@@ -10,7 +10,7 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.FriendsApplication;
 import com.findu.demo.location.LocationChangedListener;
 
-public abstract class MyMapManager {
+public abstract class BaseMapManager {
 	
 	public abstract void setMapView(MapView mapview);
 	
