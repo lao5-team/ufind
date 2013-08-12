@@ -10,6 +10,9 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+/*
+* ufind application
+*/
 public class FriendsApplication extends Application {
 
 	private static FriendsApplication mInstance = null;
