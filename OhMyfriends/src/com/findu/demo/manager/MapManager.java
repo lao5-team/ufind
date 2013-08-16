@@ -94,6 +94,56 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	// 当前我的位置
 	GeoPoint mCurrentPt;
 	OverlayItem mJuDianItem = new OverlayItem(mJuhuiGoalPt, "", "");
+	
+	public class RouteGraphic 
+	{
+		Graphic mGraphic;
+		Geometry mGeometry;
+		Symbol mSymbol;
+		Color mColor;
+		int mWidth;
+		public RouteGraphic()
+		{
+			//mGraphic = new 
+			mGeometry = new Geometry();
+			mSymbol = new Symbol();
+			mColor = mSymbol.new Color();
+			mColor.red = 255;
+			mColor.green = 0;
+			mColor.blue = 0;
+			mColor.alpha = 128;
+			mWidth = 5;
+		}
+		
+		public RouteGraphic setRoutePoints(GeoPoint[] points)
+		{
+			mGeometry.setPolyLine(points);
+			return this;
+		}
+		
+		public RouteGraphic setColor(int r, int g, int b, int a)
+		{
+			mColor.red = r;
+			mColor.green = g;
+			mColor.blue = b;
+			mColor.alpha = a;
+			return this;
+		}
+		
+		public RouteGraphic setWidth(int width)
+		{
+			mWidth = width;
+			return this;
+		}
+		
+		public Graphic getGraphic()
+		{
+			mSymbol.setLineSymbol(mColor, mWidth);
+			return new Graphic(mGeometry, mSymbol);
+			
+		}
+		
+	}
 	public MapManager(Activity activity, MapView mapView)
 	{
 		Assert.assertNotNull(activity);
@@ -200,21 +250,24 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	@Override
 	public void onGetDrivingRouteResult(MKDrivingRouteResult routeResult, int arg1) {
 		MKRoute route = routeResult.getPlan(0).getRoute(0);
-		mDrivingGeometry.setPolyLine(getPointsfromRoutePlan(route));
-
-		mDrivingColor.red = 255;
-		mDrivingColor.green = 0;
-		mDrivingColor.blue = 0;
-		mDrivingColor.alpha = 126;
-		mDrivingSymbol.setLineSymbol(mDrivingColor, 5);
-
-		if (mDrivingGraphic == null) {
-			mDrivingGraphic = new Graphic(mDrivingGeometry, mDrivingSymbol);
-		}
+		RouteGraphic routeGraphic = new RouteGraphic();
+		Graphic graphic = routeGraphic.setRoutePoints(getPointsfromRoutePlan(route)).
+		setColor(255, 0, 0, 126).setWidth(5).getGraphic();
+//		mDrivingGeometry.setPolyLine(getPointsfromRoutePlan(route));
+//
+//		mDrivingColor.red = 255;
+//		mDrivingColor.green = 0;
+//		mDrivingColor.blue = 0;
+//		mDrivingColor.alpha = 126;
+//		mDrivingSymbol.setLineSymbol(mDrivingColor, 5);
+//
+//		if (mDrivingGraphic == null) {
+//			mDrivingGraphic = new Graphic(mDrivingGeometry, mDrivingSymbol);
+//		}
 
 		mGraphicsOverlay.removeAllData();
-		mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);
+		//mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
+		mGraphicsOverlay.setCustomGraphicData(graphic);
 		mMapView.refresh();
 		
 	}
@@ -273,24 +326,27 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	@Override
 	public void onGetWalkingRouteResult(MKWalkingRouteResult routeResult, int arg1) {
 		MKRoute route = routeResult.getPlan(0).getRoute(0);
-
-		mWalkingGeometry.setPolyLine(getPointsfromRoutePlan(route));
-
-		mWalkingColor.red = 0;
-		mWalkingColor.green = 0;
-		mWalkingColor.blue = 255;
-		mWalkingColor.alpha = 126;
-		mWalkingSymbol.setLineSymbol(mWalkingColor, 5);
-
-		if (mWalkingGraphic == null) {
-			mWalkingGraphic = new Graphic(mWalkingGeometry, mWalkingSymbol);
-		}
+//
+//		mWalkingGeometry.setPolyLine(getPointsfromRoutePlan(route));
+//
+//		mWalkingColor.red = 0;
+//		mWalkingColor.green = 0;
+//		mWalkingColor.blue = 255;
+//		mWalkingColor.alpha = 126;
+//		mWalkingSymbol.setLineSymbol(mWalkingColor, 5);
+//
+//		if (mWalkingGraphic == null) {
+//			mWalkingGraphic = new Graphic(mWalkingGeometry, mWalkingSymbol);
+//		}
+		RouteGraphic routeGraphic = new RouteGraphic();
+		Graphic graphic = routeGraphic.setRoutePoints(getPointsfromRoutePlan(route)).
+		setColor(0, 0, 255, 126).setWidth(5).getGraphic();
 
 		mGraphicsOverlay.removeAllData();
-		mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);
+		mGraphicsOverlay.setCustomGraphicData(graphic);
+//		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
+//		mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
+//		mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);
 		
 		mMapView.refresh();
 		
