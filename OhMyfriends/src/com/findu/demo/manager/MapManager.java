@@ -200,29 +200,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	@Override
 	public void onGetDrivingRouteResult(MKDrivingRouteResult routeResult, int arg1) {
 		MKRoute route = routeResult.getPlan(0).getRoute(0);
-		ArrayList<ArrayList<GeoPoint>> pointList = route.getArrayPoints();
-
-		int totlePt = 0;
-
-		// 计算共有多少个地理坐标点
-		for (int i = 0; i < pointList.size(); i++) {
-			for (int j = 0; j < pointList.get(i).size(); j++) {
-				totlePt++;
-			}
-		}
-
-		GeoPoint[] routePoints = new GeoPoint[totlePt];
-
-		// 初始化地理坐标点数组
-		int index = 0;
-		for (int i = 0; i < pointList.size(); i++) {
-			for (int j = 0; j < pointList.get(i).size(); j++) {
-				routePoints[index] = pointList.get(i).get(j);
-				index++;
-			}
-		}
-
-		mDrivingGeometry.setPolyLine(routePoints);
+		mDrivingGeometry.setPolyLine(getPointsfromRoutePlan(route));
 
 		mDrivingColor.red = 255;
 		mDrivingColor.green = 0;
@@ -272,29 +250,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		{
 			Log.v(TAG, plan.getLine(i).getTitle());
 		}
-		ArrayList<ArrayList<GeoPoint>> pointList = route.getArrayPoints();
 
-		int totlePt = 0;
-
-		// 计算共有多少个地理坐标点
-		for (int i = 0; i < pointList.size(); i++) {
-			for (int j = 0; j < pointList.get(i).size(); j++) {
-				totlePt++;
-			}
-		}
-
-		GeoPoint[] routePoints = new GeoPoint[totlePt];
-
-		// 初始化地理坐标点数组
-		int index = 0;
-		for (int i = 0; i < pointList.size(); i++) {
-			for (int j = 0; j < pointList.get(i).size(); j++) {
-				routePoints[index] = pointList.get(i).get(j);
-				index++;
-			}
-		}
-
-		mBusingGeometry.setPolyLine(routePoints);
+		mBusingGeometry.setPolyLine(getPointsfromRoutePlan(route));
 
 		mBusingColor.red = 0;
 		mBusingColor.green = 255;
@@ -316,29 +273,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	@Override
 	public void onGetWalkingRouteResult(MKWalkingRouteResult routeResult, int arg1) {
 		MKRoute route = routeResult.getPlan(0).getRoute(0);
-		ArrayList<ArrayList<GeoPoint>> pointList = route.getArrayPoints();
 
-		int totlePt = 0;
-
-		// 计算共有多少个地理坐标点
-		for (int i = 0; i < pointList.size(); i++) {
-			for (int j = 0; j < pointList.get(i).size(); j++) {
-				totlePt++;
-			}
-		}
-
-		GeoPoint[] routePoints = new GeoPoint[totlePt];
-
-		// 初始化地理坐标点数组
-		int index = 0;
-		for (int i = 0; i < pointList.size(); i++) {
-			for (int j = 0; j < pointList.get(i).size(); j++) {
-				routePoints[index] = pointList.get(i).get(j);
-				index++;
-			}
-		}
-
-		mWalkingGeometry.setPolyLine(routePoints);
+		mWalkingGeometry.setPolyLine(getPointsfromRoutePlan(route));
 
 		mWalkingColor.red = 0;
 		mWalkingColor.green = 0;
@@ -455,6 +391,32 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	public void onReceivePoi(BDLocation poiLocation) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private GeoPoint[] getPointsfromRoutePlan(MKRoute route)
+	{
+		ArrayList<ArrayList<GeoPoint>> pointList = route.getArrayPoints();
+
+		int totlePt = 0;
+
+		// 计算共有多少个地理坐标点
+		for (int i = 0; i < pointList.size(); i++) {
+			for (int j = 0; j < pointList.get(i).size(); j++) {
+				totlePt++;
+			}
+		}
+
+		GeoPoint[] routePoints = new GeoPoint[totlePt];
+
+		// 初始化地理坐标点数组
+		int index = 0;
+		for (int i = 0; i < pointList.size(); i++) {
+			for (int j = 0; j < pointList.get(i).size(); j++) {
+				routePoints[index] = pointList.get(i).get(j);
+				index++;
+			}
+		}
+		return routePoints;
 	}
 
 }
