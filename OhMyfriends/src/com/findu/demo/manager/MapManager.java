@@ -20,6 +20,7 @@ import com.baidu.mapapi.search.MKBusLineResult;
 import com.baidu.mapapi.search.MKDrivingRouteResult;
 import com.baidu.mapapi.search.MKPoiResult;
 import com.baidu.mapapi.search.MKRoute;
+import com.baidu.mapapi.search.MKSearch;
 import com.baidu.mapapi.search.MKSuggestionResult;
 import com.baidu.mapapi.search.MKTransitRoutePlan;
 import com.baidu.mapapi.search.MKTransitRouteResult;
@@ -42,8 +43,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	MapView mMapView;
 	MapController mMapController;
 	LocationAbout mLocationAbout;
-
-
 	LocationOverLay mLocationOverLay;
 
 	// 用于在地图上描绘图形图像
@@ -59,29 +58,29 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	// 构建直接连接线
 	Geometry mLineGeometry = new Geometry();
 
-	// 设定直接连接线样式
-	Symbol mLineSymbol = new Symbol();
-	Symbol.Color mLineColor = mLineSymbol.new Color();
-	Graphic mLineGraphic;// 绘图专用
-	GeoPoint[] mLinePoints = new GeoPoint[2];// 两点连接坐标
-
-	// 构建步行路线连接线
-	Geometry mWalkingGeometry = new Geometry();
-	Symbol mWalkingSymbol = new Symbol();
-	Symbol.Color mWalkingColor = mWalkingSymbol.new Color();
-	Graphic mWalkingGraphic;// 步行连接线绘图专用
-
-	// 构建步行路线连接线
-	Geometry mBusingGeometry = new Geometry();
-	Symbol mBusingSymbol = new Symbol();
-	Symbol.Color mBusingColor = mBusingSymbol.new Color();
-	Graphic mBusingGraphic;// 公交连接线绘图专用
-
-	// 构建步行路线连接线
-	Geometry mDrivingGeometry = new Geometry();
-	Symbol mDrivingSymbol = new Symbol();
-	Symbol.Color mDrivingColor = mDrivingSymbol.new Color();
-	Graphic mDrivingGraphic;// 公交连接线绘图专用
+//	// 设定直接连接线样式
+//	Symbol mLineSymbol = new Symbol();
+//	Symbol.Color mLineColor = mLineSymbol.new Color();
+//	Graphic mLineGraphic;// 绘图专用
+//	GeoPoint[] mLinePoints = new GeoPoint[2];// 两点连接坐标
+//
+//	// 构建步行路线连接线
+//	Geometry mWalkingGeometry = new Geometry();
+//	Symbol mWalkingSymbol = new Symbol();
+//	Symbol.Color mWalkingColor = mWalkingSymbol.new Color();
+//	Graphic mWalkingGraphic;// 步行连接线绘图专用
+//
+//	// 构建步行路线连接线
+//	Geometry mBusingGeometry = new Geometry();
+//	Symbol mBusingSymbol = new Symbol();
+//	Symbol.Color mBusingColor = mBusingSymbol.new Color();
+//	Graphic mBusingGraphic;// 公交连接线绘图专用
+//
+//	// 构建步行路线连接线
+//	Geometry mDrivingGeometry = new Geometry();
+//	Symbol mDrivingSymbol = new Symbol();
+//	Symbol.Color mDrivingColor = mDrivingSymbol.new Color();
+//	Graphic mDrivingGraphic;// 公交连接线绘图专用
 
 	boolean isRequest = false;// 是否手动触发请求定位
 	boolean isFirstLoc = true;// 是否首次定位
@@ -94,7 +93,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	// 当前我的位置
 	GeoPoint mCurrentPt;
 	OverlayItem mJuDianItem = new OverlayItem(mJuhuiGoalPt, "", "");
-	
+	String mCity = "";
 	public class RouteGraphic 
 	{
 		Graphic mGraphic;
@@ -154,6 +153,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mMapView.getController().setZoom(14);
 		mMapView.getController().enableClick(true);
 		mMapView.setBuiltInZoomControls(true);
+		
+		mCurrentPt = new GeoPoint(0, 0);
 
 		mLocationAbout = new LocationAbout(mActivity, mMapView);
 		mLocationAbout.setLocationChangeListener(this);
@@ -177,10 +178,10 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mGraphicsOverlay.addGraphicOverlay();
 
 		// 设定连接线条颜色
-		mLineColor.red = 255;
-		mLineColor.green = 0;
-		mLineColor.blue = 0;
-		mLineColor.alpha = 255;
+//		mLineColor.red = 255;
+//		mLineColor.green = 0;
+//		mLineColor.blue = 0;
+//		mLineColor.alpha = 255;
 
 		mRouteOverlay = new CustomRouteOverlay(mActivity, mMapView);
 		mRouteOverlay.setRouteSearchListener(this);
@@ -238,6 +239,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	@Override
 	public void onGetAddrResult(MKAddrInfo arg0, int arg1) {
 		// TODO Auto-generated method stub
+		Log.v(TAG, arg0.addressComponents.city);
+		mCity = arg0.addressComponents.city;
 		
 	}
 
@@ -304,22 +307,9 @@ ItemOverlayOnTapListener, RouteSearchListener{
 			Log.v(TAG, plan.getLine(i).getTitle());
 		}
 
-		mBusingGeometry.setPolyLine(getPointsfromRoutePlan(route));
-
-		mBusingColor.red = 0;
-		mBusingColor.green = 255;
-		mBusingColor.blue = 0;
-		mBusingColor.alpha = 126;
-		mBusingSymbol.setLineSymbol(mBusingColor, 5);
-
-		if (mBusingGraphic == null) {
-			mBusingGraphic = new Graphic(mBusingGeometry, mBusingSymbol);
-		}
 
 		mGraphicsOverlay.removeAllData();
 		mRouteOverlay.addBusRouteOverlay();
-		mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
 		mMapView.refresh();
 	}
 
@@ -376,7 +366,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		// 设置行车、步行、公交路线
 		mRouteOverlay.setRouteEndPt(mJuhuiGoalPt);// 设置路线终点
 
-		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_WALK);
+		mRouteOverlay.startSearch(mCity, CustomRouteOverlay.ROUTE_MODE_WALK);
 //		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_TRANSIT);
 //		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_DRIVE);
 		mMapView.refresh();
@@ -397,9 +387,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		// 是手动触发请求或首次定位时，移动到定位点
 		if (isRequest || isFirstLoc) {
 			// 移动地图到定位点
-			mMapController.animateTo(new GeoPoint(
-					(int) (location.getLatitude() * 1e6), (int) (location
-							.getLongitude() * 1e6)));
+			mMapController.animateTo(mCurrentPt);
 			isRequest = false;
 
 			mJuhuiGoalPt = mCurrentPt;
@@ -408,45 +396,51 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		isFirstLoc = false;
 
 		connectJuDian(mCurrentPt, mJuhuiGoalPt);
-
+		mRouteOverlay.reverseGeocode(mCurrentPt);
 		// 设置路线起点
 		mRouteOverlay.setRouteStartPt(mCurrentPt);
+		
 	}
 		
 	private void connectJuDian(GeoPoint ptStart, GeoPoint ptEnd) {
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(drawLine(ptStart, ptEnd));
-		if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_WALK){
-			mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
-			
-		}else if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_TRANSIT){
-			mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
-			
-		}else{
-			mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);			
-		}
+//		if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_WALK){
+//			mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
+//			
+//		}else if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_TRANSIT){
+//			mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
+//			
+//		}else{
+//			mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);			
+//		}
 		
 		mMapView.refresh();
 	}
 	
 	private Graphic drawLine(GeoPoint ptStart, GeoPoint ptEnd) {
 
-		mLinePoints[0] = ptStart;
-		mLinePoints[1] = ptEnd;
-
-		mLineGeometry.setPolyLine(mLinePoints);
-		mLineSymbol.setLineSymbol(mLineColor, 3);
-
-		if (mLineGraphic == null) {
-			mLineGraphic = new Graphic(mLineGeometry, mLineSymbol);
-		}
-
-		return mLineGraphic;
+//		mLinePoints[0] = ptStart;
+//		mLinePoints[1] = ptEnd;
+//
+//		mLineGeometry.setPolyLine(mLinePoints);
+//		mLineSymbol.setLineSymbol(mLineColor, 3);
+//
+//		if (mLineGraphic == null) {
+//			mLineGraphic = new Graphic(mLineGeometry, mLineSymbol);
+//		}
+//
+		return null;
 	}
 	@Override
 	public void onReceivePoi(BDLocation poiLocation) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void destroy()
+	{
+		mLocationAbout.setLocationStop(true);
 	}
 	
 	private GeoPoint[] getPointsfromRoutePlan(MKRoute route)

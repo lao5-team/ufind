@@ -171,25 +171,29 @@ public class CustomRouteOverlay{
 		mEndPlanNode.name = name;
 	}
 	
-	public void startSearch(int mode){
+	public void startSearch(String city,int mode){
 		switch (mode) {
 		case ROUTE_MODE_WALK:
 			//暂定在北京地区，后期需要用户选择或者自动选择城市
-			mSearch.walkingSearch("北京", mStartPlanNode, "北京", mEndPlanNode);
+			mSearch.walkingSearch(city, mStartPlanNode, city, mEndPlanNode);
 			break;
 			
 		case ROUTE_MODE_TRANSIT:
-			mSearch.transitSearch("北京", mStartPlanNode, mEndPlanNode);
+			mSearch.transitSearch(city, mStartPlanNode, mEndPlanNode);
 			break;
 			
 		case ROUTE_MODE_DRIVE:
-			mSearch.drivingSearch("北京", mStartPlanNode, "北京", mEndPlanNode);
+			mSearch.drivingSearch(city, mStartPlanNode, city, mEndPlanNode);
 			break;
 
 		default:
-			mSearch.walkingSearch("北京", mStartPlanNode, "北京", mEndPlanNode);
+			mSearch.walkingSearch(city, mStartPlanNode, city, mEndPlanNode);
 			break;
 		}
 	}
 	
+	public void reverseGeocode(GeoPoint pt)
+	{
+		mSearch.reverseGeocode(pt);
+	}
 }
