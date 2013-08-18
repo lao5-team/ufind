@@ -18,6 +18,7 @@ import com.baidu.mapapi.map.Symbol.Color;
 import com.baidu.mapapi.search.MKAddrInfo;
 import com.baidu.mapapi.search.MKBusLineResult;
 import com.baidu.mapapi.search.MKDrivingRouteResult;
+import com.baidu.mapapi.search.MKPlanNode;
 import com.baidu.mapapi.search.MKPoiResult;
 import com.baidu.mapapi.search.MKRoute;
 import com.baidu.mapapi.search.MKSearch;
@@ -57,30 +58,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	// 这些画图的元素要不要独立出去呢？
 	// 构建直接连接线
 	Geometry mLineGeometry = new Geometry();
-
-//	// 设定直接连接线样式
-//	Symbol mLineSymbol = new Symbol();
-//	Symbol.Color mLineColor = mLineSymbol.new Color();
-//	Graphic mLineGraphic;// 绘图专用
-//	GeoPoint[] mLinePoints = new GeoPoint[2];// 两点连接坐标
-//
-//	// 构建步行路线连接线
-//	Geometry mWalkingGeometry = new Geometry();
-//	Symbol mWalkingSymbol = new Symbol();
-//	Symbol.Color mWalkingColor = mWalkingSymbol.new Color();
-//	Graphic mWalkingGraphic;// 步行连接线绘图专用
-//
-//	// 构建步行路线连接线
-//	Geometry mBusingGeometry = new Geometry();
-//	Symbol mBusingSymbol = new Symbol();
-//	Symbol.Color mBusingColor = mBusingSymbol.new Color();
-//	Graphic mBusingGraphic;// 公交连接线绘图专用
-//
-//	// 构建步行路线连接线
-//	Geometry mDrivingGeometry = new Geometry();
-//	Symbol mDrivingSymbol = new Symbol();
-//	Symbol.Color mDrivingColor = mDrivingSymbol.new Color();
-//	Graphic mDrivingGraphic;// 公交连接线绘图专用
 
 	boolean isRequest = false;// 是否手动触发请求定位
 	boolean isFirstLoc = true;// 是否首次定位
@@ -315,29 +292,14 @@ ItemOverlayOnTapListener, RouteSearchListener{
 
 	@Override
 	public void onGetWalkingRouteResult(MKWalkingRouteResult routeResult, int arg1) {
+		Log.v(TAG, "numPlan " + routeResult.getNumPlan());
 		MKRoute route = routeResult.getPlan(0).getRoute(0);
-//
-//		mWalkingGeometry.setPolyLine(getPointsfromRoutePlan(route));
-//
-//		mWalkingColor.red = 0;
-//		mWalkingColor.green = 0;
-//		mWalkingColor.blue = 255;
-//		mWalkingColor.alpha = 126;
-//		mWalkingSymbol.setLineSymbol(mWalkingColor, 5);
-//
-//		if (mWalkingGraphic == null) {
-//			mWalkingGraphic = new Graphic(mWalkingGeometry, mWalkingSymbol);
-//		}
 		RouteGraphic routeGraphic = new RouteGraphic();
 		Graphic graphic = routeGraphic.setRoutePoints(getPointsfromRoutePlan(route)).
 		setColor(0, 0, 255, 126).setWidth(5).getGraphic();
 
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(graphic);
-//		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
-//		mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
-//		mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);
-		
 		mMapView.refresh();
 		
 	}
@@ -364,9 +326,13 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mItemizedOverlay.addOverItem(mJuDianItem);
 
 		// 设置行车、步行、公交路线
-		mRouteOverlay.setRouteEndPt(mJuhuiGoalPt);// 设置路线终点
+		//mRouteOverlay.setRouteEndPt(mJuhuiGoalPt);// 设置路线终点
 
-		mRouteOverlay.startSearch(mCity, CustomRouteOverlay.ROUTE_MODE_WALK);
+		MKPlanNode start = new MKPlanNode();
+		start.pt = mCurrentPt;
+		MKPlanNode end = new MKPlanNode();
+		end.pt = mJuhuiGoalPt;
+//		mRouteOverlay.startSearch(mCity, start, end, CustomRouteOverlay.ROUTE_MODE_WALK);
 //		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_TRANSIT);
 //		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_DRIVE);
 		mMapView.refresh();
@@ -395,10 +361,10 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		// 首次定位完成
 		isFirstLoc = false;
 
-		connectJuDian(mCurrentPt, mJuhuiGoalPt);
+		//connectJuDian(mCurrentPt, mJuhuiGoalPt);
 		mRouteOverlay.reverseGeocode(mCurrentPt);
 		// 设置路线起点
-		mRouteOverlay.setRouteStartPt(mCurrentPt);
+		//mRouteOverlay.setRouteStartPt(mCurrentPt);
 		
 	}
 		
@@ -443,6 +409,26 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mLocationAbout.setLocationStop(true);
 	}
 	
+	public void searchRoute(String destName, int mode)
+	{
+		Log.v(TAG, "searchRoute");
+		MKPlanNode start = new MKPlanNode();
+		start.pt = mCurrentPt;
+		MKPlanNode end = new MKPlanNode();
+		if(null != destName)
+		{
+			end.name = destName;
+		}
+		else
+		{
+			end.pt = mJuhuiGoalPt;
+		}
+
+		
+		mRouteOverlay.startSearch(mCity, start, end, CustomRouteOverlay.ROUTE_MODE_WALK);
+
+	}
+	
 	private GeoPoint[] getPointsfromRoutePlan(MKRoute route)
 	{
 		ArrayList<ArrayList<GeoPoint>> pointList = route.getArrayPoints();
@@ -463,6 +449,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		for (int i = 0; i < pointList.size(); i++) {
 			for (int j = 0; j < pointList.get(i).size(); j++) {
 				routePoints[index] = pointList.get(i).get(j);
+				Log.v(TAG, routePoints[index].toString());
 				index++;
 			}
 		}

@@ -1,8 +1,10 @@
 package com.findu.demo.overlay;
 
+import junit.framework.Assert;
 import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import com.baidu.mapapi.map.MKEvent;
 import com.baidu.mapapi.map.MapView;
@@ -23,7 +25,7 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.FriendsApplication;
 
 public class CustomRouteOverlay{
-
+	public static String TAG = CustomRouteOverlay.class.getName();
 	public static final int ROUTE_MODE_WALK = 1;
 	public static final int ROUTE_MODE_TRANSIT = 2;
 	public static final int ROUTE_MODE_DRIVE = 3;
@@ -34,9 +36,9 @@ public class CustomRouteOverlay{
 	public TransitOverlay mTransitOverlay;
 	
 	//起点
-	private MKPlanNode mStartPlanNode;
-	//终点
-	private MKPlanNode mEndPlanNode;
+//	private MKPlanNode mStartPlanNode;
+//	//终点
+//	private MKPlanNode mEndPlanNode;
 	
 	//搜索相关
 	MKSearch mSearch = null;
@@ -48,8 +50,7 @@ public class CustomRouteOverlay{
 		mRouteOverlay = new RouteOverlay(context, mapview);
 		mTransitOverlay = new TransitOverlay(context, mMapView);
 		mSearch = new MKSearch();
-		mStartPlanNode = new MKPlanNode();
-		mEndPlanNode = new MKPlanNode();
+
 		
 		FriendsApplication application = (FriendsApplication) context.getApplication();
 		//初始化搜索模块
@@ -153,44 +154,72 @@ public class CustomRouteOverlay{
 		mSearchResultListener = listener;
 	}
 	
-	public void setRouteStartPt(GeoPoint pt){
-		mStartPlanNode.pt = pt;
-		//mStartPlanNode.name = "新宫";
-	}
+//	public void setRouteStartPt(GeoPoint pt){
+//		mStartPlanNode.pt = pt;
+//		//mStartPlanNode.name = "新宫";
+//	}
+//	
+//	public void setRouteStartName(String name){
+//		mStartPlanNode.name = name;
+//	}
+//	
+//	public void setRouteEndPt(GeoPoint pt){
+//		mEndPlanNode.pt = pt;
+//		//mEndPlanNode.name = "公益西桥";
+//	}
+//	
+//	public void setRouteEndName(String name){
+//		mEndPlanNode.name = name;
+//	}
 	
-	public void setRouteStartName(String name){
-		mStartPlanNode.name = name;
-	}
-	
-	public void setRouteEndPt(GeoPoint pt){
-		mEndPlanNode.pt = pt;
-		//mEndPlanNode.name = "公益西桥";
-	}
-	
-	public void setRouteEndName(String name){
-		mEndPlanNode.name = name;
-	}
-	
-	public void startSearch(String city,int mode){
+	public void startSearch(String city, MKPlanNode start, MKPlanNode end, int mode){
+		Log.v(TAG, "startSearch " + city + " " + start.toString() + " " + end.toString());
+		Assert.assertNotNull(start);
+		Assert.assertNotNull(end);
 		switch (mode) {
 		case ROUTE_MODE_WALK:
 			//暂定在北京地区，后期需要用户选择或者自动选择城市
-			mSearch.walkingSearch(city, mStartPlanNode, city, mEndPlanNode);
+			mSearch.walkingSearch(city, start, city, end);
 			break;
 			
 		case ROUTE_MODE_TRANSIT:
-			mSearch.transitSearch(city, mStartPlanNode, mEndPlanNode);
+			mSearch.transitSearch(city, start, end);
 			break;
 			
 		case ROUTE_MODE_DRIVE:
-			mSearch.drivingSearch(city, mStartPlanNode, city, mEndPlanNode);
+			mSearch.drivingSearch(city, start, city, end);
 			break;
 
 		default:
-			mSearch.walkingSearch(city, mStartPlanNode, city, mEndPlanNode);
+			mSearch.walkingSearch(city, start, city, end);
 			break;
 		}
 	}
+	
+//	public void startSearch(String city, String startName, String endName, int mode){
+//		MKPlanNode startPlanNode = new MKPlanNode();
+//		MKPlanNode endPlanNode = new MKPlanNode();
+//		startPlanNode.name = startName;
+//		endPlanNode.name = endName;
+//		switch (mode) {
+//		case ROUTE_MODE_WALK:
+//			//暂定在北京地区，后期需要用户选择或者自动选择城市
+//			mSearch.walkingSearch(city, startPlanNode, city, endPlanNode);
+//			break;
+//			
+//		case ROUTE_MODE_TRANSIT:
+//			mSearch.transitSearch(city, startPlanNode, endPlanNode);
+//			break;
+//			
+//		case ROUTE_MODE_DRIVE:
+//			mSearch.drivingSearch(city, startPlanNode, city, endPlanNode);
+//			break;
+//
+//		default:
+//			mSearch.walkingSearch(city, startPlanNode, city, endPlanNode);
+//			break;
+//		}
+//	}
 	
 	public void reverseGeocode(GeoPoint pt)
 	{

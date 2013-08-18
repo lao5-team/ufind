@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
@@ -18,12 +18,24 @@
         android:id="@+id/button_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/editText_dest"
         android:text="@string/search" />
+    
+         <Button
+         android:id="@+id/button_begin"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+           android:layout_below="@+id/editText_dest"
+         android:text="@string/begin" />
     
      <com.baidu.mapapi.map.MapView android:id="@+id/bmapView"
 	android:layout_width="fill_parent" android:layout_height="fill_parent" 
+	android:layout_below="@+id/button_search"
 	android:clickable="true"     
 />
 
 
-</LinearLayout>
+
+</RelativeLayout>

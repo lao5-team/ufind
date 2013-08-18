@@ -9,4 +9,6 @@
     <string name="drive">驾车路线</string>
 	<string name="search_hint">输入目的地或者在地图上选择</string>
 	<string name="search">搜索</string>
+	<string name="begin">出发</string>
+	<string name="end">到达</string>
 </resources>
