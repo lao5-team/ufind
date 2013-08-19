@@ -73,6 +73,8 @@ public class MyFriendsMain extends Activity {
 	private MapManager mMapManager;
 	private EditText mEditTextDest = null;
 	private Button mButtonSearch = null;
+	private Button mButtonSave = null;
+	private Button mButtonLoad = null;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,6 +93,27 @@ public class MyFriendsMain extends Activity {
 				mMapManager.searchRoute(null, CustomRouteOverlay.ROUTE_MODE_WALK);
 			}
 		});
+		
+		mButtonSave = (Button)findViewById(R.id.button_save);
+		mButtonSave.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mMapManager.saveRoute();
+			}
+		});
+		
+		mButtonLoad = (Button)findViewById(R.id.button_load);
+		mButtonLoad.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mMapManager.loadRoute();
+			}
+		});
+		
 		mMapManager = new MapManager(this, mMapView);
 		
 	}

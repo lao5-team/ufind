@@ -36,6 +36,8 @@ import com.findu.demo.overlay.CustomRouteOverlay;
 import com.findu.demo.overlay.ItemOverlayOnTapListener;
 import com.findu.demo.overlay.LocationOverLay;
 import com.findu.demo.overlay.RouteSearchListener;
+import com.findu.demo.route.Route;
+import com.findu.demo.route.RouteManager;
 
 public class MapManager extends BaseMapManager implements LocationChangedListener,
 ItemOverlayOnTapListener, RouteSearchListener{
@@ -62,7 +64,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	boolean isRequest = false;// 是否手动触发请求定位
 	boolean isFirstLoc = true;// 是否首次定位
 	boolean isLocationClientStop = false;
-
 	private int mCurrentRunMode = CustomRouteOverlay.ROUTE_MODE_WALK;
 
 	// 聚会地点位置
@@ -71,6 +72,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	GeoPoint mCurrentPt;
 	OverlayItem mJuDianItem = new OverlayItem(mJuhuiGoalPt, "", "");
 	String mCity = "";
+	RouteManager mRouteManager;
+	MKRoute mCurrentRoute;
 	public class RouteGraphic 
 	{
 		Graphic mGraphic;
@@ -164,6 +167,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mRouteOverlay.setRouteSearchListener(this);
 		// 修改定位数据后刷新图层生效
 		mMapView.refresh();
+		
+		mRouteManager = new RouteManager();
 	}
 	
 	//can be deleted
@@ -294,13 +299,19 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	public void onGetWalkingRouteResult(MKWalkingRouteResult routeResult, int arg1) {
 		Log.v(TAG, "numPlan " + routeResult.getNumPlan());
 		MKRoute route = routeResult.getPlan(0).getRoute(0);
+		mCurrentRoute = route;
 		RouteGraphic routeGraphic = new RouteGraphic();
-		Graphic graphic = routeGraphic.setRoutePoints(getPointsfromRoutePlan(route)).
-		setColor(0, 0, 255, 126).setWidth(5).getGraphic();
+		GeoPoint[] points = getPointsfromRoutePlan(route);
+		
+		Graphic graphic = routeGraphic.setRoutePoints(points).
+		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
 
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(graphic);
 		mMapView.refresh();
+		
+
+		
 		
 	}
 
@@ -365,6 +376,32 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mRouteOverlay.reverseGeocode(mCurrentPt);
 		// 设置路线起点
 		//mRouteOverlay.setRouteStartPt(mCurrentPt);
+		
+	}
+	
+	public void saveRoute()
+	{
+		if(null != mCurrentRoute)
+		{
+			Route myroute = new Route();
+			GeoPoint[] points = getPointsfromRoutePlan(mCurrentRoute);
+			myroute.mPoints = points.clone();
+			mRouteManager.save(myroute);
+		}
+
+	}
+	
+	public void loadRoute()
+	{
+		Log.v(TAG, "loadRoute");
+		ArrayList<Route> routes = mRouteManager.loadRoutes();
+		Route myroute = routes.get(0);
+		RouteGraphic routeGraphic = new RouteGraphic();
+		Graphic graphic = routeGraphic.setRoutePoints(myroute.mPoints).
+		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
+		mGraphicsOverlay.removeAllData();
+		mGraphicsOverlay.setCustomGraphicData(graphic);
+		mMapView.refresh();
 		
 	}
 		
