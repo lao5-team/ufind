@@ -475,6 +475,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		// 计算共有多少个地理坐标点
 		for (int i = 0; i < pointList.size(); i++) {
 			for (int j = 0; j < pointList.get(i).size(); j++) {
+				Log.v(TAG, route.getStep(i).getContent());
 				totlePt++;
 			}
 		}
