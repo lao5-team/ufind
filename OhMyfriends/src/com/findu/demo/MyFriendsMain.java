@@ -28,6 +28,7 @@ import com.baidu.mapapi.search.MKTransitRoutePlan;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.findu.demo.db.LocusDbManager;
 import com.findu.demo.location.LocationAbout;
 import com.findu.demo.location.LocationChangedListener;
 import com.findu.demo.overlay.CustomGraphicsOverlay;
@@ -36,6 +37,7 @@ import com.findu.demo.overlay.CustomRouteOverlay;
 import com.findu.demo.overlay.ItemOverlayOnTapListener;
 import com.findu.demo.overlay.LocationOverLay;
 import com.findu.demo.overlay.RouteSearchListener;
+import com.findu.demo.ui.CommandMenu;
 
 import android.R.integer;
 import android.app.Activity;
@@ -119,6 +121,8 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 	boolean isLocationClientStop = false;
 
 	private int mCurrentRunMode = CustomRouteOverlay.ROUTE_MODE_WALK;
+	private CommandMenu mCommandMenu;
+	private LocusDbManager mDbManager;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -164,6 +168,8 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		mRouteOverlay.setRouteSearchListener(this);
 		// 修改定位数据后刷新图层生效
 		mMapView.refresh();
+		mCommandMenu = new CommandMenu(this, mMapView);
+		mDbManager = new LocusDbManager(this, mMapView, mGraphicsOverlay);
 
 	}
 
@@ -224,6 +230,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 	protected void onPause() {
 		isLocationClientStop = true;
 		mMapView.onPause();
+		mCommandMenu.removeMenuView();
 		super.onPause();
 	}
 
@@ -231,6 +238,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 	protected void onResume() {
 		isLocationClientStop = false;
 		mMapView.onResume();
+		mCommandMenu.showMenuView();
 		super.onResume();
 	}
 
@@ -336,6 +344,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 
 		// 设置路线起点
 		mRouteOverlay.setRouteStartPt(mCurrentPt);
+		mDbManager.insertLocusDb((int)(location.getLatitude() * 1e6), (int)(location.getLongitude()));
 	}
 
 	@Override
