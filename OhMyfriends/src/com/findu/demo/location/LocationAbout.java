@@ -33,7 +33,7 @@ public class LocationAbout {
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(5000);
+		option.setScanSpan(60000);
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 	}

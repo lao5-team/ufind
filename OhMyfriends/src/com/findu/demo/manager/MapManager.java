@@ -364,6 +364,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		// 是手动触发请求或首次定位时，移动到定位点
 		if (isRequest || isFirstLoc) {
 			// 移动地图到定位点
+			Log.v(TAG, "onReceiveLocation: "+"Lat " + location.getLatitude() * 1e6
+					+ " Long " + location.getLongitude() * 1e6);
 			mMapController.animateTo(mCurrentPt);
 			isRequest = false;
 
@@ -374,6 +376,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 
 		//connectJuDian(mCurrentPt, mJuhuiGoalPt);
 		mRouteOverlay.reverseGeocode(mCurrentPt);
+		mRouteManager.savePoint(mCurrentPt);
 		// 设置路线起点
 		//mRouteOverlay.setRouteStartPt(mCurrentPt);
 		
@@ -383,10 +386,10 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	{
 		if(null != mCurrentRoute)
 		{
-			Route myroute = new Route();
-			GeoPoint[] points = getPointsfromRoutePlan(mCurrentRoute);
-			myroute.mPoints = points.clone();
-			mRouteManager.save(myroute);
+//			Route myroute = new Route("");
+//			GeoPoint[] points = getPointsfromRoutePlan(mCurrentRoute);
+//			myroute.mPoints = points.clone();
+//			mRouteManager.save(myroute);
 		}
 
 	}
@@ -394,10 +397,10 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	public void loadRoute()
 	{
 		Log.v(TAG, "loadRoute");
-		ArrayList<Route> routes = mRouteManager.loadRoutes();
+		ArrayList<Route> routes = null;//mRouteManager.loadRoutes("");
 		Route myroute = routes.get(0);
 		RouteGraphic routeGraphic = new RouteGraphic();
-		Graphic graphic = routeGraphic.setRoutePoints(myroute.mPoints).
+		Graphic graphic = routeGraphic.setRoutePoints(null).
 		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(graphic);
