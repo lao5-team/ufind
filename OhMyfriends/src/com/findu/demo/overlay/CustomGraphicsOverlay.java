@@ -19,12 +19,15 @@ public class CustomGraphicsOverlay {
 		mGraphicOverLay = new GraphicsOverlay(mMapView);
 	}
 	
-	public void setCustomGraphicData(Graphic graphic){
+	public void setCustomGraphicData(Graphic graphic, boolean invalidate){
 		if(graphic == null){
 			return;
 		}
 		mOverlayItemArrayList.add(graphic);
 		mGraphicOverLay.setData(graphic);
+		if(invalidate){
+			mMapView.refresh();
+		}
 	}
 	
 	public void removeGraphicData(long item){

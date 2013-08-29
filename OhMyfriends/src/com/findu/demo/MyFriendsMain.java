@@ -38,6 +38,7 @@ import com.findu.demo.overlay.ItemOverlayOnTapListener;
 import com.findu.demo.overlay.LocationOverLay;
 import com.findu.demo.overlay.RouteSearchListener;
 import com.findu.demo.ui.CommandMenu;
+import com.findu.demo.ui.RoutingUI;
 
 import android.R.integer;
 import android.app.Activity;
@@ -123,6 +124,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 	private int mCurrentRunMode = CustomRouteOverlay.ROUTE_MODE_WALK;
 	private CommandMenu mCommandMenu;
 	private LocusDbManager mDbManager;
+	private RoutingUI mRoutingLineUI;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -168,7 +170,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		mRouteOverlay.setRouteSearchListener(this);
 		// 修改定位数据后刷新图层生效
 		mMapView.refresh();
-		mCommandMenu = new CommandMenu(this, mMapView);
+		// mCommandMenu = new CommandMenu(this, mMapView);
 		mDbManager = new LocusDbManager(this, mMapView, mGraphicsOverlay);
 
 	}
@@ -197,18 +199,17 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 
 	private void connectJuDian(GeoPoint ptStart, GeoPoint ptEnd) {
 		mGraphicsOverlay.removeAllData();
-		mGraphicsOverlay.setCustomGraphicData(drawLine(ptStart, ptEnd));
+		mGraphicsOverlay.setCustomGraphicData(drawLine(ptStart, ptEnd), true);
 		if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_WALK){
-			mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
+			mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic, true);
 			
 		}else if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_TRANSIT){
-			mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
+			mGraphicsOverlay.setCustomGraphicData(mBusingGraphic, true);
 			
 		}else{
-			mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);			
+			mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic, true);
 		}
 		
-		mMapView.refresh();
 	}
 
 	private Graphic drawLine(GeoPoint ptStart, GeoPoint ptEnd) {
@@ -230,7 +231,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 	protected void onPause() {
 		isLocationClientStop = true;
 		mMapView.onPause();
-		mCommandMenu.removeMenuView();
+		// mCommandMenu.removeMenuView();
 		super.onPause();
 	}
 
@@ -238,7 +239,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 	protected void onResume() {
 		isLocationClientStop = false;
 		mMapView.onResume();
-		mCommandMenu.showMenuView();
+		// mCommandMenu.showMenuView();
 		super.onResume();
 	}
 
@@ -338,13 +339,20 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 			mJuhuiGoalPt = mCurrentPt;
 		}
 		// 首次定位完成
-		isFirstLoc = false;
 
 		connectJuDian(mCurrentPt, mJuhuiGoalPt);
 
 		// 设置路线起点
 		mRouteOverlay.setRouteStartPt(mCurrentPt);
-		mDbManager.insertLocusDb((int)(location.getLatitude() * 1e6), (int)(location.getLongitude()));
+		mDbManager.insertLocusDb((int) (location.getLatitude() * 1e6),
+				(int) (location.getLongitude()));
+		if (mRoutingLineUI == null) {
+			mRoutingLineUI = new RoutingUI(mGraphicsOverlay);
+		}
+		mGraphicsOverlay.addGraphicOverlay();
+		mRoutingLineUI.onRouting((long) (location.getLatitude() * 1e6),
+				(long) (location.getLongitude()* 1e6));
+		isFirstLoc = false;
 	}
 
 	@Override
@@ -433,9 +441,8 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		}
 
 		mGraphicsOverlay.removeAllData();
-		mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);
-		mMapView.refresh();
+		mGraphicsOverlay.setCustomGraphicData(mLineGraphic, false);
+		mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic, true);
 	}
 
 	@Override
@@ -505,9 +512,8 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 
 		mGraphicsOverlay.removeAllData();
 		mRouteOverlay.addBusRouteOverlay();
-		mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
-		mMapView.refresh();
+		mGraphicsOverlay.setCustomGraphicData(mLineGraphic, false);
+		mGraphicsOverlay.setCustomGraphicData(mBusingGraphic, true);
 	}
 
 	@Override
@@ -552,10 +558,8 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
 		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);
-		
-		mMapView.refresh();
+		mGraphicsOverlay.setCustomGraphicData(mLineGraphic, false);
+		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic, true);
 	}
 }
 
