@@ -33,9 +33,24 @@ public class LocationAbout {
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(60000);
+		option.setScanSpan(30000);
 		mLocClient.setLocOption(option);
-		mLocClient.start();
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true)
+				{
+					if(!mLocClient.isStarted())
+					{
+						mLocClient.start();
+					}
+				}
+
+				
+			}
+		});
+
 	}
 
 	public void setLocationChangeListener(LocationChangedListener listener){

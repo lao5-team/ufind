@@ -36,6 +36,7 @@ import com.findu.demo.overlay.CustomRouteOverlay;
 import com.findu.demo.overlay.ItemOverlayOnTapListener;
 import com.findu.demo.overlay.LocationOverLay;
 import com.findu.demo.overlay.RouteSearchListener;
+import com.findu.demo.route.FGeoPoint;
 import com.findu.demo.route.Route;
 import com.findu.demo.route.RouteManager;
 
@@ -144,7 +145,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 				.getLocationData());
 
 		mLocationOverLay.setLocationMarker(mActivity.getResources().getDrawable(
-				R.drawable.wa));
+				R.drawable.wa_icon));
 
 		// 添加定位图层
 		mLocationOverLay.addLocationOverlay();
@@ -165,10 +166,12 @@ ItemOverlayOnTapListener, RouteSearchListener{
 
 		mRouteOverlay = new CustomRouteOverlay(mActivity, mMapView);
 		mRouteOverlay.setRouteSearchListener(this);
+		
+		mRouteManager = new RouteManager();
 		// 修改定位数据后刷新图层生效
 		mMapView.refresh();
 		
-		mRouteManager = new RouteManager();
+		
 	}
 	
 	//can be deleted
@@ -346,7 +349,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 //		mRouteOverlay.startSearch(mCity, start, end, CustomRouteOverlay.ROUTE_MODE_WALK);
 //		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_TRANSIT);
 //		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_DRIVE);
-		mMapView.refresh();
+		mMapView.refresh(); 
 		return false;
 	}
 
@@ -362,7 +365,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mCurrentPt.setLongitudeE6((int) (location.getLongitude() * 1e6));
 
 		// 是手动触发请求或首次定位时，移动到定位点
-		if (isRequest || isFirstLoc) {
+		//if (isRequest || isFirstLoc) {
 			// 移动地图到定位点
 			Log.v(TAG, "onReceiveLocation: "+"Lat " + location.getLatitude() * 1e6
 					+ " Long " + location.getLongitude() * 1e6);
@@ -370,16 +373,19 @@ ItemOverlayOnTapListener, RouteSearchListener{
 			isRequest = false;
 
 			mJuhuiGoalPt = mCurrentPt;
-		}
+		//}
 		// 首次定位完成
-		isFirstLoc = false;
+		//isFirstLoc = false;
 
 		//connectJuDian(mCurrentPt, mJuhuiGoalPt);
 		mRouteOverlay.reverseGeocode(mCurrentPt);
-		mRouteManager.savePoint(mCurrentPt);
+		//mRouteManager.savePoint(mCurrentPt);
 		// 设置路线起点
 		//mRouteOverlay.setRouteStartPt(mCurrentPt);
+		mRouteManager.addPoint(new FGeoPoint(mCurrentPt));
+		Log.v(TAG, "Point Num: " + mRouteManager.getPoints().size());
 		
+		mMapView.refresh();
 	}
 	
 	public void saveRoute()

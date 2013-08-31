@@ -101,6 +101,24 @@ public class RouteManager {
 	public void addPoint(FGeoPoint point)
 	{
 		mPoints.add(point);
+		
+		//
+		FileOutputStream fos;
+		try {
+			FileWriter fWriter = new FileWriter(pointPath, true);
+			SimpleDateFormat formatter;
+			Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
+			formatter = new SimpleDateFormat("HH:mm:ss");
+			String strTime = formatter.format(curDate);
+			fWriter.append(strTime+"\n");
+			fWriter.append(point.mPt.getLatitudeE6() + "\n");
+			fWriter.append(point.mPt.getLongitudeE6() + "\n");
+			fWriter.append("\n");
+			fWriter.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void savePoints(String fileName)

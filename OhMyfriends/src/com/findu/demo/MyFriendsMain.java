@@ -75,6 +75,8 @@ public class MyFriendsMain extends Activity {
 	private Button mButtonSearch = null;
 	private Button mButtonSave = null;
 	private Button mButtonLoad = null;
+	private Button mButtonBegin = null;
+	private boolean mIsBegin = true;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -111,6 +113,24 @@ public class MyFriendsMain extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				mMapManager.loadRoute();
+			}
+		});
+		
+		mButtonBegin = (Button)findViewById(R.id.button_begin);
+		mButtonBegin.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mIsBegin = !mIsBegin;
+				if(mIsBegin)
+				{
+					mButtonBegin.setText(R.string.begin);
+				}
+				else
+				{
+					mButtonBegin.setText(R.string.end);
+				}
 			}
 		});
 		
