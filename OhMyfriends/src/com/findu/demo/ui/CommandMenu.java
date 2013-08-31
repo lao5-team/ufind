@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.baidu.mapapi.map.MapView;
 import com.findu.demo.MyFriendsMain;
-import com.rlk.yh.R;
+import com.findu.demo.R;
 
 public class CommandMenu implements View.OnClickListener {
 
