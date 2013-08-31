@@ -7,5 +7,6 @@
     <string name="walk">步行路线</string>
     <string name="bus">公交路线</string>
     <string name="drive">驾车路线</string>
-
+    <string name="ok">确定</string>
+	<string name="next">下一组</string>
 </resources>
