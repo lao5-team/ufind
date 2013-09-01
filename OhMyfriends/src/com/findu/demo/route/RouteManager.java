@@ -1,9 +1,11 @@
 package com.findu.demo.route;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,10 +22,12 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
 public class RouteManager {
 	String filePath = "mnt/sdcard/findu/routes.db";
 	String pointPath = "mnt/sdcard/findu/points.txt";
+	String point1Path = "mnt/sdcard/findu/points1.txt";
 	ArrayList<Route> mRoutes;
 	ArrayList<FGeoPoint> mPoints;
 	//Route mCurrentRoute = null;
 	SQLiteDatabase mDB;
+	public static String TAG = RouteManager.class.getName();
 	public RouteManager()
 	{
 
@@ -159,7 +163,7 @@ public class RouteManager {
 				FileInputStream fis;
 				ObjectInputStream ois;
 				try {
-					fis = new FileInputStream(pointPath);
+					fis = new FileInputStream(point1Path);
 					ois = new ObjectInputStream(fis);
 					mPoints = (ArrayList<FGeoPoint>) ois.readObject();
 					ois.close();
@@ -236,6 +240,58 @@ public class RouteManager {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public void loadPointtxt()
+	{
+		Log.v("RouteManager", "loadPoint");
+		ArrayList<FGeoPoint> points = new ArrayList<FGeoPoint>();
+		FileOutputStream fos;
+		try {
+			FileReader fReader = new FileReader(point1Path);
+			BufferedReader bfReader = new BufferedReader(fReader);
+			while(true)
+			{
+				String str = bfReader.readLine();
+				if(str == null)
+				{
+					break;
+				}
+				str = bfReader.readLine();
+				if(str == null)
+				{
+					break;
+				}
+				int lat = Integer.valueOf(str);
+				str = bfReader.readLine();
+				if(str == null)
+				{
+					break;
+				}
+				int longtitude = Integer.valueOf(str);
+				GeoPoint point = new GeoPoint(lat, longtitude);
+				FGeoPoint fpoint = new FGeoPoint(point);
+				if(points.size()>=1&&(point.getLatitudeE6()!=points.get(points.size()-1).mPt.getLatitudeE6()))
+				{
+					points.add(fpoint);
+				}
+				else if(points.size() == 0)
+				{
+					points.add(fpoint);
+				}
+				str = bfReader.readLine();
+				if(str == null)
+				{
+					break;
+				}
+			}
+			Log.v(TAG, "points num " + points.size());
+			fReader.close();
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
 		}
 	}
 	

@@ -33,7 +33,7 @@ public class LocationAbout {
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(30000);
+		option.setScanSpan(10000);
 		mLocClient.setLocOption(option);
 		Thread t = new Thread(new Runnable() {
 			
@@ -41,15 +41,24 @@ public class LocationAbout {
 			public void run() {
 				while(true)
 				{
-					if(!mLocClient.isStarted())
-					{
+//					if(!mLocClient.isStarted())
+//					{
 						mLocClient.start();
-					}
+						try {
+							Thread.sleep(30000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						mLocClient.stop();
+
+//					}
 				}
 
 				
 			}
 		});
+		t.start();
 
 	}
 

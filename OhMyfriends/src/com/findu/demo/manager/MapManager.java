@@ -404,13 +404,14 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	{
 		Log.v(TAG, "loadRoute");
 		ArrayList<Route> routes = null;//mRouteManager.loadRoutes("");
-		Route myroute = routes.get(0);
-		RouteGraphic routeGraphic = new RouteGraphic();
-		Graphic graphic = routeGraphic.setRoutePoints(null).
-		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
-		mGraphicsOverlay.removeAllData();
-		mGraphicsOverlay.setCustomGraphicData(graphic);
-		mMapView.refresh();
+		mRouteManager.loadPointtxt();
+//		Route myroute = routes.get(0);
+//		RouteGraphic routeGraphic = new RouteGraphic();
+//		Graphic graphic = routeGraphic.setRoutePoints(null).
+//		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
+//		mGraphicsOverlay.removeAllData();
+//		mGraphicsOverlay.setCustomGraphicData(graphic);
+//		mMapView.refresh();
 		
 	}
 		
