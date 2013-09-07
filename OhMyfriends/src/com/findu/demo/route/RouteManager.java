@@ -102,6 +102,7 @@ public class RouteManager {
 		}
 	}
 	
+	//将point写入文本文件
 	public void addPoint(FGeoPoint point)
 	{
 		mPoints.add(point);
@@ -222,9 +223,8 @@ public class RouteManager {
 			//fos = new FileOutputStream(pointPath);
 			//ObjectOutputStream oos = new ObjectOutputStream(fos);
 			//oos.writeObject(mPoints);
-			SimpleDateFormat formatter;
 			Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
-			formatter = new SimpleDateFormat("HH:mm:ss");
+			SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 			String strTime = formatter.format(curDate);
 //			oos.writeChars(strTime+"\n");
 //			oos.writeChars(point.getLatitudeE6() + "\n");
@@ -243,7 +243,7 @@ public class RouteManager {
 		}
 	}
 	
-	public void loadPointtxt()
+	public GeoPoint[] loadPointtxt()
 	{
 		Log.v("RouteManager", "loadPoint");
 		ArrayList<FGeoPoint> points = new ArrayList<FGeoPoint>();
@@ -253,11 +253,13 @@ public class RouteManager {
 			BufferedReader bfReader = new BufferedReader(fReader);
 			while(true)
 			{
+				SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 				String str = bfReader.readLine();
 				if(str == null)
 				{
 					break;
 				}
+				Date date = formatter.parse(str);
 				str = bfReader.readLine();
 				if(str == null)
 				{
@@ -271,8 +273,8 @@ public class RouteManager {
 				}
 				int longtitude = Integer.valueOf(str);
 				GeoPoint point = new GeoPoint(lat, longtitude);
-				FGeoPoint fpoint = new FGeoPoint(point);
-				if(points.size()>=1&&(point.getLatitudeE6()!=points.get(points.size()-1).mPt.getLatitudeE6()))
+				FGeoPoint fpoint = new FGeoPoint(point, date);
+				if(points.size()>=1&&(point.getLatitudeE6()!=points.get(points.size()-1).mPt.getLatitudeE6())&&point.getLatitudeE6()!=0)
 				{
 					points.add(fpoint);
 				}
@@ -288,10 +290,17 @@ public class RouteManager {
 			}
 			Log.v(TAG, "points num " + points.size());
 			fReader.close();
+			GeoPoint[] gpoints = new GeoPoint[points.size()];
+			for(int i=0; i<points.size(); i++)
+			{
+				gpoints[i] = points.get(i).mPt;
+			}
+			return gpoints;
 		}
 		catch(Exception exception)
 		{
 			exception.printStackTrace();
+			return null;
 		}
 	}
 	
