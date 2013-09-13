@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.baidu.mapapi.map.MapView;
-import com.findu.demo.MyFriendsMain;
+import com.findu.demo.activity.MyFriendsMain;
 import com.findu.demo.overlay.CustomGraphicsOverlay;
 
 import android.content.ContentResolver;

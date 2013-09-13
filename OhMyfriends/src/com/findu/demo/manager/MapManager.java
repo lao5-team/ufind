@@ -1,10 +1,14 @@
 package com.findu.demo.manager;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import junit.framework.Assert;
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.Geometry;
@@ -18,9 +22,11 @@ import com.baidu.mapapi.map.Symbol.Color;
 import com.baidu.mapapi.search.MKAddrInfo;
 import com.baidu.mapapi.search.MKBusLineResult;
 import com.baidu.mapapi.search.MKDrivingRouteResult;
+import com.baidu.mapapi.search.MKLine;
 import com.baidu.mapapi.search.MKPlanNode;
 import com.baidu.mapapi.search.MKPoiResult;
 import com.baidu.mapapi.search.MKRoute;
+import com.baidu.mapapi.search.MKRoutePlan;
 import com.baidu.mapapi.search.MKSearch;
 import com.baidu.mapapi.search.MKSuggestionResult;
 import com.baidu.mapapi.search.MKTransitRoutePlan;
@@ -75,6 +81,10 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	String mCity = "";
 	RouteManager mRouteManager;
 	MKRoute mCurrentRoute;
+	
+	MKRoutePlan mWalkingPlan;
+	MKTransitRoutePlan mTransitPlan;
+	ArrayList<FGeoPoint> mLocationPoints;
 	public class RouteGraphic 
 	{
 		Graphic mGraphic;
@@ -124,6 +134,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		}
 		
 	}
+	
+	
 	public MapManager(Activity activity, MapView mapView)
 	{
 		Assert.assertNotNull(activity);
@@ -171,6 +183,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		// 修改定位数据后刷新图层生效
 		mMapView.refresh();
 		
+		mLocationPoints = new ArrayList<FGeoPoint>();
 		
 	}
 	
@@ -239,19 +252,8 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	public void onGetDrivingRouteResult(MKDrivingRouteResult routeResult, int arg1) {
 		MKRoute route = routeResult.getPlan(0).getRoute(0);
 		RouteGraphic routeGraphic = new RouteGraphic();
-		Graphic graphic = routeGraphic.setRoutePoints(getPointsfromRoutePlan(route)).
+		Graphic graphic = routeGraphic.setRoutePoints(getPointsfromRoute(route)).
 		setColor(255, 0, 0, 126).setWidth(5).getGraphic();
-//		mDrivingGeometry.setPolyLine(getPointsfromRoutePlan(route));
-//
-//		mDrivingColor.red = 255;
-//		mDrivingColor.green = 0;
-//		mDrivingColor.blue = 0;
-//		mDrivingColor.alpha = 126;
-//		mDrivingSymbol.setLineSymbol(mDrivingColor, 5);
-//
-//		if (mDrivingGraphic == null) {
-//			mDrivingGraphic = new Graphic(mDrivingGeometry, mDrivingSymbol);
-//		}
 
 		mGraphicsOverlay.removeAllData();
 		//mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
@@ -304,7 +306,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		MKRoute route = routeResult.getPlan(0).getRoute(0);
 		mCurrentRoute = route;
 		RouteGraphic routeGraphic = new RouteGraphic();
-		GeoPoint[] points = getPointsfromRoutePlan(route);
+		GeoPoint[] points = getPointsfromRoute(route);
 		
 		Graphic graphic = routeGraphic.setRoutePoints(points).
 		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
@@ -312,44 +314,57 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(graphic);
 		mMapView.refresh();
-		
-
-		
-		
 	}
 
 	@Override
 	public boolean onTap(int index) {
-
+       
 		return false;
 	}
+	
 
 	@Override
 	public boolean onTap(GeoPoint pt, MapView mMapView) {
-		// TODO Auto-generated method stub
-		mJuhuiGoalPt = pt;
-
-		// 画连接线
-		connectJuDian(mCurrentPt, mJuhuiGoalPt);
-
-		mItemizedOverlay.removeOverItem(mJuDianItem);
-		mJuDianItem.setGeoPoint(mJuhuiGoalPt);
-		mJuDianItem.setMarker(mActivity.getResources().getDrawable(R.drawable.redhat));
-
-		// 添加直线item
-		mItemizedOverlay.addOverItem(mJuDianItem);
-
-		// 设置行车、步行、公交路线
-		//mRouteOverlay.setRouteEndPt(mJuhuiGoalPt);// 设置路线终点
-
-		MKPlanNode start = new MKPlanNode();
-		start.pt = mCurrentPt;
-		MKPlanNode end = new MKPlanNode();
-		end.pt = mJuhuiGoalPt;
-//		mRouteOverlay.startSearch(mCity, start, end, CustomRouteOverlay.ROUTE_MODE_WALK);
-//		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_TRANSIT);
-//		mRouteOverlay.startSearch(CustomRouteOverlay.ROUTE_MODE_DRIVE);
-		mMapView.refresh(); 
+		 Button button = new Button(mActivity);
+			button.setText("开始");
+	        //创建布局参数
+		 MapView.LayoutParams   layoutParam  = new MapView.LayoutParams(
+	              MapView.LayoutParams.WRAP_CONTENT,
+	              MapView.LayoutParams.WRAP_CONTENT,
+	              //使控件固定在某个地理位置
+	               pt,
+	               0,
+	               -32,
+	              //控件对齐方式
+	                MapView.LayoutParams.BOTTOM_CENTER);
+	        //添加View到MapView中
+	        mMapView.addView(button,layoutParam);
+	        
+	       button.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.v(TAG, "start !");
+				Route newRoute = new Route("测试");
+				newRoute.addGeoPoint(new GeoPoint(mCurrentPt.getLatitudeE6(), mCurrentPt.getLongitudeE6()));
+				newRoute.start();		
+			}
+		});
+//		// TODO Auto-generated method stub
+//		mJuhuiGoalPt = pt;
+//		// 画连接线
+//		connectJuDian(mCurrentPt, mJuhuiGoalPt);
+//		mItemizedOverlay.removeOverItem(mJuDianItem);
+//		mJuDianItem.setGeoPoint(mJuhuiGoalPt);
+//		mJuDianItem.setMarker(mActivity.getResources().getDrawable(R.drawable.redhat));
+//		// 添加直线item
+//		mItemizedOverlay.addOverItem(mJuDianItem);
+//		MKPlanNode start = new MKPlanNode();
+//		start.pt = mCurrentPt;
+//		MKPlanNode end = new MKPlanNode();
+//		end.pt = mJuhuiGoalPt;
+//		mMapView.refresh(); 
 		return false;
 	}
 
@@ -369,7 +384,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 			// 移动地图到定位点
 			Log.v(TAG, "onReceiveLocation: "+"Lat " + location.getLatitude() * 1e6
 					+ " Long " + location.getLongitude() * 1e6);
-			mMapController.animateTo(mCurrentPt);
+			
 			isRequest = false;
 
 			mJuhuiGoalPt = mCurrentPt;
@@ -382,9 +397,18 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		//mRouteManager.savePoint(mCurrentPt);
 		// 设置路线起点
 		//mRouteOverlay.setRouteStartPt(mCurrentPt);
-		mRouteManager.addPoint(new FGeoPoint(mCurrentPt));
+		mRouteManager.addPoint(new FGeoPoint(mCurrentPt, new Date()));
 		Log.v(TAG, "Point Num: " + mRouteManager.getPoints().size());
 		
+		mMapView.refresh();
+		
+		GeoPoint pt = new GeoPoint(mCurrentPt.getLatitudeE6(), mCurrentPt.getLongitudeE6());
+		mLocationPoints.add(new FGeoPoint(pt, null));
+	}
+	
+	public void resetMyLocation()
+	{
+		mMapController.animateTo(mCurrentPt);
 		mMapView.refresh();
 	}
 	
@@ -406,22 +430,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		ArrayList<Route> routes = null;//mRouteManager.loadRoutes("");
 		GeoPoint[] points = mRouteManager.loadPointtxt();
 		
-//		Geometry mRoutingGeometry = new Geometry();
-//
-//		mRoutingGeometry.setPolyLine(points);
-//		Color routeColor = new Color();
-//		routeColor.red = 0;
-//		routeColor.green = 255;
-//		routeColor.blue = 0;
-//		routeColor.alpha = 126;
-//		mSymbol.setLineSymbol(mRoutingColor, 5);
-//
-//		// mRoutingGeometry.setPolyLine(showPoints);
-//		mCustomGraphicsOverlay.removeAllData();
-//		mCustomGraphicsOverlay.addGraphicOverlay();
-//		Graphic cGraphic = new Graphic(mRoutingGeometry, mRoutingSymbol);
-//		mCustomGraphicsOverlay.setCustomGraphicData(cGraphic, true);
-		
 		RouteGraphic routeGraphic = new RouteGraphic();
 		Graphic graphic = routeGraphic.setRoutePoints(points).
 		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
@@ -429,45 +437,17 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(graphic);
 		mMapView.refresh();
-		
-//		Route myroute = routes.get(0);
-//		RouteGraphic routeGraphic = new RouteGraphic();
-//		Graphic graphic = routeGraphic.setRoutePoints(null).
-//		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
-//		mGraphicsOverlay.removeAllData();
-//		mGraphicsOverlay.setCustomGraphicData(graphic);
-//		mMapView.refresh();
-		
 	}
 		
 	private void connectJuDian(GeoPoint ptStart, GeoPoint ptEnd) {
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(drawLine(ptStart, ptEnd));
-//		if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_WALK){
-//			mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
-//			
-//		}else if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_TRANSIT){
-//			mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
-//			
-//		}else{
-//			mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);			
-//		}
 		
 		mMapView.refresh();
 	}
 	
 	private Graphic drawLine(GeoPoint ptStart, GeoPoint ptEnd) {
 
-//		mLinePoints[0] = ptStart;
-//		mLinePoints[1] = ptEnd;
-//
-//		mLineGeometry.setPolyLine(mLinePoints);
-//		mLineSymbol.setLineSymbol(mLineColor, 3);
-//
-//		if (mLineGraphic == null) {
-//			mLineGraphic = new Graphic(mLineGeometry, mLineSymbol);
-//		}
-//
 		return null;
 	}
 	@Override
@@ -501,12 +481,69 @@ ItemOverlayOnTapListener, RouteSearchListener{
 
 	}
 	
-	private GeoPoint[] getPointsfromRoutePlan(MKRoute route)
+	public void searchRoute(String srcName, String destName, int mode)
+	{
+		Log.v(TAG, "searchRoute");
+		MKPlanNode start = new MKPlanNode();
+		start.name = srcName;
+		MKPlanNode end = new MKPlanNode();
+		if(null != destName)
+		{
+			end.name = destName;
+		}
+		else
+		{
+			end.pt = mJuhuiGoalPt;
+		}
+
+		
+		mRouteOverlay.startSearch(mCity, start, end, mode);
+
+	}
+	
+	private GeoPoint[] getPointsfromTransitPlan(MKTransitRoutePlan plan)
+	{
+//		ArrayList<GeoPoint[]> pointsList = new ArrayList<GeoPoint[]>();
+//		ArrayList<GeoPoint>pointArray = new ArrayList<GeoPoint>();
+//		for(int i=0; i<plan.getNumRoutes(); i++)
+//		{
+//			GeoPoint[] pointList = getPointsfromRoute(plan.getRoute(i));
+//			pointsList.add(pointList);
+//			for(int j=0; j<pointList.length; j++)
+//			{
+//				pointArray.add(pointList[j]);
+//			}
+//		}
+//		return (GeoPoint[]) pointArray.toArray();
+		return null;
+	}
+	
+	private GeoPoint[] getPointsfromRoutePlan(MKRoutePlan plan)
+	{
+		ArrayList<GeoPoint[]> pointsList = new ArrayList<GeoPoint[]>();
+		ArrayList<GeoPoint>pointArray = new ArrayList<GeoPoint>();
+		for(int i=0; i<plan.getNumRoutes(); i++)
+		{
+			GeoPoint[] pointList = getPointsfromRoute(plan.getRoute(i));
+			pointsList.add(pointList);
+			for(int j=0; j<pointList.length; j++)
+			{
+				pointArray.add(pointList[j]);
+			}
+		}
+		GeoPoint pointsResult[] = new GeoPoint[pointArray.size()];
+		for(int i=0; i<pointsResult.length; i++)
+		{
+			pointsResult[i] = pointArray.get(i);
+		}
+		return pointsResult;
+	}
+	
+	
+	private GeoPoint[] getPointsfromRoute(MKRoute route)
 	{
 		ArrayList<ArrayList<GeoPoint>> pointList = route.getArrayPoints();
-
 		int totlePt = 0;
-
 		// 计算共有多少个地理坐标点
 		for (int i = 0; i < pointList.size(); i++) {
 			for (int j = 0; j < pointList.get(i).size(); j++) {
@@ -516,7 +553,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		}
 
 		GeoPoint[] routePoints = new GeoPoint[totlePt];
-
 		// 初始化地理坐标点数组
 		int index = 0;
 		for (int i = 0; i < pointList.size(); i++) {
@@ -528,5 +564,65 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		}
 		return routePoints;
 	}
+	
+	private GeoPoint[] getPointsfromLine(MKLine line)
+	{
+		ArrayList<GeoPoint> pointList = line.getPoints();
+		int totlePt = 0;
+		// 计算共有多少个地理坐标点
+		for (int i = 0; i < pointList.size(); i++) {
+				totlePt++;
+		}
+
+		GeoPoint[] routePoints = new GeoPoint[totlePt];
+		// 初始化地理坐标点数组
+		int index = 0;
+		for (int i = 0; i < pointList.size(); i++) {
+				routePoints[index] = pointList.get(i);
+				Log.v(TAG, routePoints[index].toString());
+				index++;
+		}
+		return routePoints;
+	}
+	
+	public void setWalkingRoute(MKRoutePlan plan)
+	{
+		mWalkingPlan = plan;
+		GeoPoint [] points = getPointsfromRoutePlan(mWalkingPlan);
+		RouteGraphic routeGraphic = new RouteGraphic();
+		Graphic graphic = routeGraphic.setRoutePoints(points).
+		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
+
+		mGraphicsOverlay.removeAllData();
+		mGraphicsOverlay.setCustomGraphicData(graphic);
+		
+        OverlayItem itemBegin = new OverlayItem(points[0],"起点","");
+        /**
+         * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
+         */
+        itemBegin.setMarker(mActivity.getResources().getDrawable(R.drawable.begin_icon));
+		
+		mItemizedOverlay.addOverItem(itemBegin);
+		mMapView.refresh();
+		
+	}
+	
+	public void setTransitRoute(MKTransitRoutePlan plan)
+	{
+//		mTransitResult = result;
+//		result.getPlan(arg0)
+//		RouteGraphic routeGraphic = new RouteGraphic();
+//		Graphic graphic = routeGraphic.setRoutePoints(points).
+//		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
+
+		mGraphicsOverlay.removeAllData();
+		//mGraphicsOverlay.setCustomGraphicData(graphic);
+		mMapView.refresh();
+	}
+	
+//	public setRouteSearchListener()
+//	{
+//		
+//	}
 
 }

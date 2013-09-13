@@ -7,7 +7,7 @@ import com.findu.demo.route.FGeoPoint;
 public class FindUtil {
 	public static void savePointsToFile(int mode, String fileName, ArrayList<FGeoPoint> points)
 	{
-		switch
+		//switch
 	}
 	
 	public static ArrayList<FGeoPoint> loadPointsFromFile(String fileName)

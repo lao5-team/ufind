@@ -1,9 +1,10 @@
-package com.findu.demo;
+package com.findu.demo.activity;
 
 
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
+import com.findu.demo.manager.MapManager;
 
 import android.app.Application;
 import android.content.Context;
@@ -17,7 +18,7 @@ public class FriendsApplication extends Application {
     public BMapManager mBMapManager = null;
     public static String TAG = FriendsApplication.class.getName();
     public static final String strKey = "EF327741BE0E40770FC97D2608419E4700A62E2B";
-    
+    public MapManager mMapManager = null;
     @Override
     public void onCreate() {
     	Log.v(TAG, "onCreate");

@@ -4,18 +4,18 @@
         android:id="@+id/route_walk"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/walk"/>
+        android:title="@string/walk_route"/>
     
     <item
         android:id="@+id/route_bus"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/bus"/>
+        android:title="@string/bus_route"/>
     
     <item
         android:id="@+id/route_drive"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/drive"/>
+        android:title="@string/drive_route"/>
 
 </menu>

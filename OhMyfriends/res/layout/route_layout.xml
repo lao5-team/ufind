@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+        <Button
+                android:id="@+id/transit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="18dp"
+                android:text="@string/transit" />
+
+            <Button
+                android:id="@+id/drive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/transit"
+                android:text="@string/drive" />
+
+            <Button
+                android:id="@+id/walk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/drive"
+                android:text="@string/walk" />
+    </RelativeLayout>
+
+       <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+            <Button
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="@string/back" />
+
+            
+            
+            <Button
+                android:id="@+id/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/search" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+            <EditText
+        android:id="@+id/route_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/route_name">
+
+        <requestFocus />
+    </EditText>
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/reverse"
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/end"
+            android:text="Button" />
+
+        <EditText
+            android:id="@+id/begin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="28dp"
+            android:ems="10" />
+       <EditText
+        android:id="@+id/end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/begin"
+        android:layout_marginLeft="28dp"
+        android:ems="10" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent" >
+
+        <ListView
+            android:id="@+id/route_plans"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            >
+        </ListView>
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

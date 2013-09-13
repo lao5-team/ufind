@@ -22,7 +22,7 @@ import com.baidu.mapapi.search.MKSuggestionResult;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
-import com.findu.demo.FriendsApplication;
+import com.findu.demo.activity.FriendsApplication;
 
 public class CustomRouteOverlay{
 	public static String TAG = CustomRouteOverlay.class.getName();

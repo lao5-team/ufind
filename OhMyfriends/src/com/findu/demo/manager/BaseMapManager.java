@@ -7,7 +7,7 @@ import com.baidu.mapapi.map.MKMapViewListener;
 import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
-import com.findu.demo.FriendsApplication;
+import com.findu.demo.activity.FriendsApplication;
 import com.findu.demo.location.LocationChangedListener;
 
 public abstract class BaseMapManager {

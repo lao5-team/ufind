@@ -1,4 +1,4 @@
-package com.findu.demo;
+package com.findu.demo.activity;
 
 import java.util.ArrayList;
 
@@ -28,6 +28,11 @@ import com.baidu.mapapi.search.MKTransitRoutePlan;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.findu.demo.R;
+import com.findu.demo.R.id;
+import com.findu.demo.R.layout;
+import com.findu.demo.R.menu;
+import com.findu.demo.R.string;
 import com.findu.demo.location.LocationAbout;
 import com.findu.demo.location.LocationChangedListener;
 import com.findu.demo.manager.MapManager;
@@ -41,6 +46,7 @@ import com.findu.demo.overlay.RouteSearchListener;
 import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -76,6 +82,7 @@ public class MyFriendsMain extends Activity {
 	private Button mButtonSave = null;
 	private Button mButtonLoad = null;
 	private Button mButtonBegin = null;
+	private Button mButtonReset = null;
 	private boolean mIsBegin = true;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -92,7 +99,8 @@ public class MyFriendsMain extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				mMapManager.searchRoute(null, CustomRouteOverlay.ROUTE_MODE_WALK);
+				//mMapManager.searchRoute(null, CustomRouteOverlay.ROUTE_MODE_WALK);
+				MyFriendsMain.this.startActivity(new Intent(MyFriendsMain.this, RouteActivity.class));
 			}
 		});
 		
@@ -134,62 +142,21 @@ public class MyFriendsMain extends Activity {
 			}
 		});
 		
+		mButtonReset = (Button)findViewById(R.id.reset);
+		mButtonReset.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mMapManager.resetMyLocation();
+			}
+		});
+		
 		mMapManager = new MapManager(this, mMapView);
+		FriendsApplication.getInstance().mMapManager = mMapManager;
 		
 	}
 
-//	/**
-//	 * 手动触发一次定位请求
-//	 */
-//	public void requestLocClick() {
-//		isRequest = true;
-//		// mLocClient.requestLocation();
-//		// Toast.makeText(LocationOverlayDemo.this, "正在定位…",
-//		// Toast.LENGTH_SHORT).show();
-//	}
-//
-//	/**
-//	 * 修改位置图标
-//	 * 
-//	 * @param marker
-//	 */
-//	public void modifyLocationOverlayIcon(Drawable marker) {
-//		// 当传入marker为null时，使用默认图标绘制
-//		// mMyLocationOverlay.setMarker(marker);
-//		// 修改图层，需要刷新MapView生效
-//		mMapView.refresh();
-//	}
-//
-//	private void connectJuDian(GeoPoint ptStart, GeoPoint ptEnd) {
-//		mGraphicsOverlay.removeAllData();
-//		mGraphicsOverlay.setCustomGraphicData(drawLine(ptStart, ptEnd));
-//		if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_WALK){
-//			mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
-//			
-//		}else if(mCurrentRunMode == CustomRouteOverlay.ROUTE_MODE_TRANSIT){
-//			mGraphicsOverlay.setCustomGraphicData(mBusingGraphic);
-//			
-//		}else{
-//			mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);			
-//		}
-//		
-//		mMapView.refresh();
-//	}
-//
-//	private Graphic drawLine(GeoPoint ptStart, GeoPoint ptEnd) {
-//
-//		mLinePoints[0] = ptStart;
-//		mLinePoints[1] = ptEnd;
-//
-//		mLineGeometry.setPolyLine(mLinePoints);
-//		mLineSymbol.setLineSymbol(mLineColor, 3);
-//
-//		if (mLineGraphic == null) {
-//			mLineGraphic = new Graphic(mLineGeometry, mLineSymbol);
-//		}
-//
-//		return mLineGraphic;
-//	}
 
 	@Override
 	protected void onPause() {
@@ -269,6 +236,8 @@ public class MyFriendsMain extends Activity {
 		mMapView.refresh();
 		return super.onOptionsItemSelected(item);
 	}
+	
+
 
 }
 

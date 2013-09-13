@@ -1,6 +1,7 @@
 package com.findu.demo.test;
 
 import java.io.File;
+import java.util.Date;
 
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.route.FGeoPoint;
@@ -24,9 +25,9 @@ public class RouteTest extends AndroidTestCase   {
 	public void testAddPoint()
 	{
 		RouteManager manager = new RouteManager();
-		FGeoPoint point = new FGeoPoint(new GeoPoint(0, 0));
+		FGeoPoint point = new FGeoPoint(new GeoPoint(0, 0), new Date());
 		manager.addPoint(point);
-		point = new FGeoPoint(new GeoPoint(0, 0));
+		point = new FGeoPoint(new GeoPoint(0, 0), new Date());
 		manager.addPoint(point);
 		assertEquals(2, manager.getPoints().size());
 		
@@ -36,9 +37,9 @@ public class RouteTest extends AndroidTestCase   {
 	
 	public void testSavePoints() {
 		RouteManager manager = new RouteManager();
-		FGeoPoint point = new FGeoPoint(new GeoPoint(0, 0));
+		FGeoPoint point = new FGeoPoint(new GeoPoint(0, 0), new Date());
 		manager.addPoint(point);
-		point = new FGeoPoint(new GeoPoint(0, 0));
+		point = new FGeoPoint(new GeoPoint(0, 0), new Date());
 		manager.addPoint(point);
 		
 		String filePath = "mnt/sdcard/findu/testpoints.dat";

@@ -20,6 +20,7 @@ public class Route implements Serializable{
 	public Date mBegin;
 	public Date mEnd;
 	public ArrayList<Integer> mPointIndices;
+	public ArrayList<FGeoPoint> mLocationPoints;
 	public boolean mIsFinished = false;
 	public static SimpleDateFormat dateFormat =new SimpleDateFormat("yy/MM/dd HH:mm"); 
 	public String mName;
@@ -28,11 +29,17 @@ public class Route implements Serializable{
 		mName = name;
 		mBegin = new Date();
 		mEnd = new Date();
+		mLocationPoints = new ArrayList<FGeoPoint>();
 	}
 	
 	public void addPoint(int index)
 	{
 		mPointIndices.add(index);
+	}
+	
+	public void addGeoPoint(GeoPoint point)
+	{
+		mLocationPoints.add(new FGeoPoint(point, new Date(System.currentTimeMillis())));
 	}
 	
 	public void start()
@@ -84,6 +91,7 @@ public class Route implements Serializable{
 		out.writeObject(mPointIndices);
 		out.writeBoolean(mIsFinished);
 		out.writeUTF(mName);
+		out.writeObject(mLocationPoints);
 		//out.writeObject(mBegin);
 //		if(null != mPointIndices)
 //		{
@@ -111,6 +119,7 @@ public class Route implements Serializable{
 		mPointIndices = (ArrayList<Integer>)in.readObject();
 		mIsFinished = in.readBoolean();
 		mName = in.readUTF();
+		mLocationPoints = (ArrayList<FGeoPoint>)in.readObject();
 //		out.writeObject(mBegin);
 //		out.writeObject(mEnd);
 //		out.writeObject(mPointIndices);

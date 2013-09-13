@@ -214,7 +214,7 @@ public class RouteManager {
 	public void savePoint(GeoPoint point)
 	{
 		Log.v("RouteManager", "savePoint");
-		FGeoPoint fpoint = new FGeoPoint(point);
+		FGeoPoint fpoint = new FGeoPoint(point, new Date());
 		mPoints.add(fpoint);
 		FileOutputStream fos;
 		try {
