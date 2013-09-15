@@ -21,8 +21,10 @@ import com.baidu.mapapi.map.Symbol.Color;
 import com.baidu.mapapi.search.MKAddrInfo;
 import com.baidu.mapapi.search.MKBusLineResult;
 import com.baidu.mapapi.search.MKDrivingRouteResult;
+import com.baidu.mapapi.search.MKPlanNode;
 import com.baidu.mapapi.search.MKPoiResult;
 import com.baidu.mapapi.search.MKRoute;
+import com.baidu.mapapi.search.MKRoutePlan;
 import com.baidu.mapapi.search.MKSuggestionResult;
 import com.baidu.mapapi.search.MKTransitRoutePlan;
 import com.baidu.mapapi.search.MKTransitRouteResult;
@@ -38,9 +40,10 @@ import com.findu.demo.overlay.ItemOverlayOnTapListener;
 import com.findu.demo.overlay.LocationOverLay;
 import com.findu.demo.overlay.RouteSearchListener;
 import com.findu.demo.ui.CommandMenu;
+import com.findu.demo.ui.RecordRouteUI;
+import com.findu.demo.ui.RecordRouteUI.onSelectTravelWay;
 import com.findu.demo.ui.RoutingUI;
 
-import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -52,11 +55,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.FrameLayout;
 
 public class MyFriendsMain extends Activity implements LocationChangedListener,
 		ItemOverlayOnTapListener, RouteSearchListener {
@@ -125,6 +124,9 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 	private CommandMenu mCommandMenu;
 	private LocusDbManager mDbManager;
 	private RoutingUI mRoutingLineUI;
+	private boolean mStartRecord = false;
+	private RecordRouteUI mRecordRouteUI;
+	private FrameLayout mRecordContainer;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -132,6 +134,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		CharSequence titleLable = "MyFriend";
 		setTitle(titleLable);
 
+		mRecordContainer = (FrameLayout) findViewById(R.id.container);
 		// 地图初始化
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		mMapController = mMapView.getController();
@@ -173,6 +176,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		// mCommandMenu = new CommandMenu(this, mMapView);
 		mDbManager = new LocusDbManager(this, mMapView, mGraphicsOverlay);
 
+		mRecordRouteUI = new RecordRouteUI(this);
 	}
 
 	/**
@@ -185,6 +189,9 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		// Toast.LENGTH_SHORT).show();
 	}
 
+	public GeoPoint getCurrentGeoPoint(){
+		return mCurrentPt;
+	}
 	/**
 	 * 修改位置图标
 	 * 
@@ -278,7 +285,10 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		return true;
 	}
 
-	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		return super.onPrepareOptionsMenu(menu);
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -308,6 +318,9 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 //			mGraphicsOverlay.setCustomGraphicData(mDrivingGraphic);
 			break;
 			
+		case R.id.record:
+			mRecordRouteUI.showRecordUI(mRecordContainer);
+			break;
 		default:
 			break;
 		}
@@ -556,10 +569,63 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		}
 
 		mGraphicsOverlay.removeAllData();
-		mGraphicsOverlay.setCustomGraphicData(mLineGraphic);
-		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic);
 		mGraphicsOverlay.setCustomGraphicData(mLineGraphic, false);
 		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic, true);
+	}
+	/**
+	 * 从onGetWalkingRouteResult函数中拿出来这部分绘制代码，后期考虑将
+	 * 绘制路线方案功能提取成类似下面的函数来做，待yh重构时一起合并
+	 * @param plan
+	 */
+	public void drawDriveRoute(MKRoutePlan plan){
+		MKRoute route = plan.getRoute(0);
+		ArrayList<ArrayList<GeoPoint>> pointList = route.getArrayPoints();
+		int totlePt = 0;
+		for (int i = 0; i < pointList.size(); i++) {
+			for (int j = 0; j < pointList.get(i).size(); j++) {
+				totlePt++;
+			}
+		}
+		GeoPoint[] routePoints = new GeoPoint[totlePt];
+		int index = 0;
+		for (int i = 0; i < pointList.size(); i++) {
+			for (int j = 0; j < pointList.get(i).size(); j++) {
+				routePoints[index] = pointList.get(i).get(j);
+				index++;
+			}
+		}
+		mWalkingGeometry.setPolyLine(routePoints);
+		mWalkingColor.red = 0;
+		mWalkingColor.green = 128;
+		mWalkingColor.blue = 255;
+		mWalkingColor.alpha = 126;
+		mWalkingSymbol.setLineSymbol(mWalkingColor, 5);
+		if (mWalkingGraphic == null) {
+			mWalkingGraphic = new Graphic(mWalkingGeometry, mWalkingSymbol);
+		}
+		mGraphicsOverlay.removeAllData();
+		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic, true);
+	}
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		default:
+			break;
+		}
+	}
+	/**
+	 * 暂时先不调用此回调函数
+	 */
+	@Override
+	public void selectTravelWay(MKPlanNode end, int way) {
+		MKPlanNode start = new MKPlanNode();
+		start.pt = mCurrentPt;
+		switch (way) {
+		case CustomRouteOverlay.ROUTE_MODE_WALK:
+			break;
+		default:
+			break;
+		}
 	}
 }
 

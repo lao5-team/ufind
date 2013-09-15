@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/startname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/startloc" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textColor="#00ff00"
+            android:text="@string/currentloc"
+            android:enabled="false" >
+        </AutoCompleteTextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/endname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/endloc" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteEnd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#00ff00"
+            style="android:attr/dropDownItemStyle"
+            android:text="@string/endloc" >
+        </AutoCompleteTextView>
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/waygroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+         >
+
+        <RadioButton
+            android:id="@+id/walk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ff0000"
+            android:text="@string/walk" />
+
+        <RadioButton
+            android:id="@+id/drive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ff0000"
+            android:text="@string/drive" />
+
+        <RadioButton
+            android:id="@+id/bus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ff0000"
+            android:text="@string/bus" />
+    </RadioGroup>
+
+    <include layout="@layout/recordconfirm"/>
+</LinearLayout>
