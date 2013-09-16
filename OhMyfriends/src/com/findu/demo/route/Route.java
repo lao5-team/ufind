@@ -9,10 +9,15 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.findu.demo.manager.MapManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.text.format.Time;
+import android.util.Log;
 
-public class Route implements Serializable{
+public class Route extends BroadcastReceiver implements Serializable{
 	/**
 	 * 
 	 */
@@ -125,6 +130,13 @@ public class Route implements Serializable{
 //		out.writeObject(mPointIndices);
 //		out.writeBoolean(mIsFinished);
 //		out.writeChars(mName);
+	}
+
+	@Override
+	public void onReceive(Context arg0, Intent arg1) {
+		// TODO Auto-generated method stub
+		GeoPoint point = new GeoPoint(arg1.getIntExtra("Lat", 0), arg1.getIntExtra("Long", 0));
+		Log.v(MapManager.TAG, "route receive location " + point.getLatitudeE6() + " " + point.getLongitudeE6());
 	}
 
 }

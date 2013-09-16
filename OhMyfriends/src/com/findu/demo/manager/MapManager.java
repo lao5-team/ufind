@@ -5,6 +5,8 @@ import java.util.Date;
 
 import junit.framework.Assert;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,6 +51,7 @@ import com.findu.demo.route.RouteManager;
 public class MapManager extends BaseMapManager implements LocationChangedListener,
 ItemOverlayOnTapListener, RouteSearchListener{
 	public static String TAG = MapManager.class.getName();
+	public static String ACTION_RECEIVE_LOCATION = "receive_location";
 	Activity mActivity;
 	MapView mMapView;
 	MapController mMapController;
@@ -348,7 +351,11 @@ ItemOverlayOnTapListener, RouteSearchListener{
 				Log.v(TAG, "start !");
 				Route newRoute = new Route("≤‚ ‘");
 				newRoute.addGeoPoint(new GeoPoint(mCurrentPt.getLatitudeE6(), mCurrentPt.getLongitudeE6()));
+				IntentFilter filter = new IntentFilter();
+				filter.addAction(ACTION_RECEIVE_LOCATION);
+				mActivity.registerReceiver(newRoute, filter);
 				newRoute.start();		
+				
 			}
 		});
 //		// TODO Auto-generated method stub
@@ -404,6 +411,12 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		
 		GeoPoint pt = new GeoPoint(mCurrentPt.getLatitudeE6(), mCurrentPt.getLongitudeE6());
 		mLocationPoints.add(new FGeoPoint(pt, null));
+		
+		Intent intent = new Intent();
+		intent.setAction(ACTION_RECEIVE_LOCATION);
+		intent.putExtra("Lat", mCurrentPt.getLatitudeE6());
+		intent.putExtra("Long", mCurrentPt.getLongitudeE6());
+		mActivity.sendBroadcast(intent);
 	}
 	
 	public void resetMyLocation()
