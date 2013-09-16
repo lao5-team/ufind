@@ -516,6 +516,31 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	
 	private GeoPoint[] getPointsfromTransitPlan(MKTransitRoutePlan plan)
 	{
+		ArrayList<GeoPoint> points = new ArrayList<GeoPoint>();
+		int numLine = plan.getNumLines();
+		int numRoute = plan.getNumRoute();
+		int total = numLine + numRoute;
+		for(int i=0; i<total; i++)
+		{
+			if(i%2==0)
+			{
+				for(int j=0; j<plan.getRoute(i/2).getArrayPoints().size(); j++)
+				{
+					points.addAll(plan.getRoute(i/2).getArrayPoints().get(j));
+				}
+				
+			}
+			else
+			{
+				
+				points.addAll(plan.getLine(i/2).getPoints());
+			}
+		}
+		GeoPoint[] pointList = new GeoPoint[points.size()];
+		for(int i=0; i<pointList.length; i++)
+		{
+			pointList[i] = points.get(i);
+		}
 //		ArrayList<GeoPoint[]> pointsList = new ArrayList<GeoPoint[]>();
 //		ArrayList<GeoPoint>pointArray = new ArrayList<GeoPoint>();
 //		for(int i=0; i<plan.getNumRoutes(); i++)
@@ -528,7 +553,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 //			}
 //		}
 //		return (GeoPoint[]) pointArray.toArray();
-		return null;
+		return pointList;
 	}
 	
 	private GeoPoint[] getPointsfromRoutePlan(MKRoutePlan plan)
@@ -623,12 +648,27 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	public void setTransitRoute(MKTransitRoutePlan plan)
 	{
 //		mTransitResult = result;
+		
 //		result.getPlan(arg0)
 //		RouteGraphic routeGraphic = new RouteGraphic();
 //		Graphic graphic = routeGraphic.setRoutePoints(points).
 //		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
 
+		GeoPoint[] points = getPointsfromTransitPlan(plan);
+		RouteGraphic routeGraphic = new RouteGraphic();
+		Graphic graphic = routeGraphic.setRoutePoints(points).
+		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
+
 		mGraphicsOverlay.removeAllData();
+		mGraphicsOverlay.setCustomGraphicData(graphic);
+		
+        OverlayItem itemBegin = new OverlayItem(points[0],"起点","");
+        /**
+         * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
+         */
+        itemBegin.setMarker(mActivity.getResources().getDrawable(R.drawable.begin_icon));
+		
+		mItemizedOverlay.addOverItem(itemBegin);
 		//mGraphicsOverlay.setCustomGraphicData(graphic);
 		mMapView.refresh();
 	}

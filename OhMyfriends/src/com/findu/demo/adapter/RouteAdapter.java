@@ -97,7 +97,8 @@ public class RouteAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					
+					FriendsApplication.getInstance().mMapManager.setTransitRoute(mTransitResult.getPlan(pos));
+					mActivity.finish();
 				}
 			});
 			break;
