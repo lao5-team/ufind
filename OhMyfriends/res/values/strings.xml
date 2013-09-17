@@ -13,9 +13,9 @@
 	<string name="end">到达</string>
 	<string name="back">返回</string>
 	<string name="route_name">路线名称</string>
-	<string name="my_location">我的位置</string>
 	<string name="map_select">地图选点</string>
 	<string name="transit">公交</string>
 	<string name="drive">驾车</string>
 	<string name="walk">步行</string>
+	<string name="my_location">我的位置</string>
 </resources>

@@ -86,6 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:hint="@string/my_location"
             android:layout_marginLeft="28dp"
             android:ems="10" />
        <EditText

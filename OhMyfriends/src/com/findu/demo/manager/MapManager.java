@@ -230,6 +230,11 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public GeoPoint getCurrentLocation()
+	{
+		return mCurrentPt;
+	}
 
 	@Override
 	public void mapListenerInit(MapListenerCallback callback) {

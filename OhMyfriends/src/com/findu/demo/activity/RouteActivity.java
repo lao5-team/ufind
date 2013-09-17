@@ -16,6 +16,7 @@ import com.findu.demo.manager.MapManager;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -100,11 +101,23 @@ public class RouteActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				String srcName = mBeginEdit.getText().toString();
-				String destName = mEndEdit.getText().toString();
+				String srcName = mBeginEdit.getText().toString();	
+				Log.v(TAG, "EditName" + srcName);
 				MKPlanNode nodeBegin = new MKPlanNode();
-				nodeBegin.name = srcName;
+				if(srcName.length() == 0)
+				{
+					nodeBegin.pt = FriendsApplication.getInstance().mMapManager.getCurrentLocation();
+					Log.v(TAG, nodeBegin.pt.getLatitudeE6() + "");
+					Log.v(TAG, nodeBegin.pt.getLongitudeE6() + "");
+					nodeBegin.name = srcName;
+				}
+				else
+				{
+					nodeBegin.name = srcName;
+				}
 				
+				
+				String destName = mEndEdit.getText().toString();
 				MKPlanNode nodeEnd = new MKPlanNode();
 				nodeEnd.name = destName;				
 				//mMapManager.searchRoute(srcName, destName, 0);
