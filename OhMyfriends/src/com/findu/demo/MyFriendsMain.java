@@ -606,6 +606,35 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 		mGraphicsOverlay.removeAllData();
 		mGraphicsOverlay.setCustomGraphicData(mWalkingGraphic, true);
 	}
+	public void drawTransitRoute(MKTransitRoutePlan plan){
+		MKRoute route = plan.getRoute(0);
+		ArrayList<ArrayList<GeoPoint>> pointList = route.getArrayPoints();
+		int totlePt = 0;
+		for (int i = 0; i < pointList.size(); i++) {
+			for (int j = 0; j < pointList.get(i).size(); j++) {
+				totlePt++;
+			}
+		}
+		GeoPoint[] routePoints = new GeoPoint[totlePt];
+		int index = 0;
+		for (int i = 0; i < pointList.size(); i++) {
+			for (int j = 0; j < pointList.get(i).size(); j++) {
+				routePoints[index] = pointList.get(i).get(j);
+				index++;
+			}
+		}
+		mBusingGeometry.setPolyLine(routePoints);
+		mBusingColor.red = 0;
+		mBusingColor.green = 128;
+		mBusingColor.blue = 255;
+		mBusingColor.alpha = 126;
+		mBusingSymbol.setLineSymbol(mBusingColor, 5);
+		if (mBusingGraphic == null) {
+			mBusingGraphic = new Graphic(mBusingGeometry, mBusingSymbol);
+		}
+		mGraphicsOverlay.removeAllData();
+		mGraphicsOverlay.setCustomGraphicData(mBusingGraphic, true);
+	}
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {

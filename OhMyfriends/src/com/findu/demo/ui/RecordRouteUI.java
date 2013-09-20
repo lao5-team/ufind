@@ -1,18 +1,24 @@
 package com.findu.demo.ui;
 
+import java.math.MathContext;
 import com.baidu.mapapi.map.MKEvent;
 import com.baidu.mapapi.search.MKAddrInfo;
 import com.baidu.mapapi.search.MKBusLineResult;
 import com.baidu.mapapi.search.MKDrivingRouteResult;
+import com.baidu.mapapi.search.MKLine;
 import com.baidu.mapapi.search.MKPlanNode;
+import com.baidu.mapapi.search.MKPoiInfo;
 import com.baidu.mapapi.search.MKPoiResult;
+import com.baidu.mapapi.search.MKRoute;
 import com.baidu.mapapi.search.MKRoutePlan;
 import com.baidu.mapapi.search.MKSearch;
 import com.baidu.mapapi.search.MKSearchListener;
 import com.baidu.mapapi.search.MKSuggestionInfo;
 import com.baidu.mapapi.search.MKSuggestionResult;
+import com.baidu.mapapi.search.MKTransitRoutePlan;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
+import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.FriendsApplication;
 import com.findu.demo.MyFriendsMain;
 import com.findu.demo.overlay.CustomRouteOverlay;
@@ -101,7 +107,7 @@ public class RecordRouteUI implements View.OnClickListener, TextWatcher {
 					mTravelWay = CustomRouteOverlay.ROUTE_MODE_DRIVE;
 					break;
 
-				case R.id.bmapView:
+				case R.id.bus:
 					mTravelWay = CustomRouteOverlay.ROUTE_MODE_TRANSIT;
 					break;
 
@@ -131,8 +137,85 @@ public class RecordRouteUI implements View.OnClickListener, TextWatcher {
 
 					@Override
 					public void onGetTransitRouteResult(
-							MKTransitRouteResult arg0, int arg1) {
+							MKTransitRouteResult res, int error) {
+						if (error == MKEvent.ERROR_ROUTE_ADDR) {
 						// TODO Auto-generated method stub
+							return;
+						}
+						if (error != 0 || res == null) {
+							Toast.makeText(mMainContext, "抱歉，未找到结果",
+									Toast.LENGTH_SHORT).show();
+							return;
+						}
+						int numplan = res.getNumPlan();
+						StringBuffer[] routeStrng = new StringBuffer[numplan];
+						for (int i = 0; i < numplan; i++) {
+							routeStrng[i] = new StringBuffer();
+							MKTransitRoutePlan routePlan = res.getPlan(i);
+							int numroute = routePlan.getNumRoute();
+							MKRoute rou = null;
+							int numline = routePlan.getNumLines();
+							int indexroute = 0;
+							rou = routePlan.getRoute(indexroute);
+							boolean walkfirst = isSameGeo(routePlan.getStart(),
+									routePlan.getLine(0).getGetOnStop().pt);
+							if (!walkfirst) {
+								routeStrng[i].append(rou.getTip());
+								indexroute++;
+								if (indexroute < numroute) {
+									rou = routePlan.getRoute(indexroute);
+								}
+							}
+							for (int j = 0; j < Math.max(numline, numroute); j++) {
+								MKLine mkLine = null;
+								if (j < numline) {
+									mkLine = routePlan.getLine(j);
+								}
+								if (mkLine != null && j < numline - 1) {// 公交线路未遍历完
+									boolean same = isSameGeo(mkLine
+											.getGetOffStop().pt, routePlan
+											.getLine(j + 1).getGetOnStop().pt);
+									if (!same) {
+										routeStrng[i].append(rou.getTip());
+										indexroute++;
+										if (indexroute < numroute) {
+											rou = routePlan
+													.getRoute(indexroute);
+										}
+									}
+								}
+								if (mkLine != null) {
+									Log.e("rlk",
+											"start:" + mkLine.getGetOnStop().pt
+													+ " stop:"
+													+ mkLine.getGetOffStop().pt);
+									routeStrng[i].append(mMainContext
+											.getResources().getString(
+													R.string.take));
+									if (mkLine.getTitle() != null) {
+										routeStrng[i].append(mkLine.getTitle());
+									}
+									MKPoiInfo mkOnPoiInfo = mkLine
+											.getGetOnStop();
+									MKPoiInfo mkOffPoiInfo = mkLine
+											.getGetOffStop();
+									int via = mkLine.getNumViaStops();
+									String lineInfo = mMainContext.getString(
+											R.string.onabus, mkOnPoiInfo.name,
+											via, mkOffPoiInfo.name);
+									routeStrng[i].append(lineInfo);
+								}
+								if (mkLine == null && j <= indexroute) {// 剩余最后的步行路段
+									routePlan.getRoute(numroute - 1);
+									routeStrng[i].append(routePlan.getRoute(j)
+											.getTip());
+								}
+							}
+						}
+						if (numplan > 1) {
+						} else if (numplan == 1) {
+							mMainContext.drawTransitRoute(res.getPlan(0));
+						}
 
 					}
 
@@ -289,6 +372,7 @@ public class RecordRouteUI implements View.OnClickListener, TextWatcher {
 				break;
 				
 			case CustomRouteOverlay.ROUTE_MODE_TRANSIT:
+				mSearch.transitSearch(BEIJING, stNode, enNode);
 				break;
 				
 			default:
@@ -339,5 +423,13 @@ public class RecordRouteUI implements View.OnClickListener, TextWatcher {
 	 */
 	public interface onSelectTravelWay {
 		public void selectTravelWay(MKPlanNode end, int way);
+	}
+	private boolean isSameGeo(GeoPoint pt1, GeoPoint pt2) {
+		if (pt1.getLatitudeE6() == pt2.getLatitudeE6()
+				&& pt1.getLongitudeE6() == pt2.getLongitudeE6()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

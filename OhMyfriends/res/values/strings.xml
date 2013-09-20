@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">OhMyfriends</string>
     <string name="action_settings">Settings</string>
@@ -17,4 +17,13 @@
 	<string name="record">记录</string>
 	<string name="cancel">取消</string>
 	<string name="beijing">北京</string>
+	<string name="take">乘坐</string>
+	<string name="onabus">从 <xliff:g id="startpos">%s</xliff:g>上车，经过 <xliff:g id="viastop">%d</xliff:g>站  在 <xliff:g id="endpos">%s</xliff:g>下车</string>
+	<string name="line">线路</string>
+	<string name="distencefirst">距离优先</string>
+	<string name="timefirst">时间优先</string>
+	<string name="feefirst">费用优先</string>
+	<string name="transferfirst">最少换乘</string>
+	<string name="walkfirst">最少步行</string>
+	<string name="nosubwayfirst">不含地铁</string>
 </resources>

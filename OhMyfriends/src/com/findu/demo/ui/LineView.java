@@ -32,6 +32,10 @@ public class LineView {
 		mLineLayout = (LinearLayout) mLineView.findViewById(R.id.lineview);
 		mLineGroup = (RadioGroup) mLineView.findViewById(R.id.linegroup);
 
+		mRadioParams = new WindowManager.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER_VERTICAL
+						| Gravity.LEFT);
 		mLineParam = new FrameLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER_VERTICAL
