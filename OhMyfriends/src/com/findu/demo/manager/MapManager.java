@@ -521,9 +521,28 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	
 	private GeoPoint[] getPointsfromTransitPlan(MKTransitRoutePlan plan)
 	{
+		//
 		ArrayList<GeoPoint> points = new ArrayList<GeoPoint>();
 		int numLine = plan.getNumLines();
+		for(int i=0; i<numLine; i++)
+		{
+			MKLine line = plan.getLine(i);
+			GeoPoint ptBegin = line.getGetOnStop().pt;
+			GeoPoint ptEnd = line.getGetOffStop().pt;
+			Log.v(TAG, "公交起点 " + ptBegin.getLatitudeE6() + " " + ptBegin.getLongitudeE6());
+			Log.v(TAG, "公交终点 " + ptEnd.getLatitudeE6() + " " + ptEnd.getLongitudeE6());
+		}
+		
 		int numRoute = plan.getNumRoute();
+		for(int i=0; i<numRoute; i++)
+		{
+			MKRoute route = plan.getRoute(i);
+			GeoPoint ptBegin = route.getStart();
+			GeoPoint ptEnd = route.getEnd();
+			Log.v(TAG, "步行起点 " + ptBegin.getLatitudeE6() + " " + ptBegin.getLongitudeE6());
+			Log.v(TAG, "步行终点 " + ptEnd.getLatitudeE6() + " " + ptEnd.getLongitudeE6());
+			
+		}
 		int total = numLine + numRoute;
 		for(int i=0; i<total; i++)
 		{
