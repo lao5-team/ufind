@@ -1,7 +1,7 @@
 package com.findu.demo.ui;
 
 import com.findu.demo.MyFriendsMain;
-import com.rlk.yh.R;
+import com.findu.demo.R;
 
 import android.content.Context;
 import android.view.Gravity;

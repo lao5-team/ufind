@@ -21,8 +21,9 @@ import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.FriendsApplication;
 import com.findu.demo.MyFriendsMain;
+import com.findu.demo.R;
 import com.findu.demo.overlay.CustomRouteOverlay;
-import com.rlk.yh.R;
+
 
 import android.R.integer;
 import android.app.AlertDialog;
@@ -68,7 +69,6 @@ public class RecordRouteUI implements View.OnClickListener, TextWatcher {
 	private MKSearch mSearch = null;
 	private ArrayAdapter<String> mSugAdapter = null;
 	private LineView mLineView;
-	private onSelectTravelWay mDoTravel;
 	private String BEIJING;
 	private FrameLayout mContainerLayout;
 
