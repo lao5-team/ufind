@@ -58,7 +58,7 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 
 public class MyFriendsMain extends Activity implements LocationChangedListener,
-		ItemOverlayOnTapListener, RouteSearchListener {
+		ItemOverlayOnTapListener, RouteSearchListener, onSelectTravelWay {
 
 	private final String TAG = "MyFriendsMain";
 	private final int DIANMEN_LATITUDE = (int) (39.97923 * 1E6);
