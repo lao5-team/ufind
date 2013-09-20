@@ -26,4 +26,5 @@
 	<string name="transferfirst">最少换乘</string>
 	<string name="walkfirst">最少步行</string>
 	<string name="nosubwayfirst">不含地铁</string>
+	<string name="onekeyhome">一键回家</string>
 </resources>

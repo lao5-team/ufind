@@ -23,4 +23,9 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/startrecord"/>
+     <item
+        android:id="@+id/backhome"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/onekeyhome"/>
 </menu>

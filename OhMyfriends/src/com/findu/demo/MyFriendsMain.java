@@ -41,7 +41,6 @@ import com.findu.demo.overlay.LocationOverLay;
 import com.findu.demo.overlay.RouteSearchListener;
 import com.findu.demo.ui.CommandMenu;
 import com.findu.demo.ui.RecordRouteUI;
-import com.findu.demo.ui.RecordRouteUI.onSelectTravelWay;
 import com.findu.demo.ui.RoutingUI;
 
 import android.app.Activity;
@@ -58,7 +57,7 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 
 public class MyFriendsMain extends Activity implements LocationChangedListener,
-		ItemOverlayOnTapListener, RouteSearchListener, onSelectTravelWay {
+		ItemOverlayOnTapListener, RouteSearchListener, OnClickListener{
 
 	private final String TAG = "MyFriendsMain";
 	private final int DIANMEN_LATITUDE = (int) (39.97923 * 1E6);
@@ -320,6 +319,9 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 			
 		case R.id.record:
 			mRecordRouteUI.showRecordUI(mRecordContainer);
+			break;
+		case R.id.backhome:
+			mRecordRouteUI.takeMeHome();
 			break;
 		default:
 			break;
@@ -638,20 +640,7 @@ public class MyFriendsMain extends Activity implements LocationChangedListener,
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		default:
-			break;
-		}
-	}
-	/**
-	 * 暂时先不调用此回调函数
-	 */
-	@Override
-	public void selectTravelWay(MKPlanNode end, int way) {
-		MKPlanNode start = new MKPlanNode();
-		start.pt = mCurrentPt;
-		switch (way) {
-		case CustomRouteOverlay.ROUTE_MODE_WALK:
-			break;
+
 		default:
 			break;
 		}

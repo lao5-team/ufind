@@ -411,9 +411,6 @@ public class RecordRouteUI implements View.OnClickListener, TextWatcher {
 		mSearch.suggestionSearch(cs.toString(), "北京");
 	}
 
-	public void setSelectTravelWayListener(onSelectTravelWay listener) {
-		mDoTravel = listener;
-	}
 
 	/**
 	 * 确定终点和出行方式后处理接口
@@ -421,9 +418,6 @@ public class RecordRouteUI implements View.OnClickListener, TextWatcher {
 	 * @author renlikun
 	 * 
 	 */
-	public interface onSelectTravelWay {
-		public void selectTravelWay(MKPlanNode end, int way);
-	}
 	private boolean isSameGeo(GeoPoint pt1, GeoPoint pt2) {
 		if (pt1.getLatitudeE6() == pt2.getLatitudeE6()
 				&& pt1.getLongitudeE6() == pt2.getLongitudeE6()) {
@@ -431,5 +425,12 @@ public class RecordRouteUI implements View.OnClickListener, TextWatcher {
 		} else {
 			return false;
 		}
+	}
+	public void takeMeHome(){
+		MKPlanNode stNode = new MKPlanNode();
+		stNode.pt = mMainContext.getCurrentGeoPoint();
+		MKPlanNode enNode = new MKPlanNode();
+		enNode.name = "天安门";
+		mSearch.drivingSearch(BEIJING, stNode, BEIJING, enNode);
 	}
 }
