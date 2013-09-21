@@ -47,6 +47,7 @@ import com.findu.demo.overlay.RouteSearchListener;
 import com.findu.demo.route.FGeoPoint;
 import com.findu.demo.route.Route;
 import com.findu.demo.route.RouteManager;
+import com.findu.demo.util.FindUtil;
 
 public class MapManager extends BaseMapManager implements LocationChangedListener,
 ItemOverlayOnTapListener, RouteSearchListener{
@@ -522,61 +523,124 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	private GeoPoint[] getPointsfromTransitPlan(MKTransitRoutePlan plan)
 	{
 		//
-		ArrayList<GeoPoint> points = new ArrayList<GeoPoint>();
-		int numLine = plan.getNumLines();
-		for(int i=0; i<numLine; i++)
-		{
-			MKLine line = plan.getLine(i);
-			GeoPoint ptBegin = line.getGetOnStop().pt;
-			GeoPoint ptEnd = line.getGetOffStop().pt;
-			Log.v(TAG, "公交起点 " + ptBegin.getLatitudeE6() + " " + ptBegin.getLongitudeE6());
-			Log.v(TAG, "公交终点 " + ptEnd.getLatitudeE6() + " " + ptEnd.getLongitudeE6());
-		}
+		ArrayList<Object> routeResult = new ArrayList<Object>();
+
 		
-		int numRoute = plan.getNumRoute();
-		for(int i=0; i<numRoute; i++)
+		if(plan.getNumLines() == 0)
 		{
-			MKRoute route = plan.getRoute(i);
-			GeoPoint ptBegin = route.getStart();
-			GeoPoint ptEnd = route.getEnd();
-			Log.v(TAG, "步行起点 " + ptBegin.getLatitudeE6() + " " + ptBegin.getLongitudeE6());
-			Log.v(TAG, "步行终点 " + ptEnd.getLatitudeE6() + " " + ptEnd.getLongitudeE6());
-			
-		}
-		int total = numLine + numRoute;
-		for(int i=0; i<total; i++)
-		{
-			if(i%2==0)
+			for(int i=0; i<plan.getNumRoute(); i++)
 			{
-				for(int j=0; j<plan.getRoute(i/2).getArrayPoints().size(); j++)
+				routeResult.add(plan.getRoute(i));
+			}
+		}
+		else if(plan.getNumRoute() == 0)
+		{
+			for(int i=0; i<plan.getNumLines(); i++)
+			{
+				routeResult.add(plan.getLine(i));
+			}
+		}
+		else 
+		{
+			GeoPoint ptBeginTrans = null; 
+			MKLine line = plan.getLine(0);
+			if(line != null)
+			{
+				ptBeginTrans = line.getGetOnStop().pt;
+			}
+			
+			//如果起点是车站
+			if(FindUtil.isGeoPointsIdentical(ptBeginTrans, plan.getStart()))
+			{
+				//可以有两段连续的公交，不可能有两段连续的步行
+				routeResult.add(plan.getLine(0));
+				GeoPoint tailPoint = plan.getLine(0).getGetOffStop().pt;
+				int routeIndex = 0;
+				for(int i=1; i<plan.getNumLines(); i++)
 				{
-					points.addAll(plan.getRoute(i/2).getArrayPoints().get(j));
+					if(FindUtil.isGeoPointsIdentical(tailPoint, plan.getLine(i).getGetOnStop().pt))
+					{
+						routeResult.add(plan.getLine(i));
+						tailPoint = plan.getLine(i).getGetOffStop().pt;
+					}
+					else
+					{
+						routeResult.add(routeIndex);
+						tailPoint = plan.getRoute(routeIndex).getEnd();
+						routeIndex ++;
+					}
 				}
-				
 			}
 			else
 			{
-				
-				points.addAll(plan.getLine(i/2).getPoints());
+				routeResult.add(plan.getRoute(0));
+				GeoPoint tailPoint = plan.getRoute(0).getEnd();
+				int routeIndex = 1;
+				for(int i=0; i<plan.getNumRoute(); i++)
+				{
+					if(FindUtil.isGeoPointsIdentical(tailPoint, plan.getLine(i).getGetOnStop().pt))
+					{
+						routeResult.add(plan.getLine(i));
+						tailPoint = plan.getLine(i).getGetOffStop().pt;
+					}
+					else
+					{
+						routeResult.add(plan.getRoute(routeIndex));
+						tailPoint = plan.getRoute(routeIndex).getEnd();
+						routeIndex++;
+					}
+				}				
 			}
 		}
+		
+        //打印结果
+		Log.v(TAG, "打印结果");
+		ArrayList<GeoPoint> points = new ArrayList<GeoPoint>();
+		for(int i=0; i<routeResult.size(); i++)
+		{
+			Object line = routeResult.get(i);
+			if(line instanceof MKLine)
+			{
+				Log.v(TAG, ((MKLine)line).getTitle());
+				points.addAll(((MKLine)line).getPoints());
+			}
+			else
+			{
+				Log.v(TAG, "步行 " + ((MKRoute)line).getDistance());
+				for(int j=0; j<((MKRoute)line).getArrayPoints().size(); j++)
+				{
+					points.addAll(((MKRoute)line).getArrayPoints().get(j));
+				}
+			}
+		}
+//		
+//		
+//		
+//		int numLine = plan.getNumLines();
+//		for(int i=0; i<numLine; i++)
+//		{
+//			MKLine line = plan.getLine(i);
+//			GeoPoint ptBegin = line.getGetOnStop().pt;
+//			GeoPoint ptEnd = line.getGetOffStop().pt;
+//			Log.v(TAG, "公交起点 " + ptBegin.getLatitudeE6() + " " + ptBegin.getLongitudeE6());
+//			Log.v(TAG, "公交终点 " + ptEnd.getLatitudeE6() + " " + ptEnd.getLongitudeE6());
+//		}
+//		
+//		int numRoute = plan.getNumRoute();
+//		for(int i=0; i<numRoute; i++)
+//		{
+//			MKRoute route = plan.getRoute(i);
+//			GeoPoint ptBegin = route.getStart();
+//			GeoPoint ptEnd = route.getEnd();
+//			Log.v(TAG, "步行起点 " + ptBegin.getLatitudeE6() + " " + ptBegin.getLongitudeE6());
+//			Log.v(TAG, "步行终点 " + ptEnd.getLatitudeE6() + " " + ptEnd.getLongitudeE6());
+//			
+//		}
 		GeoPoint[] pointList = new GeoPoint[points.size()];
 		for(int i=0; i<pointList.length; i++)
 		{
 			pointList[i] = points.get(i);
 		}
-//		ArrayList<GeoPoint[]> pointsList = new ArrayList<GeoPoint[]>();
-//		ArrayList<GeoPoint>pointArray = new ArrayList<GeoPoint>();
-//		for(int i=0; i<plan.getNumRoutes(); i++)
-//		{
-//			GeoPoint[] pointList = getPointsfromRoute(plan.getRoute(i));
-//			pointsList.add(pointList);
-//			for(int j=0; j<pointList.length; j++)
-//			{
-//				pointArray.add(pointList[j]);
-//			}
-//		}
-//		return (GeoPoint[]) pointArray.toArray();
 		return pointList;
 	}
 	
