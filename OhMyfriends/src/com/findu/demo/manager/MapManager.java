@@ -7,10 +7,12 @@ import junit.framework.Assert;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.Geometry;
@@ -19,6 +21,8 @@ import com.baidu.mapapi.map.MKMapViewListener;
 import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.OverlayItem;
+import com.baidu.mapapi.map.PopupClickListener;
+import com.baidu.mapapi.map.PopupOverlay;
 import com.baidu.mapapi.map.Symbol;
 import com.baidu.mapapi.map.Symbol.Color;
 import com.baidu.mapapi.search.MKAddrInfo;
@@ -36,6 +40,7 @@ import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.R;
+import com.findu.demo.activity.MyFriendsMain;
 import com.findu.demo.location.LocationAbout;
 import com.findu.demo.location.LocationChangedListener;
 import com.findu.demo.overlay.CustomGraphicsOverlay;
@@ -47,6 +52,7 @@ import com.findu.demo.overlay.RouteSearchListener;
 import com.findu.demo.route.FGeoPoint;
 import com.findu.demo.route.Route;
 import com.findu.demo.route.RouteManager;
+import com.findu.demo.util.BMapUtil;
 import com.findu.demo.util.FindUtil;
 
 public class MapManager extends BaseMapManager implements LocationChangedListener,
@@ -89,6 +95,14 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	MKRoutePlan mWalkingPlan;
 	MKTransitRoutePlan mTransitPlan;
 	ArrayList<FGeoPoint> mLocationPoints;
+	
+	private TextView  mPopupText = null;
+	private View mViewCache = null;
+	private View mPopupInfo = null;
+	private View mPopupLeft = null;
+	private View mPopupRight = null;
+	private PopupOverlay   mPop  = null;
+	private GeoPoint mDestPt = null;
 	public class RouteGraphic 
 	{
 		Graphic mGraphic;
@@ -174,11 +188,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mGraphicsOverlay = new CustomGraphicsOverlay(mMapView);
 		mGraphicsOverlay.addGraphicOverlay();
 
-		// 设定连接线条颜色
-//		mLineColor.red = 255;
-//		mLineColor.green = 0;
-//		mLineColor.blue = 0;
-//		mLineColor.alpha = 255;
 
 		mRouteOverlay = new CustomRouteOverlay(mActivity, mMapView);
 		mRouteOverlay.setRouteSearchListener(this);
@@ -188,7 +197,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mMapView.refresh();
 		
 		mLocationPoints = new ArrayList<FGeoPoint>();
-		
+        createPaopao();
 	}
 	
 	//can be deleted
@@ -327,57 +336,69 @@ ItemOverlayOnTapListener, RouteSearchListener{
 
 	@Override
 	public boolean onTap(int index) {
-       
+		   mPopupText.setText(mItemizedOverlay.mItemizedOverlay.getItem(index).getTitle());
+		   Bitmap[] bitMaps={
+			    BMapUtil.getBitmapFromView(mPopupLeft), 		
+			    BMapUtil.getBitmapFromView(mPopupInfo), 		
+			    BMapUtil.getBitmapFromView(mPopupRight) 		
+		    };
+		    mPop.showPopup(bitMaps,mItemizedOverlay.mItemizedOverlay.getItem(index).getPoint(),32);
 		return false;
 	}
 	
 
 	@Override
 	public boolean onTap(GeoPoint pt, MapView mMapView) {
-		 Button button = new Button(mActivity);
-			button.setText("开始");
-	        //创建布局参数
-		 MapView.LayoutParams   layoutParam  = new MapView.LayoutParams(
-	              MapView.LayoutParams.WRAP_CONTENT,
-	              MapView.LayoutParams.WRAP_CONTENT,
-	              //使控件固定在某个地理位置
-	               pt,
-	               0,
-	               -32,
-	              //控件对齐方式
-	                MapView.LayoutParams.BOTTOM_CENTER);
-	        //添加View到MapView中
-	        mMapView.addView(button,layoutParam);
-	        
-	       button.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Log.v(TAG, "start !");
-				Route newRoute = new Route("测试");
-				newRoute.addGeoPoint(new GeoPoint(mCurrentPt.getLatitudeE6(), mCurrentPt.getLongitudeE6()));
-				IntentFilter filter = new IntentFilter();
-				filter.addAction(ACTION_RECEIVE_LOCATION);
-				mActivity.registerReceiver(newRoute, filter);
-				newRoute.start();		
-				
-			}
-		});
-//		// TODO Auto-generated method stub
-//		mJuhuiGoalPt = pt;
-//		// 画连接线
-//		connectJuDian(mCurrentPt, mJuhuiGoalPt);
-//		mItemizedOverlay.removeOverItem(mJuDianItem);
-//		mJuDianItem.setGeoPoint(mJuhuiGoalPt);
-//		mJuDianItem.setMarker(mActivity.getResources().getDrawable(R.drawable.redhat));
-//		// 添加直线item
-//		mItemizedOverlay.addOverItem(mJuDianItem);
-//		MKPlanNode start = new MKPlanNode();
-//		start.pt = mCurrentPt;
-//		MKPlanNode end = new MKPlanNode();
-//		end.pt = mJuhuiGoalPt;
-//		mMapView.refresh(); 
+//		 Button button = new Button(mActivity);
+//			button.setText("开始");
+//	        //创建布局参数
+//		 MapView.LayoutParams   layoutParam  = new MapView.LayoutParams(
+//	              MapView.LayoutParams.WRAP_CONTENT,
+//	              MapView.LayoutParams.WRAP_CONTENT,
+//	              //使控件固定在某个地理位置
+//	               pt,
+//	               0,
+//	               -32,
+//	              //控件对齐方式
+//	                MapView.LayoutParams.BOTTOM_CENTER);
+//	        //添加View到MapView中
+//	        mMapView.addView(button,layoutParam);
+//	        
+//	       button.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				Log.v(TAG, "start !");
+//				Route newRoute = new Route("测试");
+//				newRoute.addGeoPoint(new GeoPoint(mCurrentPt.getLatitudeE6(), mCurrentPt.getLongitudeE6()));
+//				IntentFilter filter = new IntentFilter();
+//				filter.addAction(ACTION_RECEIVE_LOCATION);
+//				mActivity.registerReceiver(newRoute, filter);
+//				newRoute.start();		
+//				
+//			}
+//		});
+//	       
+//			 Button buttonRecord = new Button(mActivity);
+//				button.setText("记录");
+//		        //创建布局参数
+//			 MapView.LayoutParams layoutParamRecord  = new MapView.LayoutParams(
+//		              MapView.LayoutParams.WRAP_CONTENT,
+//		              MapView.LayoutParams.WRAP_CONTENT,
+//		              //使控件固定在某个地理位置
+//		               pt,
+//		               0,
+//		               -32,
+//		              //控件对齐方式
+//		                MapView.LayoutParams.LEFT);
+//		        //添加View到MapView中
+//		        mMapView.addView(buttonRecord,layoutParamRecord);
+        mViewCache = mActivity.getLayoutInflater().inflate(R.layout.custom_text_view, null);
+        mPopupInfo = (View) mViewCache.findViewById(R.id.popinfo);
+        mPopupLeft = (View) mViewCache.findViewById(R.id.popleft);
+        mPopupRight = (View) mViewCache.findViewById(R.id.popright);
+        mPopupText =(TextView) mViewCache.findViewById(R.id.textcache);
 		return false;
 	}
 
@@ -715,6 +736,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	{
 		mWalkingPlan = plan;
 		GeoPoint [] points = getPointsfromRoutePlan(mWalkingPlan);
+		mDestPt = points[points.length-1];
 		RouteGraphic routeGraphic = new RouteGraphic();
 		Graphic graphic = routeGraphic.setRoutePoints(points).
 		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
@@ -741,7 +763,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 //		RouteGraphic routeGraphic = new RouteGraphic();
 //		Graphic graphic = routeGraphic.setRoutePoints(points).
 //		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
-
+		mDestPt = plan.getEnd();
 		GeoPoint[] points = getPointsfromTransitPlan(plan);
 		RouteGraphic routeGraphic = new RouteGraphic();
 		Graphic graphic = routeGraphic.setRoutePoints(points).
@@ -761,9 +783,24 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mMapView.refresh();
 	}
 	
-//	public setRouteSearchListener()
-//	{
-//		
-//	}
+	public void createPaopao(){
+		
+        //泡泡点击响应回调
+        PopupClickListener popListener = new PopupClickListener(){
+			@Override
+			public void onClickedPopup(int index) {
+				if(index == 0)
+				{
+					//生成快捷方式
+					((MyFriendsMain)mActivity).addShortCut(mDestPt, "快捷方式");
+				}
+				else
+				{
+					
+				}
+			}
+        };
+        mPop = new PopupOverlay(mMapView,popListener);
+	}
 
 }

@@ -47,8 +47,10 @@ import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Intent.ShortcutIconResource;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
@@ -87,6 +89,13 @@ public class MyFriendsMain extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Intent intent = getIntent();
+		int lat = intent.getIntExtra("lat", 0);
+		int longit = intent.getIntExtra("long", 0);
+		String name = intent.getStringExtra("name");
+		Log.v(TAG, "name " + name);
+		
+		
 		setContentView(R.layout.activity_main);
 		CharSequence titleLable = "MyFriend";
 		setTitle(titleLable);
@@ -237,7 +246,37 @@ public class MyFriendsMain extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-
+public void addShortCut(GeoPoint pt, String name){
+        
+        Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+        // 设置属性
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.app_name));
+        ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(this.getApplicationContext(), R.drawable.ic_launcher);
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON,iconRes);
+ 
+        // 是否允许重复创建
+        shortcut.putExtra("duplicate", false);
+        
+        //设置桌面快捷方式的图标
+        Parcelable icon = Intent.ShortcutIconResource.fromContext(this,R.drawable.ic_launcher);        
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,icon);
+        
+        //点击快捷方式的操作
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.putExtra("lat", pt.getLatitudeE6());
+        intent.putExtra("long", pt.getLongitudeE6());
+        intent.putExtra("name", name);
+        intent.setClass(MyFriendsMain.this, MyFriendsMain.class);
+        
+        // 设置启动程序
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
+        
+        //广播通知桌面去创建
+        this.sendBroadcast(shortcut);
+    }
 
 }
 

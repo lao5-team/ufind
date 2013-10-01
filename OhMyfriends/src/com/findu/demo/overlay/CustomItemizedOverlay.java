@@ -18,7 +18,7 @@ public class CustomItemizedOverlay {
 
 	private MapView mMapView;
 	private Context mContext;
-	private LocalItemizedOverlay mItemizedOverlay;
+	public LocalItemizedOverlay mItemizedOverlay;
 	private Drawable mItemDrawable;
 	private ArrayList<OverlayItem> mItems = new ArrayList<OverlayItem>();
 	private ItemOverlayOnTapListener mTapListener;
@@ -67,7 +67,7 @@ public class CustomItemizedOverlay {
 	public void setItemOverlayTapListener(ItemOverlayOnTapListener listener){
 		mTapListener = listener;
 	}
-	private class LocalItemizedOverlay extends ItemizedOverlay {
+	public class LocalItemizedOverlay extends ItemizedOverlay {
 
 		public LocalItemizedOverlay(Drawable arg0, MapView arg1) {
 			super(arg0, arg1);
