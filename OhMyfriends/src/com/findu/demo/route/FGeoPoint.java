@@ -31,14 +31,6 @@ public class FGeoPoint implements Serializable {
 		mPt = pt;
 		mRouteID = in.readInt();
 		mDate = (Date)in.readObject();
-		// populate the fields of 'this' from the data in 'in'...
-		// int length = in.readInt();
-		// mPoints = new GeoPoint[length];
-		// for(int i=0; i<length; i++)
-		// {
-		// GeoPoint pt = new GeoPoint(in.readInt(), in.readInt());
-		// mPoints[i] = pt;
-		// }
 	}
 	
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException,
@@ -47,13 +39,5 @@ public class FGeoPoint implements Serializable {
 		out.writeInt(mPt.getLongitudeE6());
 		out.writeInt(mRouteID);
 		out.writeObject(mDate);
-		// populate the fields of 'this' from the data in 'in'...
-		// int length = in.readInt();
-		// mPoints = new GeoPoint[length];
-		// for(int i=0; i<length; i++)
-		// {
-		// GeoPoint pt = new GeoPoint(in.readInt(), in.readInt());
-		// mPoints[i] = pt;
-		// }
 	}
 }

@@ -63,20 +63,6 @@ public class Route extends BroadcastReceiver implements Serializable{
 
 	}
 	
-//	public byte[] getPointsByteArray()
-//	{
-//		
-//		int array[] = new int[mPointIndices.size()];
-//		for(int i=0; i<array.length; i++)
-//		{
-//			array[i] = mPointIndices.get(i);
-//		}
-//		ObjectOutputStream oos = new 
-//		ByteArrayOutputStream bos = new ByteArrayOutputStream(mPointIndices.size()*4);
-//		bos.w
-//		return array.
-//	}
-	
 	@Override
 	public String toString()
 	{		
@@ -134,9 +120,12 @@ public class Route extends BroadcastReceiver implements Serializable{
 
 	@Override
 	public void onReceive(Context arg0, Intent arg1) {
-		// TODO Auto-generated method stub
-		GeoPoint point = new GeoPoint(arg1.getIntExtra("Lat", 0), arg1.getIntExtra("Long", 0));
-		Log.v(MapManager.TAG, "route receive location " + point.getLatitudeE6() + " " + point.getLongitudeE6());
+		if(arg1.getAction().equals(MapManager.ACTION_RECEIVE_LOCATION))
+		{
+			GeoPoint point = new GeoPoint(arg1.getIntExtra("Lat", 0), arg1.getIntExtra("Long", 0));
+			Log.v(MapManager.TAG, "route receive location " + point.getLatitudeE6() + " " + point.getLongitudeE6());
+
+		}
 	}
 
 }

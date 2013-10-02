@@ -2,6 +2,8 @@ package com.findu.demo.activity;
 
 import java.util.ArrayList;
 
+import android.content.BroadcastReceiver;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -48,6 +50,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -86,14 +89,41 @@ public class MyFriendsMain extends Activity {
 	private Button mButtonBegin = null;
 	private Button mButtonReset = null;
 	private boolean mIsBegin = true;
+	private GeoPoint mShortcutDest;
+	private String mShortcutName;
+	private int mShortcutMode;
+	private boolean shortcutOpen = false;
+	private BroadcastReceiver mLocationReceiver = new BroadcastReceiver()
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(intent.getAction().equals(MapManager.ACTION_RECEIVE_LOCATION)&&(false == shortcutOpen))
+			{
+				Intent intentShortCut = new Intent();
+				intentShortCut.putExtra("lat", mShortcutDest.getLatitudeE6());
+				intentShortCut.putExtra("long", mShortcutDest.getLongitudeE6());
+				intentShortCut.putExtra("mode", mShortcutMode);
+				intentShortCut.setClass(MyFriendsMain.this, RouteActivity.class);
+				MyFriendsMain.this.startActivity(intentShortCut);
+				shortcutOpen = true;
+			}
+			
+		}
+		
+	};
+			
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		shortcutOpen = false;
 		Intent intent = getIntent();
 		int lat = intent.getIntExtra("lat", 0);
 		int longit = intent.getIntExtra("long", 0);
-		String name = intent.getStringExtra("name");
-		Log.v(TAG, "name " + name);
+		mShortcutDest = new GeoPoint(lat, longit);
+		mShortcutName = intent.getStringExtra("name");
+		mShortcutMode = intent.getIntExtra("mode", 0);
+		//Log.v(TAG, "name " + name);
 		
 		
 		setContentView(R.layout.activity_main);
@@ -163,6 +193,10 @@ public class MyFriendsMain extends Activity {
 		
 		mMapManager = new MapManager(this, mMapView);
 		FriendsApplication.getInstance().mMapManager = mMapManager;
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(MapManager.ACTION_RECEIVE_LOCATION);
+		this.registerReceiver(mLocationReceiver, filter);
 		
 	}
 
@@ -246,39 +280,40 @@ public class MyFriendsMain extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-public void addShortCut(GeoPoint pt, String name){
-        
-        Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        // 设置属性
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.app_name));
-        ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(this.getApplicationContext(), R.drawable.ic_launcher);
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON,iconRes);
- 
-        // 是否允许重复创建
-        shortcut.putExtra("duplicate", false);
-        
-        //设置桌面快捷方式的图标
-        Parcelable icon = Intent.ShortcutIconResource.fromContext(this,R.drawable.ic_launcher);        
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,icon);
-        
-        //点击快捷方式的操作
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.putExtra("lat", pt.getLatitudeE6());
-        intent.putExtra("long", pt.getLongitudeE6());
-        intent.putExtra("name", name);
-        intent.setClass(MyFriendsMain.this, MyFriendsMain.class);
-        
-        // 设置启动程序
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
-        
-        //广播通知桌面去创建
-        this.sendBroadcast(shortcut);
-    }
-
-}
+	public void addShortCut(GeoPoint pt, String name, int routeMode){
+	        
+	        Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+	        // 设置属性
+	        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.app_name));
+	        ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(this.getApplicationContext(), R.drawable.ic_launcher);
+	        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON,iconRes);
+	 
+	        // 是否允许重复创建
+	        shortcut.putExtra("duplicate", false);
+	        
+	        //设置桌面快捷方式的图标
+	        Parcelable icon = Intent.ShortcutIconResource.fromContext(this,R.drawable.ic_launcher);        
+	        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,icon);
+	        
+	        //点击快捷方式的操作
+	        Intent intent = new Intent(Intent.ACTION_MAIN);
+	        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+	        intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+	        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+	        intent.putExtra("lat", pt.getLatitudeE6());
+	        intent.putExtra("long", pt.getLongitudeE6());
+	        intent.putExtra("name", name);
+	        intent.putExtra("mode", routeMode);
+	        intent.setClass(MyFriendsMain.this, MyFriendsMain.class);
+	        
+	        // 设置启动程序
+	        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
+	        
+	        //广播通知桌面去创建
+	        this.sendBroadcast(shortcut);
+	    }
+	
+	}
 
 /**
  * 继承MapView重写onTouchEvent实现泡泡处理操作

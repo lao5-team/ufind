@@ -41,6 +41,8 @@ import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.R;
 import com.findu.demo.activity.MyFriendsMain;
+import com.findu.demo.activity.RouteActivity;
+import com.findu.demo.constvalue.ConstValue;
 import com.findu.demo.location.LocationAbout;
 import com.findu.demo.location.LocationChangedListener;
 import com.findu.demo.overlay.CustomGraphicsOverlay;
@@ -103,6 +105,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	private View mPopupRight = null;
 	private PopupOverlay   mPop  = null;
 	private GeoPoint mDestPt = null;
+	private int mMode = 0;
 	public class RouteGraphic 
 	{
 		Graphic mGraphic;
@@ -349,51 +352,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
 
 	@Override
 	public boolean onTap(GeoPoint pt, MapView mMapView) {
-//		 Button button = new Button(mActivity);
-//			button.setText("开始");
-//	        //创建布局参数
-//		 MapView.LayoutParams   layoutParam  = new MapView.LayoutParams(
-//	              MapView.LayoutParams.WRAP_CONTENT,
-//	              MapView.LayoutParams.WRAP_CONTENT,
-//	              //使控件固定在某个地理位置
-//	               pt,
-//	               0,
-//	               -32,
-//	              //控件对齐方式
-//	                MapView.LayoutParams.BOTTOM_CENTER);
-//	        //添加View到MapView中
-//	        mMapView.addView(button,layoutParam);
-//	        
-//	       button.setOnClickListener(new OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				Log.v(TAG, "start !");
-//				Route newRoute = new Route("测试");
-//				newRoute.addGeoPoint(new GeoPoint(mCurrentPt.getLatitudeE6(), mCurrentPt.getLongitudeE6()));
-//				IntentFilter filter = new IntentFilter();
-//				filter.addAction(ACTION_RECEIVE_LOCATION);
-//				mActivity.registerReceiver(newRoute, filter);
-//				newRoute.start();		
-//				
-//			}
-//		});
-//	       
-//			 Button buttonRecord = new Button(mActivity);
-//				button.setText("记录");
-//		        //创建布局参数
-//			 MapView.LayoutParams layoutParamRecord  = new MapView.LayoutParams(
-//		              MapView.LayoutParams.WRAP_CONTENT,
-//		              MapView.LayoutParams.WRAP_CONTENT,
-//		              //使控件固定在某个地理位置
-//		               pt,
-//		               0,
-//		               -32,
-//		              //控件对齐方式
-//		                MapView.LayoutParams.LEFT);
-//		        //添加View到MapView中
-//		        mMapView.addView(buttonRecord,layoutParamRecord);
         mViewCache = mActivity.getLayoutInflater().inflate(R.layout.custom_text_view, null);
         mPopupInfo = (View) mViewCache.findViewById(R.id.popinfo);
         mPopupLeft = (View) mViewCache.findViewById(R.id.popleft);
@@ -407,38 +365,18 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		// 更新定位数据
 		mLocationOverLay.setlocationOverlayData(mLocationAbout
 				.getLocationData());
-		// 更新图层数据执行刷新后生效
-		// mMapView.refresh();
-
 		mCurrentPt.setLatitudeE6((int) (location.getLatitude() * 1e6));
 		mCurrentPt.setLongitudeE6((int) (location.getLongitude() * 1e6));
-
-		// 是手动触发请求或首次定位时，移动到定位点
-		//if (isRequest || isFirstLoc) {
-			// 移动地图到定位点
 			Log.v(TAG, "onReceiveLocation: "+"Lat " + location.getLatitude() * 1e6
 					+ " Long " + location.getLongitude() * 1e6);
-			
-			isRequest = false;
-
-			mJuhuiGoalPt = mCurrentPt;
-		//}
-		// 首次定位完成
-		//isFirstLoc = false;
-
-		//connectJuDian(mCurrentPt, mJuhuiGoalPt);
+		isRequest = false;
+		mJuhuiGoalPt = mCurrentPt;
 		mRouteOverlay.reverseGeocode(mCurrentPt);
-		//mRouteManager.savePoint(mCurrentPt);
-		// 设置路线起点
-		//mRouteOverlay.setRouteStartPt(mCurrentPt);
 		mRouteManager.addPoint(new FGeoPoint(mCurrentPt, new Date()));
 		Log.v(TAG, "Point Num: " + mRouteManager.getPoints().size());
-		
 		mMapView.refresh();
-		
 		GeoPoint pt = new GeoPoint(mCurrentPt.getLatitudeE6(), mCurrentPt.getLongitudeE6());
 		mLocationPoints.add(new FGeoPoint(pt, null));
-		
 		Intent intent = new Intent();
 		intent.setAction(ACTION_RECEIVE_LOCATION);
 		intent.putExtra("Lat", mCurrentPt.getLatitudeE6());
@@ -543,10 +481,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	
 	private GeoPoint[] getPointsfromTransitPlan(MKTransitRoutePlan plan)
 	{
-		//
 		ArrayList<Object> routeResult = new ArrayList<Object>();
-
-		
 		if(plan.getNumLines() == 0)
 		{
 			for(int i=0; i<plan.getNumRoute(); i++)
@@ -634,29 +569,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
 				}
 			}
 		}
-//		
-//		
-//		
-//		int numLine = plan.getNumLines();
-//		for(int i=0; i<numLine; i++)
-//		{
-//			MKLine line = plan.getLine(i);
-//			GeoPoint ptBegin = line.getGetOnStop().pt;
-//			GeoPoint ptEnd = line.getGetOffStop().pt;
-//			Log.v(TAG, "公交起点 " + ptBegin.getLatitudeE6() + " " + ptBegin.getLongitudeE6());
-//			Log.v(TAG, "公交终点 " + ptEnd.getLatitudeE6() + " " + ptEnd.getLongitudeE6());
-//		}
-//		
-//		int numRoute = plan.getNumRoute();
-//		for(int i=0; i<numRoute; i++)
-//		{
-//			MKRoute route = plan.getRoute(i);
-//			GeoPoint ptBegin = route.getStart();
-//			GeoPoint ptEnd = route.getEnd();
-//			Log.v(TAG, "步行起点 " + ptBegin.getLatitudeE6() + " " + ptBegin.getLongitudeE6());
-//			Log.v(TAG, "步行终点 " + ptEnd.getLatitudeE6() + " " + ptEnd.getLongitudeE6());
-//			
-//		}
 		GeoPoint[] pointList = new GeoPoint[points.size()];
 		for(int i=0; i<pointList.length; i++)
 		{
@@ -752,17 +664,12 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		
 		mItemizedOverlay.addOverItem(itemBegin);
 		mMapView.refresh();
+		mMode = ConstValue.WALK;
 		
 	}
 	
 	public void setTransitRoute(MKTransitRoutePlan plan)
 	{
-//		mTransitResult = result;
-		
-//		result.getPlan(arg0)
-//		RouteGraphic routeGraphic = new RouteGraphic();
-//		Graphic graphic = routeGraphic.setRoutePoints(points).
-//		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
 		mDestPt = plan.getEnd();
 		GeoPoint[] points = getPointsfromTransitPlan(plan);
 		RouteGraphic routeGraphic = new RouteGraphic();
@@ -781,6 +688,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mItemizedOverlay.addOverItem(itemBegin);
 		//mGraphicsOverlay.setCustomGraphicData(graphic);
 		mMapView.refresh();
+		mMode = ConstValue.TRANSIT;
 	}
 	
 	public void createPaopao(){
@@ -792,7 +700,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 				if(index == 0)
 				{
 					//生成快捷方式
-					((MyFriendsMain)mActivity).addShortCut(mDestPt, "快捷方式");
+					((MyFriendsMain)mActivity).addShortCut(mDestPt, "快捷方式", mMode);
 				}
 				else
 				{

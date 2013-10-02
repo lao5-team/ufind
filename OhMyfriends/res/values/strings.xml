@@ -18,4 +18,5 @@
 	<string name="drive">驾车</string>
 	<string name="walk">步行</string>
 	<string name="my_location">我的位置</string>
+	<string name="save">保存</string>
 </resources>

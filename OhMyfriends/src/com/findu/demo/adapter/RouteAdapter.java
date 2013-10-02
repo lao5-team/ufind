@@ -6,6 +6,8 @@ import com.baidu.mapapi.search.MKTransitRoutePlan;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.findu.demo.activity.FriendsApplication;
+import com.findu.demo.activity.RouteActivity;
+import com.findu.demo.constvalue.ConstValue;
 
 import android.app.Activity;
 import android.util.Log;
@@ -80,8 +82,7 @@ public class RouteAdapter extends BaseAdapter {
 		{
 		case 0:
 			tv.setText(mWalkingResult.getPlan(position).getDistance() + "รื");
-			tv.setOnClickListener(new OnClickListener() {
-				
+			tv.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
@@ -112,12 +113,14 @@ public class RouteAdapter extends BaseAdapter {
 	{
 		//mRouteNum = result.getNumPlan();
 		mTransitResult = result;
+		mMode = ConstValue.TRANSIT;
 	}
 	
 	public void setWalkingPlan(MKWalkingRouteResult result)
 	{
 		//mRouteNum = result.getNumPlan();
 		mWalkingResult = result;
+		mMode = ConstValue.WALK;
 	}
 	
 	public void setMode(int mode)

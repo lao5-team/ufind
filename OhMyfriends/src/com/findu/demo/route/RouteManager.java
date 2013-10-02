@@ -314,24 +314,4 @@ public class RouteManager {
 		return mRoutes.size();
 	}
 	
-//	public Route load()
-//	{
-//		return null;
-//	}
-	
-//	public ArrayList<Route> loadRoutes()
-//	{
-//		return mRoutes;
-//	}
-
-//	public Route createRoute()
-//	{
-//		Route route = new Route();
-//		return route;
-//	}
-	
-//	public void endRoute()
-//	{
-//		mCurrentRoute.mIsFinished = true;
-//	}
 }

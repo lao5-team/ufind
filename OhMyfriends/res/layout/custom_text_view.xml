@@ -14,7 +14,7 @@
          android:gravity="center"
         android:textStyle="bold"
          android:textColor="#3814ed"
-        android:text="更新位置"
+        android:text="@string/save"
         android:textSize="12sp" />
 
    
@@ -55,7 +55,7 @@
         android:textColor="#3814ed"
         android:gravity="center"
         android:textStyle="bold"
-        android:text="更新marker"
+        android:text="待定"
         android:textSize="12sp" />
 
 </LinearLayout>
