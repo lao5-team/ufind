@@ -64,6 +64,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -93,6 +94,7 @@ public class MyFriendsMain extends Activity {
 	private String mShortcutName;
 	private int mShortcutMode;
 	private boolean shortcutOpen = false;
+	private RelativeLayout mRelativeLayout = null;
 	private BroadcastReceiver mLocationReceiver = new BroadcastReceiver()
 	{
 
@@ -127,11 +129,12 @@ public class MyFriendsMain extends Activity {
 		
 		
 		setContentView(R.layout.activity_main);
+		mRelativeLayout = (RelativeLayout)findViewById(R.id.main);
 		CharSequence titleLable = "MyFriend";
 		setTitle(titleLable);
 
 		// µÿÕº≥ı ºªØ
-		mMapView = (MapView) findViewById(R.id.bmapView);
+		//mMapView = (MapView) findViewById(R.id.bmapView);
 		mEditTextDest = (EditText)findViewById(R.id.editText_dest);
 		mButtonSearch = (Button)findViewById(R.id.button_search);
 		mButtonSearch.setOnClickListener(new OnClickListener() {
@@ -191,9 +194,9 @@ public class MyFriendsMain extends Activity {
 			}
 		});
 		
-		mMapManager = new MapManager(this, mMapView);
-		FriendsApplication.getInstance().mMapManager = mMapManager;
-		
+		//mMapManager = new MapManager(this, mMapView);
+		//FriendsApplication.getInstance().mMapManager = mMapManager;
+		mRelativeLayout.addView(FriendsApplication.getInstance().mMapManager.getMapView());
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(MapManager.ACTION_RECEIVE_LOCATION);
 		this.registerReceiver(mLocationReceiver, filter);

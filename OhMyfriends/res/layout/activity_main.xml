@@ -3,7 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:id="@+id/main">
 
     <EditText
         android:id="@+id/editText_dest"
@@ -30,11 +31,11 @@
            android:layout_below="@+id/editText_dest"
          android:text="@string/begin" />
     
-     <com.baidu.mapapi.map.MapView android:id="@+id/bmapView"
-	android:layout_width="fill_parent" android:layout_height="fill_parent" 
-	android:layout_below="@+id/button_search"
-	android:clickable="true"     
-/>
+<!--      <com.baidu.mapapi.map.MapView android:id="@+id/bmapView" -->
+<!-- 	android:layout_width="fill_parent" android:layout_height="fill_parent"  -->
+<!-- 	android:layout_below="@+id/button_search" -->
+<!-- 	android:clickable="true"      -->
+<!-- /> -->
 
      <Button
          android:id="@+id/button_save"

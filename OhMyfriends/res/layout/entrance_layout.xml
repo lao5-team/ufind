@@ -5,11 +5,39 @@
     android:background="@drawable/splash" >
 
     <Button
-        android:id="@+id/btn_entrance"
+        android:id="@+id/btn_new_plan"
         android:layout_width="160dip"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/iwillgo"
-        />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="@string/wheretogo" />
+    
+    <Button
+        android:id="@+id/btn_plan_in_time"
+        android:layout_width="160dip"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dip"
+        android:layout_below="@+id/btn_new_plan"
+        android:text="@string/readytogo" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/btn_plan_in_time"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/relativeLayout"
+        android:longClickable="true"
+       >
+    <com.baidu.mapapi.map.MapView android:id="@+id/bmapView"
+	android:layout_width="fill_parent" android:layout_height="fill_parent" 
+	android:clickable="true" 
+	 android:visibility="invisible"    
+	/>
+    </RelativeLayout>
 
 </RelativeLayout>
