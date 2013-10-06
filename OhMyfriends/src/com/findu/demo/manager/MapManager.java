@@ -63,11 +63,7 @@ public class MapManager extends BaseMapManager implements LocationChangedListene
 ItemOverlayOnTapListener, RouteSearchListener{
 	public static String TAG = MapManager.class.getName();
 	public static String ACTION_RECEIVE_LOCATION = "receive_location";
-	Activity mActivity;
-	MapView mMapView;
-	MapController mMapController;
-	LocationAbout mLocationAbout;
-	LocationOverLay mLocationOverLay;
+
 
 	// 用于在地图上描绘图形图像
 	CustomGraphicsOverlay mGraphicsOverlay;
@@ -161,10 +157,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	
 	public MapManager(Activity activity, MapView mapView)
 	{
-		Assert.assertNotNull(activity);
-		Assert.assertNotNull(mapView);
-		mActivity = activity;
-		mMapView = mapView;
+		super(activity, mapView);
 		mMapController = mMapView.getController();
 		mMapView.getController().setZoom(14);
 		mMapView.getController().enableClick(true);
@@ -205,19 +198,6 @@ ItemOverlayOnTapListener, RouteSearchListener{
         createPaopao();
 	}
 	
-	//can be deleted
-	@Override
-	public void setMapView(MapView mapview) {
-		// TODO Auto-generated method stub
-
-	}
-
-	//can be deleted
-	@Override
-	public MapView getMapView() {
-		// TODO Auto-generated method stub
-		return mMapView;
-	}
 
 	//can be deleted
 	@Override

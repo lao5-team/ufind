@@ -7,15 +7,19 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.R;
 import com.findu.demo.db.Plan;
+import com.findu.demo.db.Plan.PlanStateChangeListener;
 import com.findu.demo.db.XMLPlanManager;
 import com.findu.demo.manager.MapManager;
+import com.findu.demo.manager.MiniMapManager;
 import com.findu.demo.service.FindUService;
 import com.findu.demo.service.MockFindUService;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -26,6 +30,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * @author Administrator
@@ -41,26 +46,100 @@ public class EntranceActivity extends Activity{
 	public static String TAG = EntranceActivity.class.getName();
 	private Button mNewPlanButton;
 	private Button mReadyButton;
+	private TextView mReadyTextView;
 	private MapView mMapView;
 	private GestureDetector mGestureDetector; 
-	private MapManager mMapManager;
+	private MiniMapManager mMapManager;
 	private FindUService mService;
 	private RelativeLayout mRelativeLayout;
+	private Plan mCurReadyPlan = null;
 	private ServiceConnection mConnection = new ServiceConnection() {  
         public void onServiceConnected(ComponentName className,IBinder localBinder) {  
         	Log.d(TAG, className.getClassName());
         	mService = ((FindUService.FindUBinder)localBinder).getService();  
-    		Plan plan = mService.getOnTimePlan();
-    		Log.d(TAG, plan.name);
-    		mReadyButton.setVisibility(View.VISIBLE);
-    		mReadyButton.setText(String.format(EntranceActivity.this.getString(R.string.readytogo), plan.name));
-    		mMapManager.setDestPoint(new GeoPoint(plan.destLatitude, plan.destLongitude));
+        	mCurReadyPlan = mService.getOnTimePlan();
+        	if(null != mCurReadyPlan)
+        	{
+        		onGetReadyPlan();
+        	}
+        	
+    		
+    		
         }  
         public void onServiceDisconnected(ComponentName arg0) {  
         	mService = null;  
         }  
     }; 
+    
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver()
+    {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(intent.getAction().equals("HasPlanReady"))
+			{
+				mCurReadyPlan = mService.getOnTimePlan();
+				if(null != mCurReadyPlan)
+				{
+					onGetReadyPlan();
+				}
+			}
+		}
+    	
+    };
+    
+    private void onGetReadyPlan()
+    {
+    	Log.d(TAG, mCurReadyPlan.name);
+		
+		mReadyTextView.setVisibility(View.VISIBLE);
+		mReadyButton.setVisibility(View.VISIBLE);
+		mCurReadyPlan.addStateChangeListener(mStateChangedListener);
+		mReadyButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(mCurReadyPlan.status == Plan.READY)
+				{
+					IntentFilter filter = new IntentFilter();
+					filter.addAction(MapManager.ACTION_RECEIVE_LOCATION);
+					EntranceActivity.this.registerReceiver(mCurReadyPlan, filter);
+					mCurReadyPlan.begin();
+				}
+				else if(mCurReadyPlan.status == Plan.CAN_FINISH)
+				{
+					mCurReadyPlan.finish();
+				}
+			}
+		});
+		mMapManager.setDestPoint(new GeoPoint(mCurReadyPlan.destLatitude, mCurReadyPlan.destLongitude));
+		mStateChangedListener.onStateChanged(mCurReadyPlan);
+    }
 	
+    private Plan.PlanStateChangeListener mStateChangedListener = new PlanStateChangeListener() {
+		
+		@Override
+		public void onStateChanged(Plan plan) {
+			// TODO Auto-generated method stub
+    		if(plan.status == Plan.READY)
+    		{
+    			mReadyTextView.setText(String.format(EntranceActivity.this.getString(R.string.readytogo), plan.name));
+    			mReadyButton.setText(EntranceActivity.this.getString(R.string.begin));
+    		}
+    		if(plan.status == Plan.DOING)
+    		{
+    			mReadyTextView.setText(String.format(EntranceActivity.this.getString(R.string.ontheway), plan.name));
+    			mReadyButton.setVisibility(View.INVISIBLE);
+    		}
+    		if(plan.status == Plan.CAN_FINISH)
+    		{
+    			mReadyButton.setVisibility(View.VISIBLE);
+    			mReadyButton.setText(EntranceActivity.this.getString(R.string.finish));
+    		}
+		}
+	};
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -76,24 +155,33 @@ public class EntranceActivity extends Activity{
 		});
 		
 		mReadyButton = (Button)findViewById(R.id.btn_plan_in_time);
-		mReadyButton.setOnClickListener(new OnClickListener() {
+		mReadyButton.setVisibility(View.GONE);
+		
+		mReadyTextView = (TextView)findViewById(R.id.textView_plan_in_time);
+		mReadyTextView.setClickable(true);
+		mReadyTextView.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				// TODO Auto-generated method stub
 				Intent intent = new Intent(EntranceActivity.this, PlanActivity.class);
+				intent.putExtra("type", "Load");
+				intent.putExtra("id", mCurReadyPlan.id);
 				startActivity(intent);
 			}
 		});
-		mReadyButton.setVisibility(View.GONE);
+		mReadyTextView.setVisibility(View.GONE);
 		mRelativeLayout = (RelativeLayout)findViewById(R.id.relativeLayout);
 		mMapView = (MapView)findViewById(R.id.bmapView);
-		mMapManager = new MapManager(this, mMapView);
+		mMapManager = new MiniMapManager(this, mMapView);
 		FriendsApplication.getInstance().mMapManager = mMapManager;
 		initGesture();
 		bindService(new Intent(EntranceActivity.this, 
-		            MockFindUService.class), mConnection, Context.BIND_AUTO_CREATE);
+		            FindUService.class), mConnection, Context.BIND_AUTO_CREATE);
 		
 		XMLPlanManager.getInstance();
+		IntentFilter filter = new IntentFilter("HasPlanReady");
+		registerReceiver(mBroadcastReceiver, filter);
 	}
 	
 	private void initGesture()
@@ -176,4 +264,24 @@ public class EntranceActivity extends Activity{
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE); 
 	}
 	
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		if(null != mCurReadyPlan)
+		{
+			mCurReadyPlan.removeStateChangeListener(mStateChangedListener);
+		}
+		
+	}
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		if(null != mCurReadyPlan)
+		{
+			mCurReadyPlan.addStateChangeListener(mStateChangedListener);
+		}
+	}
 }

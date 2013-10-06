@@ -13,19 +13,31 @@
         android:layout_marginTop="32dp"
         android:text="@string/wheretogo" />
     
+    <TextView
+        android:id="@+id/textView_plan_in_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btn_new_plan"
+        android:text="@string/readytogo"
+        android:layout_marginTop="32dp"
+        android:layout_marginLeft="32dp"
+        android:textSize="24sp" />
+    
     <Button
         android:id="@+id/btn_plan_in_time"
-        android:layout_width="160dip"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dip"
-        android:layout_below="@+id/btn_new_plan"
-        android:text="@string/readytogo" />
-
+        android:layout_marginLeft="20dip"
+        android:layout_alignBaseline="@+id/textView_plan_in_time"
+        android:layout_toRightOf="@+id/textView_plan_in_time"
+        android:text="@string/begin" />
+    
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/btn_plan_in_time"
+        android:layout_below="@+id/textView_plan_in_time"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
@@ -39,5 +51,7 @@
 	 android:visibility="invisible"    
 	/>
     </RelativeLayout>
+
+
 
 </RelativeLayout>

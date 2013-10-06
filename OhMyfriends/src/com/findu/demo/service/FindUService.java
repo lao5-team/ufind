@@ -5,9 +5,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.findu.demo.db.Plan;
+import com.findu.demo.db.Plan.PlanStateChangeListener;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
@@ -20,6 +22,7 @@ import android.util.Log;
 public class FindUService extends Service {
 	public static String TAG = FindUService.class.getName();
 	public Plan mPlanToDo = null;
+	private Object mSyncObj = new Object();
 	public class FindUBinder extends Binder
 	{
 		public FindUService getService()
@@ -44,38 +47,36 @@ public class FindUService extends Service {
 	
 	public Plan getOnTimePlan()
 	{
-		Plan plan = new Plan();
-		plan.name = "ио╟Ю";
-		plan.destLatitude = (int)(39.915267 * 1E6);
-		plan.destLongitude = (int)(116.403909 * 1E6);
-		return plan;
+		return mPlanToDo;
 	}
 	
-	public void setPlanToDo(final Plan plan)
+	/**
+	 * @param plan
+	 */
+	public void addPlanToDo(final Plan plan)
 	{
-		Date curDate = new Date(System.currentTimeMillis());
-		int currentTime = curDate.getHours() * 60 + curDate.getMinutes();
-		Date beginDate = plan.startTime;
-		int beginTime = beginDate.getHours() * 60 + beginDate.getMinutes();
-		if(beginTime > currentTime)
-		{
-			Timer timer = new Timer();       
-			timer.schedule(new TimerTask() {           
-			            @Override
-			            public void run() {
-			            	if(mPlanToDo != plan)
-			            	{
-			            		mPlanToDo = plan;
-			            	}
-			            	else
-			            	{
-			            		mPlanToDo = null;
-			            	}
-			            	
-			            }
-			        }, (beginTime - currentTime)*60*1000, 60*1000); 
-		}
-		
+		plan.countDown();
+		plan.addStateChangeListener(new PlanStateChangeListener() {
+			
+			@Override
+			public void onStateChanged(Plan plan) {
+				// TODO Auto-generated method stub
+				if(plan.status == Plan.READY)
+				{
+					Log.d(TAG, plan.name + " isReady");
+					mPlanToDo = plan;
+					Intent intent = new Intent("HasPlanReady");
+					sendBroadcast(intent);
+				}
+				else if(plan.status == Plan.FINISHED || plan.status == Plan.TIME_OUT)
+				{
+					if(mPlanToDo.id == plan.id)
+					{
+						mPlanToDo = null;
+					}
+				}
+			}
+		});
 	}
 
 }

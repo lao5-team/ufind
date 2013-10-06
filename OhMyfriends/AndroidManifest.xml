@@ -35,7 +35,7 @@
             </intent-filter>
         </service>
         <activity android:name=".activity.RouteActivity"></activity>
-        <activity android:name=".activity.HistoryActiivty"></activity>
+        <activity android:name=".activity.HistoryActivity"></activity>
         <activity android:name=".activity.EntranceActivity">
                         <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,8 +45,8 @@
                 </intent-filter>
         </activity>
          <service android:name="com.findu.demo.service.FindUService"
-             />
-         <activity android:name=".activity.PlanActivity"></activity>
+             /><activity android:name=".activity.PlanActivity"></activity>
+         
     </application>
 
      <uses-permission android:name="android.permission.GET_ACCOUNTS" />

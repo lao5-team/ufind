@@ -61,6 +61,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -134,7 +135,7 @@ public class MyFriendsMain extends Activity {
 		setTitle(titleLable);
 
 		// µÿÕº≥ı ºªØ
-		//mMapView = (MapView) findViewById(R.id.bmapView);
+		mMapView = (MapView) findViewById(R.id.bmapView);
 		mEditTextDest = (EditText)findViewById(R.id.editText_dest);
 		mButtonSearch = (Button)findViewById(R.id.button_search);
 		mButtonSearch.setOnClickListener(new OnClickListener() {
@@ -194,9 +195,11 @@ public class MyFriendsMain extends Activity {
 			}
 		});
 		
-		//mMapManager = new MapManager(this, mMapView);
+		mMapManager = new MapManager(this, mMapView);
 		//FriendsApplication.getInstance().mMapManager = mMapManager;
-		mRelativeLayout.addView(FriendsApplication.getInstance().mMapManager.getMapView());
+		//ViewGroup vp = (ViewGroup) FriendsApplication.getInstance().mMapManager.getMapView().getParent();
+		//vp.removeView(FriendsApplication.getInstance().mMapManager.getMapView());
+		//mRelativeLayout.addView(FriendsApplication.getInstance().mMapManager.getMapView());
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(MapManager.ACTION_RECEIVE_LOCATION);
 		this.registerReceiver(mLocationReceiver, filter);

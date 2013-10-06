@@ -43,6 +43,22 @@ public class XMLPlanManager {
 		writePlansToXML("mnt/sdcard/test.xml");
 	}
 	
+	public void addPlan(Plan plan)
+	{
+		int size = mPlans.size();
+		if(size >1)
+		{
+			plan.id = mPlans.get(size-1).id + 1;
+			
+		}
+		else
+		{
+			plan.id = 0;
+		}
+		mPlans.add(plan);
+		
+	}
+	
 	private XMLPlanManager()
 	{
 		readPlansFromXML("mnt/sdcard/test.xml");
@@ -124,36 +140,46 @@ public class XMLPlanManager {
 			serializer.setOutput(fos, "UTF-8");
 			serializer.startDocument("UTF-8", true);
 			serializer.startTag(null, "plans");
+			serializer.text("\n");
 			for (Plan p : mPlans) {
 				serializer.startTag(null, "plan");
+				serializer.text("\n");
 				serializer.startTag(null, "name");
 				serializer.text(p.name);
 				serializer.endTag(null, "name");
+				serializer.text("\n");
 				serializer.startTag(null, "destLat");
 				serializer.text(p.destLatitude + "");
 				serializer.endTag(null, "destLat");
+				serializer.text("\n");
 				serializer.startTag(null, "destLong");
 				serializer.text(p.destLongitude + "");
 				serializer.endTag(null, "destLong");
+				serializer.text("\n");
 				serializer.startTag(null, "startTime");
-				serializer.text(p.startTime.toString());
+		    	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+				serializer.text(formatter.format(p.startTime));
 				serializer.endTag(null, "startTime");
+				serializer.text("\n");
 				serializer.startTag(null, "isDayly");
 				serializer.text(p.isDaylyRemind + "");
 				serializer.endTag(null, "isDayly");
-				serializer.startTag(null, "isDayly");
+				serializer.text("\n");
+				serializer.startTag(null, "duration");
 				serializer.text(p.duration + "");
-				serializer.endTag(null, "isDayly");
+				serializer.endTag(null, "duration");
+				serializer.text("\n");
 				serializer.endTag(null, "plan");
+				serializer.text("\n");
 			}
 			serializer.endTag(null, "plans");
 			serializer.endDocument();
-			// fos.flush();
-			// fos.close();
+			fos.flush();
+			fos.close();
 		}
 		catch(Exception e)
 		{
-			
+			e.printStackTrace();
 		}
 	}
 }

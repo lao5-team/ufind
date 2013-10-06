@@ -19,8 +19,12 @@ import com.findu.demo.adapter.HistoryAdapter;
 import com.findu.demo.db.Plan;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Xml;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 
 /**
@@ -32,13 +36,31 @@ public class HistoryActivity extends Activity {
 	
 	private ListView mListView;
 	private HistoryAdapter mAdapter;
+	private Button mButtonNotArrived;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.history_layout);
+		mButtonNotArrived = (Button)findViewById(R.id.button_not_arrived);
+		mButtonNotArrived.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(HistoryActivity.this, PlanActivity.class);
+				intent.putExtra("type", "Create");
+				startActivity(intent);
+			}
+		});
 		mListView = (ListView)this.findViewById(R.id.listView_history);
 		mAdapter = new HistoryAdapter(this);
 		mListView.setAdapter(mAdapter);
+	}
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		mAdapter.notifyDataSetChanged();
 	}
 	
 	
