@@ -22,7 +22,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -53,6 +55,42 @@ public class EntranceActivity extends Activity{
 	private FindUService mService;
 	private RelativeLayout mRelativeLayout;
 	private Plan mCurReadyPlan = null;
+	private Button mSimLocationButton = null;
+	private final int PLAN_STATE_CHANGED = 0;
+	private Handler mHandler = new Handler()
+	{
+		@Override
+		public void handleMessage(Message msg)
+		{
+			if(msg.what == PLAN_STATE_CHANGED)
+			{
+				Plan plan = (Plan)msg.obj;
+				switch(msg.arg1)
+				{
+					case Plan.READY:
+			    			mReadyTextView.setText(String.format(EntranceActivity.this.getString(R.string.readytogo), plan.name));
+			    			mReadyButton.setText(EntranceActivity.this.getString(R.string.begin));
+			    			break;
+					case Plan.DOING:
+			    			mReadyTextView.setText(String.format(EntranceActivity.this.getString(R.string.ontheway), plan.name));
+			    			mReadyButton.setVisibility(View.INVISIBLE);
+			    			break;
+			    	case Plan.CAN_FINISH:
+			    			mReadyButton.setVisibility(View.VISIBLE);
+			    			mReadyButton.setText(EntranceActivity.this.getString(R.string.finish));
+			    			break;
+			    	case Plan.IDLE:
+			    	case Plan.TIME_OUT:
+			    	case Plan.FINISHED:
+			    			mReadyTextView.setVisibility(View.INVISIBLE);
+			    			mReadyButton.setVisibility(View.INVISIBLE);
+			    			break;
+				}
+				
+			}
+		}
+	};
+	
 	private ServiceConnection mConnection = new ServiceConnection() {  
         public void onServiceConnected(ComponentName className,IBinder localBinder) {  
         	Log.d(TAG, className.getClassName());
@@ -62,9 +100,6 @@ public class EntranceActivity extends Activity{
         	{
         		onGetReadyPlan();
         	}
-        	
-    		
-    		
         }  
         public void onServiceDisconnected(ComponentName arg0) {  
         	mService = null;  
@@ -122,21 +157,11 @@ public class EntranceActivity extends Activity{
 		@Override
 		public void onStateChanged(Plan plan) {
 			// TODO Auto-generated method stub
-    		if(plan.status == Plan.READY)
-    		{
-    			mReadyTextView.setText(String.format(EntranceActivity.this.getString(R.string.readytogo), plan.name));
-    			mReadyButton.setText(EntranceActivity.this.getString(R.string.begin));
-    		}
-    		if(plan.status == Plan.DOING)
-    		{
-    			mReadyTextView.setText(String.format(EntranceActivity.this.getString(R.string.ontheway), plan.name));
-    			mReadyButton.setVisibility(View.INVISIBLE);
-    		}
-    		if(plan.status == Plan.CAN_FINISH)
-    		{
-    			mReadyButton.setVisibility(View.VISIBLE);
-    			mReadyButton.setText(EntranceActivity.this.getString(R.string.finish));
-    		}
+    		Message msg = mHandler.obtainMessage();
+    		msg.what = PLAN_STATE_CHANGED;
+    		msg.arg1 = plan.status;
+    		msg.obj = plan;
+    		mHandler.sendMessage(msg);
 		}
 	};
     
@@ -173,6 +198,19 @@ public class EntranceActivity extends Activity{
 		mReadyTextView.setVisibility(View.GONE);
 		mRelativeLayout = (RelativeLayout)findViewById(R.id.relativeLayout);
 		mMapView = (MapView)findViewById(R.id.bmapView);
+		mSimLocationButton = (Button)findViewById(R.id.button_sim_location);
+		mSimLocationButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent();
+				intent.setAction(MapManager.ACTION_RECEIVE_LOCATION);
+				intent.putExtra("Lat", 39914035);
+				intent.putExtra("Long", 116403094);
+				sendBroadcast(intent);
+			}
+		});
 		mMapManager = new MiniMapManager(this, mMapView);
 		FriendsApplication.getInstance().mMapManager = mMapManager;
 		initGesture();
@@ -261,6 +299,7 @@ public class EntranceActivity extends Activity{
 	{
 		super.onStart();
 		Intent intent = new Intent(this, FindUService.class);  
+		startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE); 
 	}
 	
@@ -273,6 +312,13 @@ public class EntranceActivity extends Activity{
 			mCurReadyPlan.removeStateChangeListener(mStateChangedListener);
 		}
 		
+	}
+	@Override
+	protected void onDestroy()
+	{
+		unbindService(mConnection);
+		super.onDestroy();
+		//System.exit(0);
 	}
 	
 	@Override

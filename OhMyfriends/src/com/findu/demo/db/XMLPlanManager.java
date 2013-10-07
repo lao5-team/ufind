@@ -22,7 +22,7 @@ public class XMLPlanManager {
 	public static String TAG = XMLPlanManager.class.getName();
 	private ArrayList<Plan> mPlans = new ArrayList<Plan>();
 	private static XMLPlanManager instance = null;
-	
+	private final String XML_PATH = "mnt/sdcard/test.xml";
 	public static XMLPlanManager getInstance()
 	{
 		if(null == instance)
@@ -40,28 +40,46 @@ public class XMLPlanManager {
 	public void setPlans(ArrayList<Plan> plans)
 	{
 		mPlans = plans;
-		writePlansToXML("mnt/sdcard/test.xml");
+		writePlansToXML(XML_PATH);
 	}
 	
 	public void addPlan(Plan plan)
 	{
-		int size = mPlans.size();
-		if(size >1)
-		{
-			plan.id = mPlans.get(size-1).id + 1;
-			
-		}
-		else
-		{
-			plan.id = 0;
-		}
+		plan.id = createID();
 		mPlans.add(plan);
-		
+		writePlansToXML(XML_PATH);
+	}
+	
+	public void update(Plan plan)
+	{
+		int index = 0;
+		for(Plan p:mPlans)
+		{
+			if(p.id == plan.id)
+			{
+				break;
+			}
+			index++;
+		}
+		mPlans.set(index, plan);
+		writePlansToXML(XML_PATH);
+	}
+	
+	public int createID()
+	{
+		if(0!=mPlans.size())
+		{
+			return (mPlans.get(mPlans.size()-1).id + 1);
+		}
+		else 
+		{
+			return 0;
+		}
 	}
 	
 	private XMLPlanManager()
 	{
-		readPlansFromXML("mnt/sdcard/test.xml");
+		readPlansFromXML(XML_PATH);
 	}
 	
 	private void readPlansFromXML(String fileName)
@@ -88,6 +106,12 @@ public class XMLPlanManager {
 					if(node.getNodeType() == Node.ELEMENT_NODE)
 					{    
 						Element childNode = (Element) node;
+					    if ("id".equals(childNode.getNodeName())) 
+					    {
+					    	//获取name元素下Text节点,然后从Text节点获取数据
+					    	//person.setName(childNode.getFirstChild().getNodeValue());
+					    	plan.id = Integer.parseInt(childNode.getFirstChild().getNodeValue());
+					    } 
 					    //判断是否name元素
 					    if ("name".equals(childNode.getNodeName())) 
 					    {
@@ -143,6 +167,10 @@ public class XMLPlanManager {
 			serializer.text("\n");
 			for (Plan p : mPlans) {
 				serializer.startTag(null, "plan");
+				serializer.text("\n");
+				serializer.startTag(null, "id");
+				serializer.text(p.id+"");
+				serializer.endTag(null, "id");
 				serializer.text("\n");
 				serializer.startTag(null, "name");
 				serializer.text(p.name);

@@ -4,10 +4,16 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.findu.demo.R;
+import com.findu.demo.activity.EntranceActivity;
 import com.findu.demo.db.Plan;
 import com.findu.demo.db.Plan.PlanStateChangeListener;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
@@ -22,7 +28,6 @@ import android.util.Log;
 public class FindUService extends Service {
 	public static String TAG = FindUService.class.getName();
 	public Plan mPlanToDo = null;
-	private Object mSyncObj = new Object();
 	public class FindUBinder extends Binder
 	{
 		public FindUService getService()
@@ -67,6 +72,11 @@ public class FindUService extends Service {
 					mPlanToDo = plan;
 					Intent intent = new Intent("HasPlanReady");
 					sendBroadcast(intent);
+					showNotification(plan);
+				}
+				else if(plan.status == Plan.CAN_FINISH)
+				{
+					showNotification(plan);
 				}
 				else if(plan.status == Plan.FINISHED || plan.status == Plan.TIME_OUT)
 				{
@@ -74,9 +84,46 @@ public class FindUService extends Service {
 					{
 						mPlanToDo = null;
 					}
+					showNotification(plan);
 				}
 			}
 		});
+	}
+	
+	private void showNotification(Plan plan)
+	{
+		String ns = Context.NOTIFICATION_SERVICE;
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+		String tickerText = "";
+		if(plan.status == Plan.READY)
+		{
+			tickerText = "准备去" + plan.name + "了";
+		}
+		else if(plan.status == Plan.CAN_FINISH)		
+		{
+			tickerText = "已经到" + plan.name + "附近了";
+		}
+		else if(plan.status == Plan.TIME_OUT)
+		{
+			tickerText = plan.name + "超时了";
+		}
+		else
+		{
+			return ;
+		}
+		long when = System.currentTimeMillis();
+		Notification notification = new Notification(R.drawable.ic_launcher, tickerText, when);
+		Intent notificationIntent = new Intent(this, EntranceActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		notification.setLatestEventInfo(this, tickerText, tickerText, contentIntent);
+		mNotificationManager.notify(0, notification);
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		Log.v(TAG, "onDestroy");
 	}
 
 }

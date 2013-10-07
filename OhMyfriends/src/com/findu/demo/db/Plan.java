@@ -31,13 +31,13 @@ import android.util.Log;
  * 5.朋友列表 网络版时添加
  * 6.完成时长
  */
-public class Plan extends BroadcastReceiver{
-	public static int IDLE = 0;
-	public static int READY = 1;
-	public static int DOING = 2;
-	public static int CAN_FINISH = 3;
-	public static int FINISHED = 4;
-	public static int TIME_OUT = 5;
+public class Plan extends BroadcastReceiver implements Cloneable{
+	public final static int IDLE = 0;
+	public final static int READY = 1;
+	public final static int DOING = 2;
+	public final static int CAN_FINISH = 3;
+	public final static int FINISHED = 4;
+	public final static int TIME_OUT = 5;
 	public int id;
 	public String name;
 	public int destLatitude;
@@ -65,7 +65,7 @@ public class Plan extends BroadcastReceiver{
 		listeners = new ArrayList<Plan.PlanStateChangeListener>();
 		isDaylyRemind = false;
 		duration = 0;
-		
+		friends = new ArrayList();
 	}
 	
 	public void addStateChangeListener(PlanStateChangeListener listener)
@@ -86,6 +86,7 @@ public class Plan extends BroadcastReceiver{
 	
 	public void countDown()
 	{
+		Log.d(Plan.class.getName(), "countDown");
 		if(status == IDLE && timer==null)
 		{
 			Date curDate = new Date(System.currentTimeMillis());
@@ -101,6 +102,7 @@ public class Plan extends BroadcastReceiver{
 				            public void run() {
 				            	if(status == IDLE)
 				            	{
+				            		Log.v(Plan.class.getName(), "READY");
 				            		status = Plan.READY;
 				            		notifyStateChanged();
 				            	}
@@ -110,7 +112,7 @@ public class Plan extends BroadcastReceiver{
 				            		notifyStateChanged();
 				            	}
 				            }
-				        }, (beginTime - currentTime)*1*1000, 6*1000*5); 
+				        }, (beginTime - currentTime)*10*1000, 60*1000*5); 
 			}
 		}
 		
@@ -130,6 +132,9 @@ public class Plan extends BroadcastReceiver{
 		if(status == CAN_FINISH)
 		{
 			status = FINISHED;
+			Date curDate = new Date(System.currentTimeMillis());
+			duration = (curDate.getHours() - startTime.getHours())*60 
+					+ curDate.getMinutes() - startTime.getMinutes();
 			notifyStateChanged();
 		}
 	}
@@ -154,6 +159,22 @@ public class Plan extends BroadcastReceiver{
 				notifyStateChanged();
 			}
 		}
+	}
+	
+	@Override
+	public Object clone()
+	{
+		Plan newPlan = new Plan();
+		newPlan.id = id;
+		newPlan.name = name;
+		newPlan.destLatitude = destLatitude;
+		newPlan.destLongitude = destLongitude;
+		newPlan.startTime = (Date) startTime.clone();
+		newPlan.isDaylyRemind = isDaylyRemind;
+		newPlan.friends = (ArrayList) friends.clone();
+		newPlan.duration = duration;
+		newPlan.status = status;
+		return newPlan;
 	}
 	
 }

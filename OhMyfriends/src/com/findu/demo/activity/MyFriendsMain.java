@@ -235,7 +235,6 @@ public class MyFriendsMain extends Activity {
 			FriendsApplication.getInstance().mBMapManager = null;
 		}
 		super.onDestroy();
-		System.exit(0);
 	}
 
 	@Override

@@ -364,7 +364,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		intent.putExtra("Lat", mCurrentPt.getLatitudeE6());
 		intent.putExtra("Long", mCurrentPt.getLongitudeE6());
 		mActivity.sendBroadcast(intent);
-		updateRoute();
+		//updateRoute();
 	}
 	
 	public void resetMyLocation()

@@ -33,4 +33,6 @@
 	<string name="wheretogo">您要去哪？</string>
 	<string name="readytogo">准备去%1$s</string>
 	<string name="ontheway">在去%1$s的路上</string>
+	<string name="update">更新</string>
+	<string name="create">新路线</string>
 </resources>

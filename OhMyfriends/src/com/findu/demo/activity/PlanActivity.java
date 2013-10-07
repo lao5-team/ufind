@@ -47,10 +47,10 @@ public class PlanActivity extends Activity {
 	private Button mButtonLocation = null;
 	private EditText mEditTime = null;
 	private CheckBox mCheckDayly = null;
-	private Button mButtonFinish = null;
+	private Button mButtonCreate = null;
 	private Button mButtonCancel = null;
+	private Button mButtonUpdate = null;
 	private FindUService mService = null;
-	
 	private ServiceConnection mConnection = new ServiceConnection() {  
         public void onServiceConnected(ComponentName className,IBinder localBinder) {  
         	Log.d(TAG, className.getClassName());
@@ -83,7 +83,7 @@ public class PlanActivity extends Activity {
 				{
 					if(p.id == id)
 					{
-						mCurPlan = p;
+						mCurPlan = (Plan)p.clone();
 						break;
 					}
 				}
@@ -111,19 +111,30 @@ public class PlanActivity extends Activity {
 		});
 		mEditTime = (EditText)findViewById(R.id.editText_time);
 		mCheckDayly = (CheckBox)findViewById(R.id.checkBox_dayly_remind);
-		mButtonFinish = (Button)findViewById(R.id.button_finish);
-		mButtonFinish.setOnClickListener(new OnClickListener() {
+		mButtonCreate = (Button)findViewById(R.id.button_finish);
+		mButtonCreate.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				updateData();
 				mService.addPlanToDo(mCurPlan);
-				ArrayList<Plan> plans = XMLPlanManager.getInstance().getPlans();
-				plans.add(mCurPlan);
-				XMLPlanManager.getInstance().setPlans(plans);
+				XMLPlanManager.getInstance().addPlan(mCurPlan);
 				finish();
 			}
 		});
+		
+		mButtonUpdate = (Button)findViewById(R.id.button_update);
+		mButtonUpdate.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				updateData();
+				mService.addPlanToDo(mCurPlan);
+				XMLPlanManager.getInstance().update(mCurPlan);
+				finish();
+			}
+		});
+		
 		mButtonCancel = (Button)findViewById(R.id.button_cancel);
 		mButtonCancel.setOnClickListener(new OnClickListener() {
 			@Override
