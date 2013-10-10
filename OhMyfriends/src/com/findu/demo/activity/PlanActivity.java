@@ -96,6 +96,13 @@ public class PlanActivity extends Activity {
 
 	}
 	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		unbindService(mConnection);
+	}
+	
 	private void initView()
 	{
 		mEditName = (EditText)findViewById(R.id.editText_name);

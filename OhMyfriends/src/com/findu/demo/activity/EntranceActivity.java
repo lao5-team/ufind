@@ -57,6 +57,10 @@ public class EntranceActivity extends Activity{
 	private Plan mCurReadyPlan = null;
 	private Button mSimLocationButton = null;
 	private final int PLAN_STATE_CHANGED = 0;
+	
+	/**
+	 * 处理mCurReadyPlan的状态变更情况
+	 */
 	private Handler mHandler = new Handler()
 	{
 		@Override
@@ -95,6 +99,7 @@ public class EntranceActivity extends Activity{
         public void onServiceConnected(ComponentName className,IBinder localBinder) {  
         	Log.d(TAG, className.getClassName());
         	mService = ((FindUService.FindUBinder)localBinder).getService();  
+        	//连接服务时，获取正要进行的plan
         	mCurReadyPlan = mService.getOnTimePlan();
         	if(null != mCurReadyPlan)
         	{
@@ -124,6 +129,9 @@ public class EntranceActivity extends Activity{
     	
     };
     
+    /**
+     * 当收到有ready plan的广播时，UI上的处理
+     */
     private void onGetReadyPlan()
     {
     	Log.d(TAG, mCurReadyPlan.name);
