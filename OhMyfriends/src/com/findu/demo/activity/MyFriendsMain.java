@@ -101,16 +101,16 @@ public class MyFriendsMain extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(intent.getAction().equals(MapManager.ACTION_RECEIVE_LOCATION)&&(false == shortcutOpen))
-			{
-				Intent intentShortCut = new Intent();
-				intentShortCut.putExtra("lat", mShortcutDest.getLatitudeE6());
-				intentShortCut.putExtra("long", mShortcutDest.getLongitudeE6());
-				intentShortCut.putExtra("mode", mShortcutMode);
-				intentShortCut.setClass(MyFriendsMain.this, RouteActivity.class);
-				MyFriendsMain.this.startActivity(intentShortCut);
-				shortcutOpen = true;
-			}
+//			if(intent.getAction().equals(MapManager.ACTION_RECEIVE_LOCATION)&&(false == shortcutOpen))
+//			{
+//				Intent intentShortCut = new Intent();
+//				intentShortCut.putExtra("lat", mShortcutDest.getLatitudeE6());
+//				intentShortCut.putExtra("long", mShortcutDest.getLongitudeE6());
+//				intentShortCut.putExtra("mode", mShortcutMode);
+//				intentShortCut.setClass(MyFriendsMain.this, RouteActivity.class);
+//				MyFriendsMain.this.startActivity(intentShortCut);
+//				shortcutOpen = true;
+//			}
 			
 		}
 		

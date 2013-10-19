@@ -25,6 +25,7 @@ import com.baidu.mapapi.map.PopupClickListener;
 import com.baidu.mapapi.map.PopupOverlay;
 import com.baidu.mapapi.map.Symbol;
 import com.baidu.mapapi.map.Symbol.Color;
+import com.baidu.mapapi.map.TransitOverlay;
 import com.baidu.mapapi.search.MKAddrInfo;
 import com.baidu.mapapi.search.MKBusLineResult;
 import com.baidu.mapapi.search.MKDrivingRouteResult;
@@ -301,6 +302,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		mGraphicsOverlay.removeAllData();
 		mRouteOverlay.addBusRouteOverlay();
 		mMapView.refresh();
+		
 	}
 
 	@Override
@@ -654,22 +656,34 @@ ItemOverlayOnTapListener, RouteSearchListener{
 	public void setTransitRoute(MKTransitRoutePlan plan)
 	{
 		mDestPt = plan.getEnd();
-		GeoPoint[] points = getPointsfromTransitPlan(plan);
-		RouteGraphic routeGraphic = new RouteGraphic();
-		Graphic graphic = routeGraphic.setRoutePoints(points).
-		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
-
-		mGraphicsOverlay.removeAllData();
-		mGraphicsOverlay.setCustomGraphicData(graphic);
-		
-        OverlayItem itemBegin = new OverlayItem(points[0],"起点","");
-        /**
-         * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
-         */
-        itemBegin.setMarker(mActivity.getResources().getDrawable(R.drawable.begin_icon));
-		
-		mItemizedOverlay.addOverItem(itemBegin);
+//		GeoPoint[] points = getPointsfromTransitPlan(plan);
+//		RouteGraphic routeGraphic = new RouteGraphic();
+//		Graphic graphic = routeGraphic.setRoutePoints(points).
+//		setColor(0, 0, 255, 126).setWidth(10).getGraphic();
+//
+//		mGraphicsOverlay.removeAllData();
+//		mGraphicsOverlay.setCustomGraphicData(graphic);
+//		
+//        OverlayItem itemBegin = new OverlayItem(points[0],"起点","");
+//        /**
+//         * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
+//         */
+//        itemBegin.setMarker(mActivity.getResources().getDrawable(R.drawable.begin_icon));
+//		
+//		mItemizedOverlay.addOverItem(itemBegin);
 		//mGraphicsOverlay.setCustomGraphicData(graphic);
+		TransitOverlay  routeOverlay = new TransitOverlay (mActivity, mMapView);
+	    // 此处仅展示一个方案作为示例
+	    routeOverlay.setData(plan);
+	  //清除其他图层
+	    mMapView.getOverlays().clear();
+	  //添加路线图层
+	    mMapView.getOverlays().add(routeOverlay);
+	  //执行刷新使生效
+	    mMapView.refresh();
+	    // 使用zoomToSpan()绽放地图，使路线能完全显示在地图上
+	    mMapView.getController().zoomToSpan(routeOverlay.getLatSpanE6(), routeOverlay.getLonSpanE6());
+	  //移动地图到起点
 		mMapView.refresh();
 		mMode = ConstValue.TRANSIT;
 	}

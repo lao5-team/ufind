@@ -38,7 +38,6 @@ public class RouteActivity extends Activity {
 	EditText mBeginEdit;
 	EditText mEndEdit;
 	ListView mRoutesList;
-	MapManager mMapManager;
 	MKSearch mSearch;
 	RouteAdapter mRouteAdapter;
 	int mMode = ConstValue.WALK;
@@ -50,7 +49,7 @@ public class RouteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		initView();
 		initMapSearch();
-		handleShortCut();
+		//handleShortCut();
 	}
 	
 	public void searchRoute(MKPlanNode nodeBegin, MKPlanNode nodeEnd, int mode)
@@ -104,8 +103,10 @@ public class RouteActivity extends Activity {
 			@Override
 			public void onGetTransitRouteResult(MKTransitRouteResult arg0,
 					int arg1) {
-				mRouteAdapter.setTransitPlan(arg0);
-				mRouteAdapter.notifyDataSetChanged();
+				//mRouteAdapter.setTransitPlan(arg0);
+				//mRouteAdapter.notifyDataSetChanged();
+				FriendsApplication.getInstance().mMapManager.setTransitRoute(arg0.getPlan(0));
+				finish();
 			}
 
 			@Override
