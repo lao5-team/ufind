@@ -38,15 +38,34 @@
         <activity android:name=".activity.HistoryActivity"></activity>
         <activity android:name=".activity.EntranceActivity">
                         <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-<!--            		<action android:name="android.intent.action.CREATE_SHORTCUT"></action> -->
+<!--                 <action android:name="android.intent.action.MAIN" /> -->
+<!--                 <category android:name="android.intent.category.LAUNCHER" /> -->
                 </intent-filter>
         </activity>
          <service android:name="com.findu.demo.service.FindUService"
              /><activity android:name=".activity.PlanActivity"></activity>
-         
+             <activity android:name=".activity.SuTestActivity">
+
+             </activity>
+             <activity android:name=".activity.LoginActivity">
+                    <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+                	<category android:name="android.intent.category.LAUNCHER" />
+                	 </intent-filter>
+             </activity>
+                 <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent100579301" />
+            </intent-filter>
+        </activity>
     </application>
 
      <uses-permission android:name="android.permission.GET_ACCOUNTS" />
