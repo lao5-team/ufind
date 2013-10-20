@@ -63,7 +63,7 @@ public class LoginActivity extends Activity {
                 	try {
 						mQQOpenID = values.getString("openid");
 						Log.v("LoginActivity", values.toString());
-						getAppFriends();
+						//getAppFriends();
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
