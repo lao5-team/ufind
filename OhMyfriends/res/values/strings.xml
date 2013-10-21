@@ -35,4 +35,9 @@
 	<string name="ontheway">在去%1$s的路上</string>
 	<string name="update">更新</string>
 	<string name="create">新路线</string>
+	<string name="login">登录</string>
+	<string name="logout">注销</string>
+	<string name="register">注册</string>
+	<string name="username">用户名</string>
+	<string name="password">密码</string>	
 </resources>

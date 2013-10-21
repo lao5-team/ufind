@@ -8,8 +8,10 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.findu.demo.R;
 import com.tencent.open.HttpStatusException;
 import com.tencent.open.NetworkUnavailableException;
+import com.tencent.tauth.Constants;
 import com.tencent.tauth.IRequestListener;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -17,7 +19,14 @@ import com.tencent.tauth.UiError;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 /**
@@ -42,11 +51,39 @@ public class LoginActivity extends Activity {
     private Tencent mTencent;
     private final String APP_ID = "100579301";
     private String mQQOpenID = null;
+    private String mQQNickName = null;
+    private String mQQImgUrl = null;
+    private EditText mInputUserName;
+    private EditText mInputPassword;
+    private Button mLogin;
+    private Button mRegister;
+    private Button mLogout;
+    private ImageButton mLoginQQ;
+    private Handler mUIHandler;
+    private final int LOGIN_COMPLETE = 0;
+    private final int GET_USERINFO_COMPLETE = 1;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.login);
 		 mTencent = Tencent.createInstance(APP_ID, this.getApplicationContext());
-		loginInQQ();
+		 initUI();
+		 mUIHandler = new Handler()
+		 {
+			 @Override
+			 public void handleMessage(Message msg)
+			 {
+				 switch(msg.arg1)
+				 {
+				     case LOGIN_COMPLETE:
+				    	 getQQUserInfo();
+					 break;
+				     case GET_USERINFO_COMPLETE:
+				    	 setUserInfo();
+				     break;
+				 }
+			 }
+		 };
 		
 	}
 	
@@ -64,6 +101,12 @@ public class LoginActivity extends Activity {
 						mQQOpenID = values.getString("openid");
 						Log.v("LoginActivity", values.toString());
 						//getAppFriends();
+						Toast.makeText(LoginActivity.this, "QQ登录成功", Toast.LENGTH_SHORT).show();
+						Message msg = mUIHandler.obtainMessage();
+						msg.arg1 = LOGIN_COMPLETE;
+						mUIHandler.sendMessage(msg);
+						login(mQQOpenID, null, true);
+						//登录成功后跳转到其他Activity
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -72,10 +115,6 @@ public class LoginActivity extends Activity {
             };
             mTencent.login(this, "all", listener);
         }
-//        else {
-//            mTencent.logout(this);
-//            updateLoginButton();
-//        }
 	}
 	
 	/**
@@ -92,7 +131,7 @@ public class LoginActivity extends Activity {
 	 * 检查之前是否已经登录过
 	 * @return 
 	 */
-	private boolean isPrevLogined()
+	private boolean isPrevLogin()
 	{
 		return false;
 	}
@@ -109,6 +148,11 @@ public class LoginActivity extends Activity {
 		return false;
 	}
 	
+	private void setUserInfo()
+	{
+		
+	}
+	
 	/**
 	 * 保存用户登录信息
 	 * @param userID
@@ -122,6 +166,7 @@ public class LoginActivity extends Activity {
 	
 	private boolean logout()
 	{
+		mTencent.logout(getApplicationContext());
 		return false;
 	}
 	
@@ -154,6 +199,9 @@ public class LoginActivity extends Activity {
     	Log.v("LoginActivity", "base " + base + "msg " +msg);
     }
     
+    /**
+     * 获取安装应用的好友列表，现在缺乏权限，无法调用
+     */
     private void getAppFriends() {
         if (ready()) {
             mTencent.getAppFriends(new BaseApiListener("get_app_friends", false));
@@ -256,5 +304,44 @@ public class LoginActivity extends Activity {
         }
     }
 
+    private void initUI()
+    {
+    	mLoginQQ = (ImageButton)findViewById(R.id.login_qq);
+    	mLoginQQ.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				loginInQQ();
+			}
+		});
+    }
+    
+    private void getQQUserInfo()
+    {
+    	Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				 JSONObject json = mTencent.request(Constants.GRAPH_SIMPLE_USER_INFO, null,
+			                Constants.HTTP_GET);
+			    	 Log.v("LoginActivity", json.toString());
+			    	 try {
+						mQQNickName = json.getString("nickname");
+						mQQImgUrl = json.getString("figureurl_qq_2");
+						mQQImgUrl.replace("\\/", "\\");
+						Message msg = mUIHandler.obtainMessage();
+						msg.arg1 = GET_USERINFO_COMPLETE;
+						mUIHandler.sendMessage(msg);
+						Log.v("LoginActivity", mQQImgUrl);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+			}
+		});
+    	t.start();
+    }
 	
 }
