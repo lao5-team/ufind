@@ -6,14 +6,14 @@
 
 
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="30dp"
-        android:text="@string/email" />
+        android:text="@string/username" />
     
         <EditText
         android:id="@+id/inputEmail"
