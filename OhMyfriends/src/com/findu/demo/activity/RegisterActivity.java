@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 
 public class RegisterActivity extends Activity {
-	private TextView mEmail;
+	private TextView mUserName;
 	private TextView mNickName;
 	private TextView mPassword;
 	private Button mCommit;
@@ -24,7 +24,7 @@ public class RegisterActivity extends Activity {
 	
 	private void initUI()
 	{
-		mEmail = (TextView)this.findViewById(R.id.email);
+		mUserName = (TextView)this.findViewById(R.id.username);
 		mNickName = (TextView)this.findViewById(R.id.nickname);
 		mPassword = (TextView)this.findViewById(R.id.password);
 		mCommit = (Button)this.findViewById(R.id.commit);
@@ -33,7 +33,7 @@ public class RegisterActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				String emailStr = mEmail.getEditableText().toString();
+				String emailStr = mUserName.getEditableText().toString();
 				String nickNameStr = mNickName.getEditableText().toString();
 				String passwordStr = mPassword.getEditableText().toString();
 				register(emailStr, nickNameStr, passwordStr);
