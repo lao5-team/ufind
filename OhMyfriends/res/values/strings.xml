@@ -40,4 +40,7 @@
 	<string name="register">注册</string>
 	<string name="username">用户名</string>
 	<string name="password">密码</string>	
+	<string name="email">电子邮箱</string>	
+	<string name="nickname">昵称</string>	
+	<string name="commit">提交</string>	
 </resources>

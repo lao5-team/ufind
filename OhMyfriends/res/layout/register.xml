@@ -2,6 +2,80 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+
+
+
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/email" />
     
+        <EditText
+        android:id="@+id/inputEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/email"
+        android:layout_toRightOf="@+id/email"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
+
+        <TextView
+        android:id="@+id/nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/email"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="15dp"
+        android:text="@string/nickname" />    
+        
+    <EditText
+        android:id="@+id/inputNickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/nickname"
+        android:layout_toRightOf="@+id/nickname"
+        android:layout_alignLeft="@+id/inputEmail"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+
+
+    <TextView
+        android:id="@+id/password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nickname"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="15dp"
+        android:text="@string/password" />
+
+    <EditText
+        android:id="@+id/inputPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignBaseline="@+id/password"
+        android:layout_toRightOf="@+id/password"
+        android:layout_alignLeft="@+id/inputEmail"
+        android:ems="10"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/commit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:layout_centerHorizontal="true"
+         android:layout_below="@+id/password"
+        android:text="@string/commit" />
 
 </RelativeLayout>

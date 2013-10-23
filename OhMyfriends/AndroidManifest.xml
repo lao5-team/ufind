@@ -66,6 +66,7 @@
                 <data android:scheme="tencent100579301" />
             </intent-filter>
         </activity>
+                 <activity android:name=".activity.RegisterActivity"></activity>
     </application>
 
      <uses-permission android:name="android.permission.GET_ACCOUNTS" />
