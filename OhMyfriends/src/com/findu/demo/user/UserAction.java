@@ -9,6 +9,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.util.Log;
+
 public class UserAction {
 
 	private Socket mSocket;
@@ -19,7 +21,7 @@ public class UserAction {
 	private boolean initSocket(){
 		
 		try {
-			mSocket = new Socket("192.168.0.102", 8080);
+			mSocket = new Socket("192.168.200.2", 8080);
 			mSocket.setSoTimeout(3000);
 			mBw = new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream(),
 					"UTF8"));
@@ -88,12 +90,12 @@ public class UserAction {
 			String line;
 			
 			while ((line = rd.readLine()) != null) {
-				System.out.println(line);
+				Log.v("UserAction", line);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return true;
 		}
 		return true;
 	}

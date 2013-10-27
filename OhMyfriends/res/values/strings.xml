@@ -42,4 +42,7 @@
 	<string name="password">密码</string>	
 	<string name="nickname">昵称</string>	
 	<string name="commit">提交</string>	
+	<string name="contacts">联系人</string>	
+	<string name="map">地图</string>	
+	<string name="setting">设置</string>
 </resources>

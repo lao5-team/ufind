@@ -33,10 +33,10 @@ public class RegisterActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				String emailStr = mUserName.getEditableText().toString();
+				String userName = mUserName.getEditableText().toString();
 				String nickNameStr = mNickName.getEditableText().toString();
 				String passwordStr = mPassword.getEditableText().toString();
-				register(emailStr, nickNameStr, passwordStr);
+				register(userName, nickNameStr, passwordStr);
 			}
 		});
 	}

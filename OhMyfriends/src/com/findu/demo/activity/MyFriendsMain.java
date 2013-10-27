@@ -56,6 +56,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -350,5 +351,18 @@ class MyLocationMapView extends MapView {
 				pop.hidePop();
 		}
 		return true;
+	}
+	
+	@Override 
+	public boolean onKeyDown(int keyCode,KeyEvent event) {  
+	   // 是否触发按键为back键  
+	   Log.v("MyFriendsMain", keyCode + "");
+	   if (keyCode == KeyEvent.KEYCODE_BACK) {  
+	       // 弹出退出确认框  
+	        //finish(); 
+	        System.exit(0);
+	        return true;  
+	    }
+	   return false;
 	}
 }

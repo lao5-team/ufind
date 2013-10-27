@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.findu.demo.R;
+import com.findu.demo.user.UserAction;
 import com.tencent.open.HttpStatusException;
 import com.tencent.open.NetworkUnavailableException;
 import com.tencent.tauth.Constants;
@@ -18,7 +19,10 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -51,9 +55,12 @@ import android.widget.Toast;
 public class LoginActivity extends Activity {
     private Tencent mTencent;
     private final String APP_ID = "100579301";
+    private boolean mIsQQLogin;
     private String mQQOpenID = null;
     private String mQQNickName = null;
     private String mQQImgUrl = null;
+    private String mUsername = null;
+    private String mPassword = null;
     private EditText mInputUserName;
     private EditText mInputPassword;
     private Button mLogin;
@@ -61,14 +68,26 @@ public class LoginActivity extends Activity {
     private Button mLogout;
     private ImageButton mLoginQQ;
     private Handler mUIHandler;
-    private final int LOGIN_COMPLETE = 0;
+    private final int LOGIN_QQ_COMPLETE = 0;
     private final int GET_USERINFO_COMPLETE = 1;
+    private final int LOGIN_COMPLETE = 2;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login);
+		 setContentView(R.layout.splash_layout);
 		 mTencent = Tencent.createInstance(APP_ID, this.getApplicationContext());
-		 initUI();
+		
+		 if(!isNeedLogin())
+		 {
+			 autoLogin();
+		 }
+		 else
+		 {
+			 setContentView(R.layout.login);
+			
+			initUI();
+		 }
+		 
 		 mUIHandler = new Handler()
 		 {
 			 @Override
@@ -76,12 +95,18 @@ public class LoginActivity extends Activity {
 			 {
 				 switch(msg.arg1)
 				 {
-				     case LOGIN_COMPLETE:
+				     case LOGIN_QQ_COMPLETE:
 				    	 getQQUserInfo();
-					 break;
+				    	 login(mQQOpenID, null, true, false);
+				    	 break;
 				     case GET_USERINFO_COMPLETE:
 				    	 setUserInfo();
-				     break;
+				    	 break;
+				     case LOGIN_COMPLETE:
+						 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+						 startActivity(intent);
+						 break;
+				     
 				 }
 			 }
 		 };
@@ -104,10 +129,9 @@ public class LoginActivity extends Activity {
 						//getAppFriends();
 						Toast.makeText(LoginActivity.this, "QQ登录成功", Toast.LENGTH_SHORT).show();
 						Message msg = mUIHandler.obtainMessage();
-						msg.arg1 = LOGIN_COMPLETE;
+						msg.arg1 = LOGIN_QQ_COMPLETE;
 						mUIHandler.sendMessage(msg);
-						login(mQQOpenID, null, true);
-						//登录成功后跳转到其他Activity
+						
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -128,14 +152,6 @@ public class LoginActivity extends Activity {
 		return false;
 	}
 	
-	/**
-	 * 检查之前是否已经登录过
-	 * @return 
-	 */
-	private boolean isPrevLogin()
-	{
-		return false;
-	}
 	
 	/**
 	 * 登录到服务器
@@ -144,14 +160,31 @@ public class LoginActivity extends Activity {
 	 * @param isQQ 是否是QQ登录
 	 * @return
 	 */
-	private boolean login(String userID, String password, boolean isQQ)
+	private boolean login(String userID, String password, boolean isQQ, final boolean isAutoLogin)
 	{
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				UserAction ua = new UserAction();
+		        if(ua.sendUserLoginRequest(0, mQQOpenID, mQQNickName, ""))
+		        {
+		        	//写入登录信息
+		        	if(!isAutoLogin)
+		        	{
+		        		saveLoginInfo(mQQOpenID, "", true);
+		        	}
+		        	//拉起HomeActivity
+		        	Message msg = mUIHandler.obtainMessage();
+		        	msg.arg1 = LOGIN_COMPLETE;
+		        	mUIHandler.sendMessage(msg);
+		        			
+		        }
+			}
+		});
+		t.start();
+
 		return false;
-	}
-	
-	private void setUserInfo()
-	{
-		
 	}
 	
 	/**
@@ -162,7 +195,20 @@ public class LoginActivity extends Activity {
 	 */
 	private void saveLoginInfo(String userID, String password, boolean isQQ)
 	{
-		
+		Log.v("LoginActivity", "saveLoginInfo " + userID + " " + password);
+		SharedPreferences preference = getSharedPreferences("Userinfo",Context.MODE_PRIVATE);
+        Editor edit = preference.edit();
+        edit.putBoolean("isLoginQQ", isQQ);
+        if(isQQ)
+        {
+            edit.putString("openID",userID);
+        }
+        else
+        {
+        	edit.putString("username", userID);
+        	edit.putString("password",password);
+        }
+        edit.commit();
 	}
 	
 	private boolean logout()
@@ -246,13 +292,6 @@ public class LoginActivity extends Activity {
                         LoginActivity.this.runOnUiThread(r);
                     }
                 }
-                // azrael 2/1注释掉了, 这里为何要在api返回的时候设置token呢,
-                // 如果cgi返回的值没有token, 则会清空原来的token
-                // String token = response.getString("access_token");
-                // String expire = response.getString("expires_in");
-                // String openid = response.getString("openid");
-                // mTencent.setAccessToken(token, expire);
-                // mTencent.setOpenId(openid);
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.e("toddtest", response.toString());
@@ -354,6 +393,59 @@ public class LoginActivity extends Activity {
 			}
 		});
     	t.start();
+    }
+    
+    private boolean isNeedLogin()
+    {
+    	SharedPreferences preferences = getSharedPreferences("Userinfo",Context.MODE_PRIVATE);
+    	boolean isLoginQQ = preferences.getBoolean("isLoginQQ", false);
+    	if(isLoginQQ)
+    	{
+    		String openID = preferences.getString("openID", "");
+    		if(openID == null)
+    		{
+    			return true;
+    		}
+    		else
+    		{
+    			mQQOpenID = openID;
+    			
+    		}
+    	}
+    	else
+    	{
+    		String username = preferences.getString("username", "");
+    		String password = preferences.getString("password", "");
+    		if(username == null || password == null)
+    		{
+    			return false;
+    		}
+    		else
+    		{
+    			mUsername = username;
+    			mPassword = password;
+    		}
+    	}
+    	return false;
+    }
+    
+    private void autoLogin()
+    {
+    	if(mIsQQLogin)
+    	{
+    		login(mQQOpenID, null, true, true);
+    	}
+    	else
+    	{
+    		login(mUsername, mPassword, false, true);
+    	}
+    	
+    }
+    
+    //向服务器写入用户信息
+    private void setUserInfo()
+    {
+    	
     }
 	
 }
