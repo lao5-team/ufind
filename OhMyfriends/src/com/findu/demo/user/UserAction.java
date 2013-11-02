@@ -54,7 +54,7 @@ public class UserAction {
 	 * 
 	 * @param picture 头像链接， 数据库长度为512
 	 */
-	public boolean sendUserLoginRequest(int logintype, String qqid,
+	public boolean sendUserLoginRequest(int logintype, String qqid,String pwd, 
 			String nickname, String picture) {
 		if (!initSocket()) {
 			for (int i = 0; i < 3; i++) {
@@ -68,7 +68,7 @@ public class UserAction {
 		}
 
 		String msg = "login\r\n" + "#logintype#=" + logintype + "\r\n"
-				+ "#qqid#=" + qqid + "\r\n" + "#nickname#=" + nickname + "\r\n"
+				+ "#qqid#=" + qqid + "\r\n" + "#userpwd#=" + pwd + "\r\n" + "#nickname#=" + nickname + "\r\n"
 				+ "#picture#=" + picture;
 
 		StringBuffer sb = makeUserProtocolString("login", msg);
