@@ -152,14 +152,13 @@ public class UserAction {
 		return true;
 	}
 
-	/*
+	/**
 	 * @param logintype 0 为QQ用户登录， 1为注册用户登录
-	 * 
 	 * @param id 为QQ的id串或者用户名id(根据logintype决定)，数据库长度为30
-	 * 
+	 * @param pwd
 	 * @param nickname 用户昵称，没有时传""，数据库长度为30
-	 * 
 	 * @param picture 头像链接， 数据库长度为512
+	 * @return
 	 */
 	public boolean sendUserAddRequest(int logintype, String id, String pwd,
 			String nickname, String picture) {

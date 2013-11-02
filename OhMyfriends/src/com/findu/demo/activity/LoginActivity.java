@@ -71,6 +71,7 @@ public class LoginActivity extends Activity {
     private final int LOGIN_QQ_COMPLETE = 0;
     private final int GET_USERINFO_COMPLETE = 1;
     private final int LOGIN_COMPLETE = 2;
+    private final int LOGIN_FAILED = 3;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -106,7 +107,9 @@ public class LoginActivity extends Activity {
 						 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
 						 startActivity(intent);
 						 break;
-				     
+				     case LOGIN_FAILED:
+				    	 Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+						 break;
 				 }
 			 }
 		 };
@@ -149,6 +152,7 @@ public class LoginActivity extends Activity {
 	 */
 	private boolean registerByQQ(String qqOpenID)
 	{
+		
 		return false;
 	}
 	
@@ -160,26 +164,58 @@ public class LoginActivity extends Activity {
 	 * @param isQQ 是否是QQ登录
 	 * @return
 	 */
-	private boolean login(String userID, String password, boolean isQQ, final boolean isAutoLogin)
+	private boolean login(final String userID, final String password, final boolean isQQ, final boolean isAutoLogin)
 	{
 		Thread t = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				UserAction ua = new UserAction();
-		        if(ua.sendUserLoginRequest(0, mQQOpenID, mQQNickName, ""))
-		        {
-		        	//写入登录信息
-		        	if(!isAutoLogin)
-		        	{
-		        		saveLoginInfo(mQQOpenID, "", true);
-		        	}
-		        	//拉起HomeActivity
-		        	Message msg = mUIHandler.obtainMessage();
-		        	msg.arg1 = LOGIN_COMPLETE;
-		        	mUIHandler.sendMessage(msg);
-		        			
-		        }
+				if(isQQ)
+				{
+			        if(ua.sendUserLoginRequest(0, mQQOpenID, mQQNickName, ""))
+			        {
+			        	//写入登录信息
+			        	if(!isAutoLogin)
+			        	{
+			        		saveLoginInfo(mQQOpenID, "", true);
+			        	}
+			        	//拉起HomeActivity
+			        	Message msg = mUIHandler.obtainMessage();
+			        	msg.arg1 = LOGIN_COMPLETE;
+			        	mUIHandler.sendMessage(msg);
+			        			
+			        }
+			        else
+			        {
+			        	Message msg = mUIHandler.obtainMessage();
+			        	msg.arg1 = LOGIN_FAILED;
+			        	mUIHandler.sendMessage(msg);
+			        }
+				}
+				else
+				{
+					if(ua.sendUserLoginRequest(1, userID, password, ""))
+			        {
+			        	//写入登录信息
+			        	if(!isAutoLogin)
+			        	{
+			        		saveLoginInfo(userID, password, false);
+			        	}
+			        	//拉起HomeActivity
+			        	Message msg = mUIHandler.obtainMessage();
+			        	msg.arg1 = LOGIN_COMPLETE;
+			        	mUIHandler.sendMessage(msg);
+			        			
+			        }
+			        else
+			        {
+			        	Message msg = mUIHandler.obtainMessage();
+			        	msg.arg1 = LOGIN_FAILED;
+			        	mUIHandler.sendMessage(msg);
+			        }
+				}
+
 			}
 		});
 		t.start();
@@ -189,9 +225,9 @@ public class LoginActivity extends Activity {
 	
 	/**
 	 * 保存用户登录信息
-	 * @param userID
-	 * @param password
-	 * @param isQQ
+	 * @param userID  用户名
+	 * @param password  密码
+	 * @param isQQ  是否为QQ登录
 	 */
 	private void saveLoginInfo(String userID, String password, boolean isQQ)
 	{
@@ -346,6 +382,8 @@ public class LoginActivity extends Activity {
 
     private void initUI()
     {
+    	mInputUserName = (EditText)findViewById(R.id.inputUserName);
+    	mInputPassword = (EditText)findViewById(R.id.inputPassword);
     	mLoginQQ = (ImageButton)findViewById(R.id.login_qq);
     	mLoginQQ.setOnClickListener(new OnClickListener() {
 			
@@ -364,6 +402,16 @@ public class LoginActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
 				startActivity(intent);
+			}
+		});
+    	
+    	mLogin = (Button)findViewById(R.id.login);
+    	mLogin.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				login(mInputUserName.getText().toString(), mInputUserName.getText().toString(), false, false);
 			}
 		});
     }
@@ -401,7 +449,7 @@ public class LoginActivity extends Activity {
     	boolean isLoginQQ = preferences.getBoolean("isLoginQQ", false);
     	if(isLoginQQ)
     	{
-    		String openID = preferences.getString("openID", "");
+    		String openID = preferences.getString("openID", null);
     		if(openID == null)
     		{
     			return true;
@@ -414,11 +462,11 @@ public class LoginActivity extends Activity {
     	}
     	else
     	{
-    		String username = preferences.getString("username", "");
-    		String password = preferences.getString("password", "");
+    		String username = preferences.getString("username", null);
+    		String password = preferences.getString("password", null);
     		if(username == null || password == null)
     		{
-    			return false;
+    			return true;
     		}
     		else
     		{

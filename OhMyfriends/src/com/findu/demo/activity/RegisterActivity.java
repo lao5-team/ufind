@@ -1,18 +1,21 @@
 package com.findu.demo.activity;
 import com.findu.demo.R;
+import com.findu.demo.user.UserAction;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class RegisterActivity extends Activity {
-	private TextView mUserName;
-	private TextView mNickName;
-	private TextView mPassword;
+	private EditText mUserName;
+	private EditText mNickName;
+	private EditText mPassword;
 	private Button mCommit;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -24,9 +27,9 @@ public class RegisterActivity extends Activity {
 	
 	private void initUI()
 	{
-		mUserName = (TextView)this.findViewById(R.id.username);
-		mNickName = (TextView)this.findViewById(R.id.nickname);
-		mPassword = (TextView)this.findViewById(R.id.password);
+		mUserName = (EditText)this.findViewById(R.id.inputUserName);
+		mNickName = (EditText)this.findViewById(R.id.inputNickname);
+		mPassword = (EditText)this.findViewById(R.id.inputPassword);
 		mCommit = (Button)this.findViewById(R.id.commit);
 		mCommit.setOnClickListener(new OnClickListener() {
 			
@@ -41,8 +44,25 @@ public class RegisterActivity extends Activity {
 		});
 	}
 	
-	private void register(String email, String nickName, String password)
+	private void register(final String username, final String nickName, final String password)
 	{
-		
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+
+				UserAction ua = new UserAction();
+		        if(ua.sendUserAddRequest(1, username, password, nickName, null))
+		        {
+		        	Toast.makeText(RegisterActivity.this, "×¢²á³É¹¦", Toast.LENGTH_SHORT).show();
+		        }
+			}
+		})
+		{
+			
+		};
+		t.start();
+
 	}
 }
