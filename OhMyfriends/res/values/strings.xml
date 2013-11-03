@@ -46,5 +46,5 @@
 	<string name="map">地图</string>	
 	<string name="setting">设置</string>
 	<string name="addFriend">添加好友</string>
-	<string name="startFriend">添加好友</string>
+	<string name="startMeeting">发起聚会</string>
 </resources>

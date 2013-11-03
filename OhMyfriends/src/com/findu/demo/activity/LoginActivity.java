@@ -9,7 +9,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.findu.demo.R;
+import com.findu.demo.user.User;
 import com.findu.demo.user.UserAction;
+import com.findu.demo.user.UserManager;
 import com.tencent.open.HttpStatusException;
 import com.tencent.open.NetworkUnavailableException;
 import com.tencent.tauth.Constants;
@@ -170,10 +172,11 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void run() {
+				User user = new User();
 				UserAction ua = new UserAction();
 				if(isQQ)
 				{
-			        if(ua.sendUserLoginRequest(0, mQQOpenID, mQQNickName, ""))
+			        if(ua.sendUserLoginRequest(0, mQQOpenID, "", mQQNickName, "" ,user))
 			        {
 			        	//写入登录信息
 			        	if(!isAutoLogin)
@@ -195,7 +198,7 @@ public class LoginActivity extends Activity {
 				}
 				else
 				{
-					if(ua.sendUserLoginRequest(1, userID, password, ""))
+					if(ua.sendUserLoginRequest(1, userID, password, "", "" ,user))
 			        {
 			        	//写入登录信息
 			        	if(!isAutoLogin)
@@ -215,6 +218,7 @@ public class LoginActivity extends Activity {
 			        	mUIHandler.sendMessage(msg);
 			        }
 				}
+				UserManager.getInstance().setCurrentUser(user);
 
 			}
 		});

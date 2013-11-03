@@ -9,6 +9,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.util.Log;
+
 public class UserAction {
 
 	private Socket mSocket;
@@ -27,7 +29,7 @@ public class UserAction {
 //			mSocket = new Socket("192.168.0.102", 8080);
 			mSocket = new Socket("192.168.0.102", 8080);
 			System.out.println("456");
-			mSocket.setSoTimeout(300);
+			mSocket.setSoTimeout(500);
 			mBw = new BufferedWriter(new OutputStreamWriter(
 					mSocket.getOutputStream(), "UTF8"));
 			mIns = mSocket.getInputStream();
@@ -54,8 +56,16 @@ public class UserAction {
 	 * 
 	 * @param picture 头像链接， 数据库长度为512
 	 */
+	/**
+	 * @param logintype 0 为QQ用户登录， 1为注册用户登录
+	 * @param qqid 为QQ的id串，数据库长度为30
+	 * @param pwd  密码
+	 * @param nickname  用户昵称，没有时传""，数据库长度为30
+	 * @param picture  头像链接， 数据库长度为512，没有时传""
+	 * @return
+	 */
 	public boolean sendUserLoginRequest(int logintype, String qqid,String pwd, 
-			String nickname, String picture) {
+			String nickname, String picture, User user) {
 		if (!initSocket()) {
 			for (int i = 0; i < 3; i++) {
 				if (initSocket()) {
@@ -67,10 +77,21 @@ public class UserAction {
 			return false;
 		}
 
-		String msg = "login\r\n" + "#logintype#=" + logintype + "\r\n"
-				+ "#qqid#=" + qqid + "\r\n" + "#userpwd#=" + pwd + "\r\n" + "#nickname#=" + nickname + "\r\n"
-				+ "#picture#=" + picture;
+		String msg;
+		if( 0 == logintype)
+		{
+			msg = "login\r\n" + "#logintype#=" + logintype + "\r\n"
+					+ "#qqid#=" + qqid + "\r\n" + "#userpwd#=" + pwd + "\r\n" + "#nickname#=" + nickname + "\r\n"
+					+ "#picture#=" + picture;
 
+		}
+		else
+		{
+			msg = "login\r\n" + "#logintype#=" + logintype + "\r\n"
+					+ "#userid#=" + qqid + "\r\n" + "#userpwd#=" + pwd + "\r\n" + "#nickname#=" + nickname + "\r\n"
+					+ "#picture#=" + picture;			
+		}
+		
 		StringBuffer sb = makeUserProtocolString("login", msg);
 		try {
 			mBw.write(sb.toString());
@@ -80,6 +101,15 @@ public class UserAction {
 
 			while ((line = rd.readLine()) != null) {
 				System.out.println(line);
+				if(line.contains("login:ok"))
+				{
+					line = rd.readLine();
+					int index1 = line.indexOf(':');
+					int index2 = line.indexOf('<');
+					user.mFindUID = line.substring(index1+1, index2);
+					Log.v("LoginActivity", "FindUID " + user.mFindUID);
+					return true;
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -194,6 +224,7 @@ public class UserAction {
 
 			while ((line = rd.readLine()) != null) {
 				System.out.println(line);
+
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
