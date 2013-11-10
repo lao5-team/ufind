@@ -2,33 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
-    <Button
-        android:id="@+id/button_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:text="@string/edit" />
     
      <TextView
-        android:id="@+id/plan_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:layout_marginTop="10dip"
-        android:text="@string/name" />
-    
-        <Button
-        android:id="@+id/button_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="16dp"
-        android:text="@string/delete" />
-
+         android:id="@+id/plan_name"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="10dip"
+         android:text="@string/name" />
 
     <EditText
         android:id="@+id/input_plan_name"
@@ -37,22 +18,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/plan_name"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dip"
         android:layout_marginRight="16dip"
+        android:layout_marginTop="16dp"
         android:ems="10" >
 
         <requestFocus />
     </EditText>
-
-    <Button
-        android:id="@+id/set_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/input_plan_name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dip"
-        android:text="@string/set_location" />
 
         <TextView
         android:id="@+id/textView_start_time"
@@ -83,43 +55,57 @@
         android:layout_marginRight="16dip"
         android:text="@string/dayly_remind" />
 
+    <TextView
+        android:id="@+id/posName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/set_location"
+        android:layout_alignBottom="@+id/set_location"
+        android:layout_alignLeft="@+id/textView_start_time"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/set_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/input_plan_name"
+        android:layout_below="@+id/input_plan_name"
+        android:layout_marginTop="16dp"
+        android:text="@string/set_location" />
+
     <Button
         android:id="@+id/call_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/checkBox_dayly_remind"
         android:layout_below="@+id/editText_time"
-        android:layout_marginTop="28dp"
-        android:layout_centerHorizontal="true"
+        android:layout_marginTop="51dp"
         android:text="@string/call_friends" />
 
-
-    <Button
-        android:id="@+id/button_finish"
+    <TextView
+        android:id="@+id/friendsName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/create" />
+        android:layout_alignBaseline="@+id/call_friends"
+        android:layout_alignBottom="@+id/call_friends"
+        android:layout_alignLeft="@+id/editText_time"
+        android:text="TextView" />
 
     <Button
-        android:id="@+id/button_cancel"
+        android:id="@+id/finish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/friendsName"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="14dp"
+        android:text="@string/finish" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/finish"
+        android:layout_alignRight="@+id/call_friends"
         android:text="@string/cancel" />
-
-    <Button
-        android:id="@+id/button_update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button_finish"
-        android:layout_alignBottom="@+id/button_finish"
-        android:layout_centerHorizontal="true"
-        android:text="@string/update" />
 
 </RelativeLayout>

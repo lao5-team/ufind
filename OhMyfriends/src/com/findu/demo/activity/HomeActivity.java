@@ -16,6 +16,10 @@ public class HomeActivity extends TabActivity {
         super.onCreate(savedInstanceState);
 
         final TabHost tabHost = getTabHost();
+        
+        tabHost.addTab(tabHost.newTabSpec("tab0")
+                .setIndicator(this.getString(R.string.meet))
+                .setContent(new Intent(this, MeetListActivity.class)));
 
         tabHost.addTab(tabHost.newTabSpec("tab1")
                 .setIndicator(this.getString(R.string.contacts))

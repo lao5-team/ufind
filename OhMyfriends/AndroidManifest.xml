@@ -73,6 +73,7 @@
                  <activity android:name=".activity.ContactsActivity"></activity>
                  <activity android:name=".activity.SettingActivity"></activity>
                  <activity android:name=".activity.HomeActivity"></activity>
+                 <activity android:name=".activity.MeetListActivity"></activity>
     </application>
 
      <uses-permission android:name="android.permission.GET_ACCOUNTS" />

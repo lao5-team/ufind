@@ -23,7 +23,7 @@
         android:text="TextView" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/friendsName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/avatar"
@@ -35,9 +35,9 @@
         android:id="@+id/uFind_ID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignBottom="@+id/friendsName"
         android:layout_marginLeft="26dp"
-        android:layout_toRightOf="@+id/textView2"
+        android:layout_toRightOf="@+id/friendsName"
         android:text="TextView" />
 
 </RelativeLayout>

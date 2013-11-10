@@ -22,6 +22,7 @@ import com.findu.demo.db.Plan;
 import com.findu.demo.db.XMLPlanManager;
 import com.findu.demo.manager.MapManager;
 import com.findu.demo.service.FindUService;
+import com.findu.demo.user.User;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -45,12 +46,17 @@ public class PlanActivity extends Activity {
 	private Plan mCurPlan = null;
 	private EditText mEditName = null;
 	private Button mButtonLocation = null;
+	private Button mButtonFriends = null;
 	private EditText mEditTime = null;
 	private CheckBox mCheckDayly = null;
-	private Button mButtonCreate = null;
+	private Button mButtonFinish = null;
 	private Button mButtonCancel = null;
 	private Button mButtonUpdate = null;
 	private FindUService mService = null;
+	private final int REQ_SET_LOCATION = 0;
+	private final int REQ_SET_FRIENDS = 1;
+	private final int RESULT_OK = 0;
+	private final int RESULT_FAIL = 1;
 	private ServiceConnection mConnection = new ServiceConnection() {  
         public void onServiceConnected(ComponentName className,IBinder localBinder) {  
         	Log.d(TAG, className.getClassName());
@@ -66,33 +72,7 @@ public class PlanActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.plan_layout);
-		initView();
-		Intent intent = getIntent();
-		String type = intent.getStringExtra("type");
-		if(type.equals("Create"))
-		{
-			mCurPlan = new Plan();
-		}
-		else if(type.equals("Load"))
-		{
-			int id = intent.getIntExtra("id", -1);
-			if(-1 != id)
-			{
-				ArrayList<Plan> plans = XMLPlanManager.getInstance().getPlans();
-				for(Plan p:plans)
-				{
-					if(p.id == id)
-					{
-						mCurPlan = (Plan)p.clone();
-						break;
-					}
-				}
-			}
-			upateView();
-		}
-
-		bindService(new Intent(PlanActivity.this, 
-	            FindUService.class), mConnection, Context.BIND_AUTO_CREATE);
+		initUI();
 
 	}
 	
@@ -103,41 +83,44 @@ public class PlanActivity extends Activity {
 		unbindService(mConnection);
 	}
 	
-	private void initView()
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		mEditName = (EditText)findViewById(R.id.editText_name);
-		mButtonLocation = (Button)findViewById(R.id.button_set_location);
+		if(requestCode == REQ_SET_LOCATION && resultCode == RESULT_OK)
+		{
+			mCurPlan.destLatitude = data.getIntExtra("latitude", 0);
+			mCurPlan.destLongitude = data.getIntExtra("longtitude", 0);
+		}
+		else if(requestCode == REQ_SET_FRIENDS && resultCode == RESULT_OK)
+		{
+			mCurPlan.friends = (ArrayList<User>) data.getSerializableExtra("friends");
+		}
+	}
+	
+	
+	private void initUI()
+	{
+		mEditName = (EditText)findViewById(R.id.plan_name);
+		mButtonLocation = (Button)findViewById(R.id.set_location);
 		mButtonLocation.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				// 这里的逻辑要处理一下
 				Intent intent = new Intent(PlanActivity.this, MyFriendsMain.class);
-				startActivity(intent);
+				startActivityForResult(intent, REQ_SET_LOCATION);
 			}
 		});
 		mEditTime = (EditText)findViewById(R.id.editText_time);
-		mCheckDayly = (CheckBox)findViewById(R.id.checkBox_dayly_remind);
-		mButtonCreate = (Button)findViewById(R.id.button_finish);
-		mButtonCreate.setOnClickListener(new OnClickListener() {
+		mButtonFinish = (Button)findViewById(R.id.button_finish);
+		mButtonFinish.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				updateData();
-				mService.addPlanToDo(mCurPlan);
+				//updateData();
+				//mService.addPlanToDo(mCurPlan);
 				XMLPlanManager.getInstance().addPlan(mCurPlan);
-				finish();
-			}
-		});
-		
-		mButtonUpdate = (Button)findViewById(R.id.button_update);
-		mButtonUpdate.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				updateData();
-				mService.addPlanToDo(mCurPlan);
-				XMLPlanManager.getInstance().update(mCurPlan);
+				sendPlanRequest(mCurPlan);
 				finish();
 			}
 		});
@@ -148,6 +131,15 @@ public class PlanActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				finish();
+			}
+		});
+		
+		mButtonFriends = (Button)findViewById(R.id.call_friends);
+		mButtonFriends.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(PlanActivity.this, ContactsActivity.class);
+				startActivityForResult(intent, REQ_SET_FRIENDS);
 			}
 		});
 	}
@@ -176,6 +168,14 @@ public class PlanActivity extends Activity {
 		mCurPlan.destLatitude = 39914935;
 		mCurPlan.destLongitude = 116403694;
 		mCurPlan.isDaylyRemind = mCheckDayly.isChecked();
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void sendPlanRequest(Plan plan)
+	{
 		
 	}
 	

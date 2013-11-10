@@ -1,7 +1,7 @@
 package com.findu.demo.activity;
 
 import com.findu.demo.R;
-import com.findu.demo.user.UserManager;
+import com.findu.demo.manager.UserManager;
 
 import android.app.Activity;
 import android.os.Bundle;
