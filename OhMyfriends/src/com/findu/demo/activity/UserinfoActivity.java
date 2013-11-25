@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.TextView;
 
-public class SettingActivity extends Activity {
+public class UserinfoActivity extends Activity {
 
 	//nickName
 	//uFind_ID

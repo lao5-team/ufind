@@ -48,4 +48,7 @@
 	<string name="setting">设置</string>
 	<string name="addFriend">添加好友</string>
 	<string name="startMeeting">发起聚会</string>
+	<string name="searchFriend">查找好友</string>
+	<string name="typeFriendID">请输入好友ID</string>
+	<string name="confirmAddFriend">将其加为好友</string>
 </resources>

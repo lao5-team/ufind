@@ -85,7 +85,15 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		 setContentView(R.layout.splash_layout);
 		 mTencent = Tencent.createInstance(APP_ID, this.getApplicationContext());
-		
+//		 Thread t = new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				loginInQQ();
+//			}
+//		});
+//		 t.start();
 		 if(!isNeedManualLogin())
 		 {
 			 autoLogin();
@@ -260,8 +268,6 @@ public class LoginActivity extends Activity {
 
         @Override
         public void onComplete(JSONObject response) {
-//            mBaseMessageText.setText("onComplete:");
-//            mMessageText.setText(response.toString());
             doComplete(response);
         }
 
@@ -514,5 +520,10 @@ public class LoginActivity extends Activity {
     {
     	
     }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mTencent.onActivityResult(requestCode, resultCode, data) ;
+}
 	
 }

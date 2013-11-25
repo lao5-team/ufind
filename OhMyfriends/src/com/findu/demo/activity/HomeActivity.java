@@ -33,7 +33,7 @@ public class HomeActivity extends TabActivity {
         // the tab is clicked.
         tabHost.addTab(tabHost.newTabSpec("tab3")
                 .setIndicator(this.getString(R.string.setting))
-                .setContent(new Intent(this, SettingActivity.class)));
+                .setContent(new Intent(this, UserinfoActivity.class)));
                         //.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
     }
 	

@@ -27,11 +27,30 @@
 	 	
     </RelativeLayout>
 
-   	<ListView
+   	<Button
+   	    android:id="@+id/finish_set_friends"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignParentBottom="true"
+   	    android:text="@string/finish" 
+   	    android:visibility="gone"/>
+
+   	<Button
+   	    android:id="@+id/cancel_set_friends"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignBaseline="@+id/finish_set_friends"
+   	    android:layout_alignParentRight="true"
+   	    android:text="@string/cancel" 
+   	    android:visibility="gone"/>
+   	
+   	   	<ListView
    	    android:id="@+id/friends"
    	    android:layout_width="match_parent"
-   	    android:layout_height="wrap_content"
-   	    android:layout_below="@id/header" >
+   	    android:layout_height="match_parent"
+   	    android:layout_below="@id/header" 
+   	    android:layout_above="@id/finish_set_friends"
+   	    >
 
    	</ListView>
 

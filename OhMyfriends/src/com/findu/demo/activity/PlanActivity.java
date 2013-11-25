@@ -111,7 +111,6 @@ public class PlanActivity extends Activity {
 				startActivityForResult(intent, REQ_SET_LOCATION);
 			}
 		});
-		mEditTime = (EditText)findViewById(R.id.editText_time);
 		mButtonFinish = (Button)findViewById(R.id.button_finish);
 		mButtonFinish.setOnClickListener(new OnClickListener() {
 			
