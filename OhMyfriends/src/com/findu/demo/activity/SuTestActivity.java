@@ -20,12 +20,21 @@ public class SuTestActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+       // setContentView(R.layout.main);
         
+        Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				UserAction ua = new UserAction();
+				ua.sendUserLoginRequest(1, "yh", "yhchinabest", "", "", null);	
+			}
+		});
+        t.start();
 //        new Runnable() {
 //			public void run() {
-				UserAction ua = new UserAction();
-				ua.sendUserAddRequest(1, "yh", "yhchinabest", "", "");				
+			
 //			}
 //		}.run();;
                

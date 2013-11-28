@@ -45,13 +45,16 @@
          <service android:name="com.findu.demo.service.FindUService"
              /><activity android:name=".activity.PlanActivity"></activity>
              <activity android:name=".activity.SuTestActivity">
-
+<!--                     <intent-filter> -->
+<!--                     <action android:name="android.intent.action.MAIN" /> -->
+<!--                 	<category android:name="android.intent.category.LAUNCHER" /> -->
+<!--                 	 </intent-filter> -->
              </activity>
              <activity android:name=".activity.LoginActivity">
-                    <intent-filter>
-                    <action android:name="android.intent.action.MAIN" />
-                	<category android:name="android.intent.category.LAUNCHER" />
-                	 </intent-filter>
+                 <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+                 <category android:name="android.intent.category.LAUNCHER" />
+                 </intent-filter>
              </activity>
                  <activity
             android:name="com.tencent.tauth.AuthActivity"
@@ -59,10 +62,8 @@
             android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="tencent100579301" />
             </intent-filter>
         </activity>
@@ -70,6 +71,7 @@
                  <activity android:name=".activity.ContactsActivity"></activity>
                  <activity android:name=".activity.SettingActivity"></activity>
                  <activity android:name=".activity.HomeActivity"></activity>
+                 <activity android:name=".activity.MeetListActivity"></activity>
     </application>
 
      <uses-permission android:name="android.permission.GET_ACCOUNTS" />

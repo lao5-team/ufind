@@ -10,6 +10,8 @@ public class User implements Serializable {
 	public String mNickname;
 	public String mPassword;
 	public String mQQOpenID;
+	public String mFindUID;
 	public Bitmap mAvatar;
+	
 	public ArrayList<User> mFriends;
 }

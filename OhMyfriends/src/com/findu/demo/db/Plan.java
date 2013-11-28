@@ -14,6 +14,7 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.activity.MyFriendsMain;
 import com.findu.demo.activity.RouteActivity;
 import com.findu.demo.manager.MapManager;
+import com.findu.demo.user.User;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -44,7 +45,7 @@ public class Plan extends BroadcastReceiver implements Cloneable{
 	public int destLongitude;
 	public Date startTime;
 	public boolean isDaylyRemind;
-	public ArrayList friends;
+	public ArrayList<User> friends;
 	public int duration;
 	public int status; 
 	public Timer timer = null;

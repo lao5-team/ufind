@@ -16,19 +16,19 @@
         android:text="@string/username" />
     
         <EditText
-        android:id="@+id/inputEmail"
-        android:layout_width="wrap_content"
+        android:id="@+id/inputUserName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/email"
-        android:layout_toRightOf="@+id/email"
+        android:layout_alignBaseline="@+id/username"
+        android:layout_toRightOf="@+id/username"
         android:ems="10"
-        android:inputType="textEmailAddress" />
+        />
 
         <TextView
         android:id="@+id/nickname"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/email"
+        android:layout_below="@+id/username"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="45dp"
         android:layout_marginLeft="15dp"
@@ -36,14 +36,12 @@
         
     <EditText
         android:id="@+id/inputNickname"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/nickname"
         android:layout_toRightOf="@+id/nickname"
-        android:layout_alignLeft="@+id/inputEmail"
+        android:layout_alignLeft="@+id/inputUserName"
         android:ems="10" >
-
-        <requestFocus />
     </EditText>
 
 
@@ -60,12 +58,11 @@
 
     <EditText
         android:id="@+id/inputPassword"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignBaseline="@+id/password"
         android:layout_toRightOf="@+id/password"
-        android:layout_alignLeft="@+id/inputEmail"
+        android:layout_alignLeft="@+id/inputUserName"
         android:ems="10"
         android:inputType="textPassword" />
 
