@@ -24,6 +24,15 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:text="@string/startMeeting" />
+
+        <TextView
+            android:id="@+id/selectFriends"
+            android:layout_below="@+id/addFriend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/selectFriends" 
+            android:visibility="gone"/>
 	 	
     </RelativeLayout>
 
@@ -43,15 +52,11 @@
    	    android:layout_alignParentRight="true"
    	    android:text="@string/cancel" 
    	    android:visibility="gone"/>
-   	
-   	   	<ListView
+
+   	<ListView
    	    android:id="@+id/friends"
    	    android:layout_width="match_parent"
    	    android:layout_height="match_parent"
    	    android:layout_below="@id/header" 
-   	    android:layout_above="@id/finish_set_friends"
-   	    >
-
-   	</ListView>
-
+   	    android:layout_above="@id/finish_set_friends"/>
 </RelativeLayout>

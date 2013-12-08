@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/open_sdk.jar"/>
+	<classpathentry kind="lib" path="libs/asmack.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

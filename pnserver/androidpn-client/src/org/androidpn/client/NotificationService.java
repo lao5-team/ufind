@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Binder;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -69,6 +71,8 @@ public class NotificationService extends Service {
     private SharedPreferences sharedPrefs;
 
     private String deviceId;
+    
+
 
     public NotificationService() {
         notificationReceiver = new NotificationReceiver();
@@ -132,11 +136,7 @@ public class NotificationService extends Service {
         stop();
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        Log.d(LOGTAG, "onBind()...");
-        return null;
-    }
+
 
     @Override
     public void onRebind(Intent intent) {

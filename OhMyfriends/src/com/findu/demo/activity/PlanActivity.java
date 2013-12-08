@@ -18,6 +18,7 @@ import org.xmlpull.v1.XmlSerializer;
 
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.R;
+import com.findu.demo.constvalue.ConstValue;
 import com.findu.demo.db.Plan;
 import com.findu.demo.db.XMLPlanManager;
 import com.findu.demo.manager.MapManager;
@@ -40,23 +41,21 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class PlanActivity extends Activity {
 	public static String TAG = PlanActivity.class.getName();
 	private Plan mCurPlan = null;
-	private EditText mEditName = null;
-	private Button mButtonLocation = null;
-	private Button mButtonFriends = null;
+	private EditText mEtxName = null;
+	private Button mBtnLocation = null;
+	private Button mBtnSelectFriends = null;
 	private EditText mEditTime = null;
 	private CheckBox mCheckDayly = null;
 	private Button mButtonFinish = null;
-	private Button mButtonCancel = null;
-	private Button mButtonUpdate = null;
+	private Button mBtnCancel = null;
+	private Button mBtnUpdate = null;
+	private TextView mTvSelectedFriends = null;
 	private FindUService mService = null;
-	private final int REQ_SET_LOCATION = 0;
-	private final int REQ_SET_FRIENDS = 1;
-	private final int RESULT_OK = 0;
-	private final int RESULT_FAIL = 1;
 	private ServiceConnection mConnection = new ServiceConnection() {  
         public void onServiceConnected(ComponentName className,IBinder localBinder) {  
         	Log.d(TAG, className.getClassName());
@@ -71,8 +70,9 @@ public class PlanActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.plan_layout);
+		setContentView(R.layout.plan_layout3);
 		initUI();
+		mCurPlan = new Plan();
 
 	}
 	
@@ -86,32 +86,41 @@ public class PlanActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if(requestCode == REQ_SET_LOCATION && resultCode == RESULT_OK)
+		
+		if(requestCode == ConstValue.INTENT_SET_LOCATION && resultCode == RESULT_OK)
 		{
 			mCurPlan.destLatitude = data.getIntExtra("latitude", 0);
 			mCurPlan.destLongitude = data.getIntExtra("longtitude", 0);
 		}
-		else if(requestCode == REQ_SET_FRIENDS && resultCode == RESULT_OK)
+		else if(requestCode == ConstValue.INTENT_SET_FRIENDS && resultCode == RESULT_OK)
 		{
-			mCurPlan.friends = (ArrayList<User>) data.getSerializableExtra("friends");
+			
+			mCurPlan.friends = (ArrayList<User>) data.getSerializableExtra(ConstValue.SELECTED_FRIENDS);
+			String names = "";
+			for(int i=0; i<mCurPlan.friends.size(); i++)
+			{
+				names += mCurPlan.friends.get(i).mNickname + ",";
+			}
+			Log.v(TAG, "set Friends " + names);
+			mTvSelectedFriends.setText(names);
 		}
 	}
 	
 	
 	private void initUI()
 	{
-		mEditName = (EditText)findViewById(R.id.plan_name);
-		mButtonLocation = (Button)findViewById(R.id.set_location);
-		mButtonLocation.setOnClickListener(new OnClickListener() {
+		mEtxName = (EditText)findViewById(R.id.etx_plan_name);
+		mBtnLocation = (Button)findViewById(R.id.btn_set_location);
+		mBtnLocation.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// 这里的逻辑要处理一下
 				Intent intent = new Intent(PlanActivity.this, MyFriendsMain.class);
-				startActivityForResult(intent, REQ_SET_LOCATION);
+				startActivityForResult(intent, ConstValue.INTENT_SET_LOCATION);
 			}
 		});
-		mButtonFinish = (Button)findViewById(R.id.button_finish);
+		mButtonFinish = (Button)findViewById(R.id.btn_finish);
 		mButtonFinish.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -124,8 +133,8 @@ public class PlanActivity extends Activity {
 			}
 		});
 		
-		mButtonCancel = (Button)findViewById(R.id.button_cancel);
-		mButtonCancel.setOnClickListener(new OnClickListener() {
+		mBtnCancel = (Button)findViewById(R.id.btn_cancel);
+		mBtnCancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -133,21 +142,22 @@ public class PlanActivity extends Activity {
 			}
 		});
 		
-		mButtonFriends = (Button)findViewById(R.id.call_friends);
-		mButtonFriends.setOnClickListener(new OnClickListener() {
+		mBtnSelectFriends = (Button)findViewById(R.id.btn_select_friends);
+		mBtnSelectFriends.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(PlanActivity.this, ContactsActivity.class);
-				startActivityForResult(intent, REQ_SET_FRIENDS);
+				selectFriends();
 			}
 		});
+		
+		mTvSelectedFriends = (TextView)findViewById(R.id.tv_selected_friends);
 	}
 	
 	private void upateView()
 	{
 		if(null!=mCurPlan)
 		{
-			mEditName.setText(mCurPlan.name);
+			mEtxName.setText(mCurPlan.name);
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 			mEditTime.setText(format.format(mCurPlan.startTime));
 			mCheckDayly.setChecked(mCurPlan.isDaylyRemind);
@@ -156,7 +166,7 @@ public class PlanActivity extends Activity {
 	
 	private void updateData()
 	{
-		mCurPlan.name = mEditName.getText().toString();
+		mCurPlan.name = mEtxName.getText().toString();
 		SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 		try {
 			mCurPlan.startTime = format.parse(mEditTime.getText().toString());
@@ -177,6 +187,16 @@ public class PlanActivity extends Activity {
 	{
 		
 	}
+	
+	private void selectFriends()
+	{
+		Intent intent = new Intent(PlanActivity.this, ContactsActivity.class);
+		intent.putExtra(ConstValue.INTENT_TYPE, ConstValue.INTENT_SET_FRIENDS);
+		startActivityForResult(intent, ConstValue.INTENT_SET_FRIENDS);
+
+	}
+	
+
 	
 	
 }

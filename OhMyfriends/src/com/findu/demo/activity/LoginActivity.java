@@ -5,10 +5,15 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 
 import org.apache.http.conn.ConnectTimeoutException;
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.findu.demo.R;
+import com.findu.demo.manager.LoginManager;
 import com.findu.demo.manager.UserManager;
 import com.findu.demo.user.User;
 import com.findu.demo.user.UserAction;
@@ -170,9 +175,9 @@ public class LoginActivity extends Activity {
 	 * @param isAutoLogin 是否为自动登录
 	 * @return
 	 */
-	private boolean login(final String userID, final String password, final boolean isQQ, final boolean isAutoLogin)
+	private void login(final String userID, final String password, final boolean isQQ, final boolean isAutoLogin)
 	{
-		Thread t = new Thread(new Runnable() {
+		Thread t1 = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -226,9 +231,31 @@ public class LoginActivity extends Activity {
 
 			}
 		});
-		t.start();
+		//t.start();
+		Thread t = new Thread(new Runnable() {
 
-		return false;
+			@Override
+			public void run() {
+				if(LoginManager.getInstance().login(userID, password))
+				{
+		        	if(!isAutoLogin)
+		        	{
+		        		saveLoginInfo(userID, password, false);
+		        	}
+		        	Message msg = mUIHandler.obtainMessage();
+		        	msg.arg1 = LOGIN_COMPLETE;
+		        	mUIHandler.sendMessage(msg);
+				}
+				else
+				{
+		        	Message msg = mUIHandler.obtainMessage();
+		        	msg.arg1 = LOGIN_FAILED;
+		        	mUIHandler.sendMessage(msg);
+				}
+			}
+			
+		});
+		t.start();
 	}
 	
 	/**

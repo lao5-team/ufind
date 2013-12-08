@@ -6,6 +6,7 @@ import junit.framework.Assert;
 
 import com.findu.demo.R;
 import com.findu.demo.activity.ContactsActivity;
+import com.findu.demo.constvalue.ConstValue;
 import com.findu.demo.user.User;
 
 import android.app.Activity;
@@ -67,7 +68,7 @@ public class ContactsAdapter extends BaseAdapter {
 		TextView tv = (TextView)v.findViewById(R.id.name);
 		tv.setText(mFriends.get(position).mNickname);
 		final int pos = position;
-		if(((ContactsActivity)mActivity).getType() == ContactsActivity.TYPE_SET_FRIENDS)
+		if(((ContactsActivity)mActivity).getType() == ConstValue.INTENT_SET_FRIENDS)
 		{
 			CheckBox cb = (CheckBox)v.findViewById(R.id.checkJoin);
 			cb.setVisibility(View.VISIBLE);

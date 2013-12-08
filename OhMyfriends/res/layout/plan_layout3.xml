@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+     <TextView
+         android:id="@+id/tv_plan_name"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_centerHorizontal="true"
+         android:layout_marginLeft="10dp"
+         android:layout_marginTop="10dip"
+         android:text="@string/name"
+         android:textSize="20dip" />
+
+    <EditText
+        android:id="@+id/etx_plan_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tv_plan_name"
+        android:layout_marginLeft="16dip"
+        android:layout_marginRight="16dip"
+        android:layout_marginTop="16dp"
+        android:layout_toRightOf="@id/tv_plan_name"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+        <TextView
+            android:id="@+id/tv_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/btn_travel_plan"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="16dip"
+            android:layout_marginTop="20dip"
+            android:text="@string/start_time" />
+
+    <Button
+        android:id="@+id/btn_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp"
+        android:text="@string/finish" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/cancel" />
+
+    <Button
+        android:id="@+id/btn_select_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/etx_plan_name"
+        android:text="@string/call_friends" />
+
+    <Button
+        android:id="@+id/btn_set_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tv_selected_friends"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dip"
+        android:text="@string/set_location" />
+
+    <TextView
+        android:id="@+id/tv_selected_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_select_friends"
+        android:layout_alignBottom="@+id/btn_select_friends"
+        android:layout_toRightOf="@+id/btn_select_friends"
+        android:text="张三，李四"
+        android:textSize="20dip" />
+
+    <Button
+        android:id="@+id/btn_travel_plan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/btn_set_location"
+        android:layout_below="@id/btn_set_location"
+        android:text="@string/travel_plan" />
+
+    <EditText
+        android:id="@+id/etx_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_start_time"
+        android:layout_alignBottom="@+id/tv_start_time"
+        android:layout_alignRight="@+id/btn_cancel"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/tv_meeting_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_start_time"
+        android:layout_below="@+id/etx_start_time"
+        android:layout_marginTop="21dp"
+        android:text="@string/meet_time" />
+
+    <EditText
+        android:id="@+id/etx_meet_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_meeting_time"
+        android:layout_alignBottom="@+id/tv_meeting_time"
+        android:layout_alignLeft="@+id/etx_start_time"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/tv_set_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_set_location"
+        android:layout_alignBottom="@+id/btn_set_location"
+        android:layout_alignLeft="@+id/tv_selected_friends"
+        android:layout_marginLeft="14dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tv_travel_plan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_travel_plan"
+        android:layout_alignBottom="@+id/btn_travel_plan"
+        android:layout_alignRight="@+id/tv_set_location"
+        android:text="TextView" />
+
+</RelativeLayout>

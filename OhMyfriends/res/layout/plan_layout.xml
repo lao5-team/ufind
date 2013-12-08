@@ -13,7 +13,7 @@
         android:text="@string/edit" />
     
      <TextView
-        android:id="@+id/plan_name"
+        android:id="@+id/tv_plan_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 		android:layout_centerHorizontal="true"
@@ -31,12 +31,12 @@
 
 
     <EditText
-        android:id="@+id/input_plan_name"
+        android:id="@+id/etx_plan_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/plan_name"
+        android:layout_below="@+id/tv_plan_name"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dip"
         android:layout_marginRight="16dip"
@@ -46,19 +46,19 @@
     </EditText>
 
     <Button
-        android:id="@+id/set_location"
+        android:id="@+id/btn_set_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/input_plan_name"
+        android:layout_below="@+id/etx_plan_name"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dip"
         android:text="@string/set_location" />
 
         <TextView
-        android:id="@+id/textView_start_time"
+        android:id="@+id/tv_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/set_location"
+        android:layout_below="@+id/btn_set_location"
         android:layout_marginTop="20dip"
         android:layout_alignParentLeft="true"
         android:layout_centerHorizontal="true"
@@ -66,10 +66,10 @@
         android:text="@string/start_time" />
 
    		 <EditText
-        android:id="@+id/editText_time"
+        android:id="@+id/etx_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         android:layout_below="@+id/textView_start_time"
+         android:layout_below="@+id/tv_start_time"
          android:layout_marginLeft="16dip"
         android:ems="10" />
     
@@ -77,24 +77,24 @@
         android:id="@+id/checkBox_dayly_remind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/editText_time"
-        android:layout_alignBottom="@+id/editText_time"
+        android:layout_toRightOf="@+id/etx_start_time"
+        android:layout_alignBottom="@+id/etx_start_time"
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dip"
         android:text="@string/dayly_remind" />
 
     <Button
-        android:id="@+id/call_friends"
+        android:id="@+id/btn_select_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText_time"
+        android:layout_below="@+id/etx_start_time"
         android:layout_marginTop="28dp"
         android:layout_centerHorizontal="true"
         android:text="@string/call_friends" />
 
 
     <Button
-        android:id="@+id/button_finish"
+        android:id="@+id/btn_finish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -104,7 +104,7 @@
         android:text="@string/create" />
 
     <Button
-        android:id="@+id/button_cancel"
+        android:id="@+id/btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -117,8 +117,8 @@
         android:id="@+id/button_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button_finish"
-        android:layout_alignBottom="@+id/button_finish"
+        android:layout_alignBaseline="@+id/btn_finish"
+        android:layout_alignBottom="@+id/btn_finish"
         android:layout_centerHorizontal="true"
         android:text="@string/update" />
 
