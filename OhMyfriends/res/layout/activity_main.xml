@@ -7,7 +7,7 @@
     android:id="@+id/main">
 
     <EditText
-        android:id="@+id/editText_dest"
+        android:id="@+id/etx_dest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -15,25 +15,25 @@
 
         <requestFocus />
     </EditText>
-    <Button
-        android:id="@+id/button_search"
+    <Button
+        android:id="@+id/btn_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editText_dest"
+        android:layout_below="@+id/etx_dest"
         android:text="@string/search" />
     
          <Button
-         android:id="@+id/button_begin"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-          android:layout_alignParentRight="true"
-           android:layout_below="@+id/editText_dest"
-         android:text="@string/begin" />
+             android:id="@+id/btn_start"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentRight="true"
+             android:layout_below="@+id/etx_dest"
+             android:text="@string/begin" />
     
      <com.baidu.mapapi.map.MapView android:id="@+id/bmapView"
 	android:layout_width="fill_parent" android:layout_height="fill_parent" 
-	android:layout_below="@+id/button_search"
+	android:layout_below="@+id/btn_search"
 	android:clickable="true"     
 />
 
@@ -48,21 +48,32 @@
          android:text="Save" />
 
      <Button
-         android:id="@+id/button_load"
+         android:id="@+id/btn_cancel_map"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignParentBottom="true"
          android:layout_alignParentRight="true"
          android:layout_marginRight="16dp"
-         android:text="Load" />
+         android:text="@string/cancel" />
 
      <Button
-         android:id="@+id/reset"
+         android:id="@+id/btn_finish_location"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignParentBottom="true"
          android:layout_alignParentLeft="true"
          android:layout_marginLeft="14dp"
-         android:text="Rest" />
+         android:text="@string/finish" />
+
+     <TextView
+         android:id="@+id/tv_dest_location"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/btn_finish_location"
+         android:layout_alignLeft="@+id/btn_finish_location"
+         android:layout_alignRight="@+id/btn_cancel_map"
+         android:layout_marginBottom="14dp"
+         android:text="TextView"
+         android:textSize="20dip" />
 
 </RelativeLayout>

@@ -23,7 +23,7 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 import com.findu.demo.activity.FriendsApplication;
-import com.findu.demo.activity.MyFriendsMain;
+import com.findu.demo.activity.MapActivity;
 import com.findu.demo.user.User;
 
 public class LoginManager {
@@ -31,7 +31,7 @@ public class LoginManager {
 	private Connection mXmppConnection = null;
 	private AccountManager mXmppAccountManager = null;
 	private final static String TAG = LoginManager.class.getName();
-	private final static String SERVER_IP_ADDRESS = "192.168.100.8";
+	private final static String SERVER_IP_ADDRESS = "192.168.100.4";
 	public interface LoginListener
 	{
 		void onReceive(Object result);

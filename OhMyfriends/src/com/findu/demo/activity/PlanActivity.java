@@ -55,6 +55,7 @@ public class PlanActivity extends Activity {
 	private Button mBtnCancel = null;
 	private Button mBtnUpdate = null;
 	private TextView mTvSelectedFriends = null;
+	private TextView mTvDestLocationName = null;
 	private FindUService mService = null;
 	private ServiceConnection mConnection = new ServiceConnection() {  
         public void onServiceConnected(ComponentName className,IBinder localBinder) {  
@@ -80,7 +81,7 @@ public class PlanActivity extends Activity {
 	public void onDestroy()
 	{
 		super.onDestroy();
-		unbindService(mConnection);
+		//unbindService(mConnection);
 	}
 	
 	@Override
@@ -89,8 +90,10 @@ public class PlanActivity extends Activity {
 		
 		if(requestCode == ConstValue.INTENT_SET_LOCATION && resultCode == RESULT_OK)
 		{
-			mCurPlan.destLatitude = data.getIntExtra("latitude", 0);
-			mCurPlan.destLongitude = data.getIntExtra("longtitude", 0);
+			mCurPlan.destLatitude = data.getIntExtra(ConstValue.DEST_LOCATION_LATITUDE, 0);
+			mCurPlan.destLongitude = data.getIntExtra(ConstValue.DEST_LOCATION_LONGTITUDE, 0);
+			mCurPlan.destLocationName = data.getStringExtra(ConstValue.DEST_LOCATION_NAME);
+			mTvDestLocationName.setText(mCurPlan.destLocationName);
 		}
 		else if(requestCode == ConstValue.INTENT_SET_FRIENDS && resultCode == RESULT_OK)
 		{
@@ -116,8 +119,7 @@ public class PlanActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// 这里的逻辑要处理一下
-				Intent intent = new Intent(PlanActivity.this, MyFriendsMain.class);
-				startActivityForResult(intent, ConstValue.INTENT_SET_LOCATION);
+				chooseDestLocation();
 			}
 		});
 		mButtonFinish = (Button)findViewById(R.id.btn_finish);
@@ -151,8 +153,16 @@ public class PlanActivity extends Activity {
 		});
 		
 		mTvSelectedFriends = (TextView)findViewById(R.id.tv_selected_friends);
+		
+		mTvDestLocationName = (TextView)findViewById(R.id.tv_set_location);
 	}
 	
+	protected void chooseDestLocation() {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent(PlanActivity.this, MapActivity.class);
+		startActivityForResult(intent, ConstValue.INTENT_SET_LOCATION);
+	}
+
 	private void upateView()
 	{
 		if(null!=mCurPlan)

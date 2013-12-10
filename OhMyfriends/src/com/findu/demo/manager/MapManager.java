@@ -43,7 +43,7 @@ import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.findu.demo.R;
 import com.findu.demo.activity.FriendsApplication;
-import com.findu.demo.activity.MyFriendsMain;
+import com.findu.demo.activity.MapActivity;
 import com.findu.demo.activity.RouteActivity;
 import com.findu.demo.constvalue.ConstValue;
 import com.findu.demo.location.LocationAbout;
@@ -697,7 +697,7 @@ ItemOverlayOnTapListener, RouteSearchListener{
 				if(index == 0)
 				{
 					//生成快捷方式
-					((MyFriendsMain)mActivity).addShortCut(mDestPt, "快捷方式", mMode);
+					((MapActivity)mActivity).addShortCut(mDestPt, "快捷方式", mMode);
 				}
 				else
 				{

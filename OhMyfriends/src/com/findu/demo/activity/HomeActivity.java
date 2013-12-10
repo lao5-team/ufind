@@ -27,7 +27,7 @@ public class HomeActivity extends TabActivity {
 
         tabHost.addTab(tabHost.newTabSpec("tab2")
                 .setIndicator(this.getString(R.string.map))
-                .setContent(new Intent(this, MyFriendsMain.class)));
+                .setContent(new Intent(this, MapActivity.class)));
         
         // This tab sets the intent flag so that it is recreated each time
         // the tab is clicked.

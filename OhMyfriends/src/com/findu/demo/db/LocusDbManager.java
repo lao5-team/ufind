@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.baidu.mapapi.map.MapView;
-import com.findu.demo.activity.MyFriendsMain;
+import com.findu.demo.activity.MapActivity;
 import com.findu.demo.overlay.CustomGraphicsOverlay;
 
 import android.content.ContentResolver;
@@ -15,7 +15,7 @@ import android.database.Cursor;
 public class LocusDbManager {
 
 	private ContentResolver mLocusResolver;
-	private MyFriendsMain mContextFriendsMain;
+	private MapActivity mContextFriendsMain;
 	private MapView mMapView;
 	private CustomGraphicsOverlay mGraphicsOverlay;
 	
@@ -29,7 +29,7 @@ public class LocusDbManager {
 	private static final String COLUME_LATITUDE = "latitude";
 	private static final String COLUME_LONGITUDE = "longitude";
 
-	public LocusDbManager(MyFriendsMain main, MapView mapview, CustomGraphicsOverlay graphicsOverlay) {
+	public LocusDbManager(MapActivity main, MapView mapview, CustomGraphicsOverlay graphicsOverlay) {
 		mContextFriendsMain = main;
 		mLocusResolver = main.getContentResolver();
 		mMapView = mapview;

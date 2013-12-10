@@ -11,7 +11,7 @@ import java.util.TimerTask;
 import org.w3c.dom.ls.LSInput;
 
 import com.baidu.platform.comapi.basestruct.GeoPoint;
-import com.findu.demo.activity.MyFriendsMain;
+import com.findu.demo.activity.MapActivity;
 import com.findu.demo.activity.RouteActivity;
 import com.findu.demo.manager.MapManager;
 import com.findu.demo.user.User;
@@ -41,6 +41,7 @@ public class Plan extends BroadcastReceiver implements Cloneable{
 	public final static int TIME_OUT = 5;
 	public int id;
 	public String name;
+	public String destLocationName;
 	public int destLatitude;
 	public int destLongitude;
 	public Date startTime;

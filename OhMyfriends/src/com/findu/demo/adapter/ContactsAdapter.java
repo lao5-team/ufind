@@ -87,6 +87,11 @@ public class ContactsAdapter extends BaseAdapter {
 				}
 			});
 		}
+		else
+		{
+			CheckBox cb = (CheckBox)v.findViewById(R.id.checkJoin);
+			cb.setVisibility(View.GONE);
+		}
 		return v;
 	}
 	
