@@ -3,6 +3,7 @@
  */
 package com.findu.demo.db;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -32,7 +33,7 @@ import android.util.Log;
  * 5.朋友列表 网络版时添加
  * 6.完成时长
  */
-public class Plan extends BroadcastReceiver implements Cloneable{
+public class Plan extends BroadcastReceiver implements Cloneable, Serializable{
 	public final static int IDLE = 0;
 	public final static int READY = 1;
 	public final static int DOING = 2;

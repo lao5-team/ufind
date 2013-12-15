@@ -40,14 +40,14 @@ public class XMLPlanManager {
 	public void setPlans(ArrayList<Plan> plans)
 	{
 		mPlans = plans;
-		writePlansToXML(XML_PATH);
+		//writePlansToXML(XML_PATH);
 	}
 	
 	public void addPlan(Plan plan)
 	{
 		plan.id = createID();
 		mPlans.add(plan);
-		writePlansToXML(XML_PATH);
+		//writePlansToXML(XML_PATH);
 	}
 	
 	public void update(Plan plan)
@@ -62,7 +62,7 @@ public class XMLPlanManager {
 			index++;
 		}
 		mPlans.set(index, plan);
-		writePlansToXML(XML_PATH);
+		//writePlansToXML(XML_PATH);
 	}
 	
 	public int createID()

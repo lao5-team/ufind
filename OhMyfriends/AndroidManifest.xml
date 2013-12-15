@@ -72,6 +72,7 @@
                  <activity android:name=".activity.SettingActivity"></activity>
                  <activity android:name=".activity.HomeActivity"></activity>
                  <activity android:name=".activity.MeetListActivity"></activity>
+        		 <activity android:name=".activity.ChatActivity"></activity>
         <service android:enabled="true"
 			android:name="org.androidpn.client.NotificationService"
 			android:label="NotificationService">

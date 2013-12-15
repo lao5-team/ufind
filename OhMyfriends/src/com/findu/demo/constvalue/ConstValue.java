@@ -11,6 +11,7 @@ public class ConstValue {
 	public static final String DEST_LOCATION_NAME = "dest_location_name";
 	public static final String DEST_LOCATION_LATITUDE =  "dest_location_latitude";
 	public static final String DEST_LOCATION_LONGTITUDE = "dest_location_longtitude";
+	public static final String NEW_PLAN = "new_plan";
 	public static final int INTENT_SET_FRIENDS = 1;	
 	public static final int INTENT_NORMAL = 0;
 	public static final int INTENT_SET_LOCATION = 2;

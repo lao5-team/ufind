@@ -22,6 +22,7 @@ import com.findu.demo.constvalue.ConstValue;
 import com.findu.demo.db.Plan;
 import com.findu.demo.db.XMLPlanManager;
 import com.findu.demo.manager.MapManager;
+import com.findu.demo.manager.PlanManager;
 import com.findu.demo.service.FindUService;
 import com.findu.demo.user.User;
 
@@ -127,11 +128,9 @@ public class PlanActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				//updateData();
+				updateData();
 				//mService.addPlanToDo(mCurPlan);
-				XMLPlanManager.getInstance().addPlan(mCurPlan);
-				sendPlanRequest(mCurPlan);
-				finish();
+				finishPlan();
 			}
 		});
 		
@@ -177,21 +176,33 @@ public class PlanActivity extends Activity {
 	private void updateData()
 	{
 		mCurPlan.name = mEtxName.getText().toString();
-		SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-		try {
-			mCurPlan.startTime = format.parse(mEditTime.getText().toString());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		mCurPlan.destLatitude = 39914935;
-		mCurPlan.destLongitude = 116403694;
-		mCurPlan.isDaylyRemind = mCheckDayly.isChecked();
+//		SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+//		try {
+//			mCurPlan.startTime = format.parse(mEditTime.getText().toString());
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		//聚会地点和成员由ContactsActivity和MapActivity返回
 		
 	}
 	
 	/**
-	 * 
+	 * 制定plan完成
+	 */
+	private void finishPlan()
+	{
+		XMLPlanManager.getInstance().addPlan(mCurPlan);
+		sendPlanRequest(mCurPlan);
+//		Intent intent = new Intent();
+//		intent.putExtra(ConstValue.NEW_PLAN, mCurPlan);
+//		setResult(RESULT_OK, intent);
+		//PlanManager.getInstance().addPlan(mCurPlan);
+		finish();
+	}
+	
+	/** 向服务器发送Plan请求
+	 * @param plan
 	 */
 	private void sendPlanRequest(Plan plan)
 	{

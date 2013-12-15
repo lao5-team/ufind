@@ -31,7 +31,7 @@ public class LoginManager {
 	private Connection mXmppConnection = null;
 	private AccountManager mXmppAccountManager = null;
 	private final static String TAG = LoginManager.class.getName();
-	private final static String SERVER_IP_ADDRESS = "192.168.100.4";
+	private final static String SERVER_IP_ADDRESS = "115.28.6.55";
 	public interface LoginListener
 	{
 		void onReceive(Object result);

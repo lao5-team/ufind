@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
 
     <ImageView
         android:id="@+id/imageView1"
@@ -11,6 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="56dp"
         android:layout_marginTop="50dp"
+        android:visibility="gone"
         android:src="@drawable/begin_icon" />
 
     <TextView
@@ -19,16 +20,63 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imageView1"
         android:layout_centerHorizontal="true"
+        android:visibility="gone"
         android:text="TextView" />
 
-    <Button
-        android:id="@+id/confirmAdd"
+    <TextView
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="97dp"
-        android:layout_toRightOf="@+id/imageView1"
-        android:text="@string/confirmAddFriend" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="15dip"
+        android:text="输入好友用户名" />
+
+    <EditText
+        android:id="@+id/etx_friends_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_margin="15dp"
+        android:ems="10" >
+    </EditText>
+    
+     <TextView
+        android:id="@+id/tv_input_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="15dip"
+        android:layout_below="@+id/etx_friends_id"
+        android:text="输入好友昵称" />
+
+    <EditText
+        android:id="@+id/etx_friends_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_input_nickname"
+        android:layout_margin="15dp"
+        android:ems="10" >
+    </EditText>
+
+<!--     <Button -->
+<!--         android:id="@+id/btn_finish" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignParentLeft="true" -->
+<!--         android:layout_below="@+id/etx_friends_id" -->
+<!--         android:layout_marginLeft="10dp" -->
+<!--         android:layout_marginTop="15dp" -->
+<!--         android:text="@string/finish" /> -->
+    
+<!--         <Button -->
+<!--         android:id="@+id/btn_cancel" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignParentRight="true" -->
+<!--         android:layout_below="@+id/etx_friends_id" -->
+<!--         android:layout_marginRight="10dp" -->
+<!--         android:layout_marginTop="15dp" -->
+<!--         android:text="@string/cancel" /> -->
 
 </RelativeLayout>
