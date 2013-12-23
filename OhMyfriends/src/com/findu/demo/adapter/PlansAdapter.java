@@ -32,7 +32,7 @@ public class PlansAdapter extends BaseAdapter {
 	@Override
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		return mPlans.get(arg0);
 	}
 
 	@Override

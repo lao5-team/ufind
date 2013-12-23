@@ -10,15 +10,21 @@ import org.jivesoftware.smack.packet.Presence;
 
 import com.findu.demo.R;
 import com.findu.demo.adapter.PlansAdapter;
+import com.findu.demo.constvalue.ConstValue;
+import com.findu.demo.db.Plan;
+import com.findu.demo.db.XMLPlanManager;
 import com.findu.demo.manager.UserManager;
 import com.findu.demo.user.User;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -60,12 +66,23 @@ public class MeetListActivity extends Activity {
 //	    FriendsApplication.getInstance().getConnection().sendPacket(presence);
 //	    chat = chatManager.createChat("byyf3@" + FriendsApplication.getInstance().getConnection().getServiceName(), null);
 	    initUI();
+	    test();
 	}
 	
 	private void initUI()
 	{
 		mlvwPlans = (ListView)findViewById(R.id.lvw_plans);
 		mlvwPlans.setAdapter(mPlanAdapter);
+		mlvwPlans.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+					Intent intent = new Intent(MeetListActivity.this, MeetActivity.class);
+					intent.putExtra(ConstValue.OPEN_PLAN, (Plan)mPlanAdapter.getItem(arg2));
+					MeetListActivity.this.startActivity(intent);
+			}
+		});
 //		tv = (TextView)this.findViewById(R.id.tv_selected_friends);
 //		et = (EditText)this.findViewById(R.id.etx_meet_time);
 //		bt = (Button)this.findViewById(R.id.btn_travel_plan);
@@ -127,5 +144,11 @@ public class MeetListActivity extends Activity {
 //		}
 //		
 //    }
+	private void test()
+	{
+		Plan plan = new Plan();
+		plan.name = "Test";
+		XMLPlanManager.getInstance().addPlan(plan);
+	}
 	
 }

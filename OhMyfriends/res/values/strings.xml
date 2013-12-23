@@ -54,4 +54,5 @@
 	<string name="selectFriends">请在列表中选择好友</string>
 	<string name="travel_plan">出行方式</string>
 	<string name="meet_time">出行方式</string>
+	<string name="switch_view">切换</string>
 </resources>

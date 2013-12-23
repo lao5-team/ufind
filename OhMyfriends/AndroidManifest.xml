@@ -80,6 +80,7 @@
 				<action android:name="org.androidpn.client.NotificationService" />
 			</intent-filter>
 		</service>
+        <activity android:name=".activity.MeetActivity"></activity>
     </application>
 
      <uses-permission android:name="android.permission.GET_ACCOUNTS" />
