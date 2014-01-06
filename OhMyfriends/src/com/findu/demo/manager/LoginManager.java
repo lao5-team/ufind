@@ -31,7 +31,7 @@ public class LoginManager {
 	private Connection mXmppConnection = null;
 	private AccountManager mXmppAccountManager = null;
 	private final static String TAG = LoginManager.class.getName();
-	private final static String SERVER_IP_ADDRESS = "115.28.6.55";
+	private final static String SERVER_IP_ADDRESS = "115.28.59.116";
 	public interface LoginListener
 	{
 		void onReceive(Object result);
@@ -135,7 +135,7 @@ public class LoginManager {
 		
 		//这里有点疑惑，这里使用AccountManger中的createAccount方法和使用Registration的区别是什么
 		Map<String, String> attributes = new HashMap<String, String>();
-		attributes.put("nickname", user.mNickname);
+		attributes.put("name", user.mNickname);
 		try {
 			mXmppAccountManager = xmppConnection.getAccountManager();
 			mXmppAccountManager.createAccount(user.mUsername, user.mPassword, attributes);
@@ -166,6 +166,12 @@ public class LoginManager {
         try {
         	xmppConnection.connect();
         	xmppConnection.login(username, password);
+        	mXmppAccountManager = xmppConnection.getAccountManager();
+        	User user = new User();
+        	user.mUsername = username;
+        	user.mPassword = password;
+        	user.mNickname = mXmppAccountManager.getAccountAttribute("name");
+        	UserManager.getInstance().setCurrentUser(user);
         	return true;
 		} catch (XMPPException e) {
 			// TODO Auto-generated catch block
@@ -174,6 +180,7 @@ public class LoginManager {
 		}
        
 	}
+	
 	
 	
 }

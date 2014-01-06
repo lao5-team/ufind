@@ -78,6 +78,7 @@ public class RegisterActivity extends Activity {
 				User user = new User();
 				user.mUsername = username;
 				user.mPassword = password;
+				user.mNickname = nickName;
 				boolean result = LoginManager.getInstance().register(user);
 				Message msg = mUIHandler.obtainMessage();
 				if(result == true)

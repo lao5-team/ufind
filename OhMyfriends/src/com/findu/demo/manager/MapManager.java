@@ -774,7 +774,12 @@ ItemOverlayOnTapListener, RouteSearchListener{
 		MKPlanNode nodeDest = new MKPlanNode();
 		nodeDest.pt = mDestPt;		
 		Log.d(TAG, nodeSrc.toString() + nodeDest.toString());
-		search.walkingSearch("北京", nodeSrc, "北京", nodeDest);
+		search.walkingSearch(mCity, nodeSrc, mCity, nodeDest);
+	}
+	
+	public String getCurrentCity()
+	{
+		return mCity;
 	}
 
 }

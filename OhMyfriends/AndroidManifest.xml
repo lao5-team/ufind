@@ -81,6 +81,7 @@
 			</intent-filter>
 		</service>
         <activity android:name=".activity.MeetActivity"></activity>
+        <activity android:name=".activity.UserinfoActivity"></activity>
     </application>
 
      <uses-permission android:name="android.permission.GET_ACCOUNTS" />

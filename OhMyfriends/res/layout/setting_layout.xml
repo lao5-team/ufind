@@ -14,7 +14,7 @@
         android:src="@drawable/wa_icon" />
 
     <TextView
-        android:id="@+id/nickName"
+        android:id="@+id/tv_NickName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/avatar"
@@ -22,22 +22,13 @@
         android:layout_toRightOf="@+id/avatar"
         android:text="TextView" />
 
-    <TextView
-        android:id="@+id/friendsName"
+    <Button
+        android:id="@+id/btn_choose_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/avatar"
-        android:layout_below="@+id/avatar"
-        android:layout_marginTop="19dp"
-        android:text="uFind ID" />
-
-    <TextView
-        android:id="@+id/uFind_ID"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/friendsName"
-        android:layout_marginLeft="26dp"
-        android:layout_toRightOf="@+id/friendsName"
-        android:text="TextView" />
+        android:layout_below="@+id/tv_NickName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="81dp"
+        android:text="Button" />
 
 </RelativeLayout>

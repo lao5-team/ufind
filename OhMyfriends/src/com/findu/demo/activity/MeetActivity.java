@@ -1,5 +1,6 @@
 package com.findu.demo.activity;
 
+import com.baidu.mapapi.map.MapView;
 import com.findu.demo.R;
 import com.findu.demo.constvalue.ConstValue;
 import com.findu.demo.db.Plan;
@@ -23,6 +24,8 @@ public class MeetActivity extends Activity {
 	private ViewFlipper mVfpContent;
 	private Plan mCurPlan = null;
 	private TextView mTvName = null;
+	private View mChatView = null;
+	private MapView mMapView = null;
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -57,5 +60,7 @@ public class MeetActivity extends Activity {
 		
 		mTvName = (TextView)findViewById(R.id.tv_meet_name);
 		mTvName.setText(mCurPlan.name);
+		mChatView = findViewById(R.id.chat);
+		mMapView = (MapView)findViewById(R.id.mapView);
 	}
 }
