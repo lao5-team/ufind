@@ -551,6 +551,8 @@ public class LoginActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mTencent.onActivityResult(requestCode, resultCode, data) ;
-}
+    }
+    
+    
 	
 }

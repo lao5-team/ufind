@@ -1,7 +1,11 @@
 package com.findu.demo.manager;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.androidpn.client.Constants;
 import org.androidpn.client.XmppManager;
@@ -18,8 +22,12 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.OfflineMessageManager;
+import org.jivesoftware.smackx.packet.VCard;
 
 import android.content.SharedPreferences.Editor;
+import android.os.Message;
 import android.util.Log;
 
 import com.findu.demo.activity.FriendsApplication;
@@ -28,7 +36,6 @@ import com.findu.demo.user.User;
 
 public class LoginManager {
 	
-	private Connection mXmppConnection = null;
 	private AccountManager mXmppAccountManager = null;
 	private final static String TAG = LoginManager.class.getName();
 	private final static String SERVER_IP_ADDRESS = "115.28.59.116";
@@ -79,7 +86,7 @@ public class LoginManager {
                     }
                 };
 
-                mXmppConnection.addPacketListener(packetListener, packetFilter);
+                FriendsApplication.getInstance().mXmppConnection.addPacketListener(packetListener, packetFilter);
 
                 registration.setType(IQ.Type.SET);
                 // registration.setTo(xmppHost);
@@ -89,7 +96,7 @@ public class LoginManager {
                 // registration.setAttributes(attributes);
                 registration.addAttribute("username", mUser.mUsername);
                 registration.addAttribute("password", mUser.mPassword);
-                mXmppConnection.sendPacket(registration);
+                FriendsApplication.getInstance().mXmppConnection.sendPacket(registration);
 
         }
     }
@@ -158,6 +165,7 @@ public class LoginManager {
 	
 	public boolean login(String username, String password)
 	{
+		pullOfflineMessage(username, password);
 		ConnectionConfiguration config = new ConnectionConfiguration(SERVER_IP_ADDRESS, 5222);
 		config.setSASLAuthenticationEnabled(false);
 		
@@ -180,6 +188,84 @@ public class LoginManager {
 		}
        
 	}
+	public void setAvatarBytes(byte[] data)
+			throws XMPPException, IOException {
+		VCard vcard = new VCard();
+		vcard.load(FriendsApplication.getInstance().mXmppConnection);
+		String encodedImage = StringUtils.encodeBase64(data);
+		vcard.setAvatar(data, encodedImage);
+		vcard.setEncodedImage(encodedImage);
+		vcard.setField("PHOTO", "<TYPE>image/jpg</TYPE><BINVAL>" + encodedImage
+				+ "</BINVAL>", true);
+		vcard.save(FriendsApplication.getInstance().mXmppConnection);
+
+	}
+	
+	private void pullOfflineMessage(String username, String password)
+    {
+    	ConnectionConfiguration connConfig = new ConnectionConfiguration(SERVER_IP_ADDRESS, 5222);  
+        
+    	  connConfig.setSendPresence(false); // where connConfig is object of .  
+    	  
+    	 XMPPConnection connection = new XMPPConnection(connConfig);  
+    	 try {
+			connection.connect();
+			connection.login(username, password);
+		} catch (XMPPException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}  
+    	     
+    	 OfflineMessageManager offlineManager = new OfflineMessageManager(  
+    			 connection);  
+    	        try {  
+    	            Iterator<org.jivesoftware.smack.packet.Message> it = offlineManager  
+    	                    .getMessages();  
+    	  
+    	            System.out.println(offlineManager.supportsFlexibleRetrieval());  
+    	            System.out.println("离线消息数量: " + offlineManager.getMessageCount());  
+    	  
+    	              
+    	            Map<String,ArrayList<org.jivesoftware.smack.packet.Message>> offlineMsgs = new HashMap<String,ArrayList<org.jivesoftware.smack.packet.Message>>();  
+    	              
+    	            while (it.hasNext()) {  
+    	                org.jivesoftware.smack.packet.Message message = it.next();  
+    	                Log.v(TAG, "收到离线消息, Received from 【" + message.getFrom()  
+    	                                + "】 message: " + message.getBody());  
+    	                String fromUser = message.getFrom().split("/")[0];  
+    	  
+    	                if(offlineMsgs.containsKey(fromUser))  
+    	                {  
+    	                    offlineMsgs.get(fromUser).add(message);  
+    	                }else{  
+    	                    ArrayList<org.jivesoftware.smack.packet.Message> temp = new ArrayList<org.jivesoftware.smack.packet.Message>();  
+    	                    temp.add(message);  
+    	                    offlineMsgs.put(fromUser, temp);  
+    	                }  
+    	            }  
+    	  
+    	            //在这里进行处理离线消息集合......  
+    	            Set<String> keys = offlineMsgs.keySet();  
+    	            Iterator<String> offIt = keys.iterator();  
+    	            while(offIt.hasNext())  
+    	            {  
+//    	                String key = offIt.next();  
+//    	                ArrayList<Message> ms = offlineMsgs.get(key);  
+//    	                TelFrame tel = new TelFrame(key);  
+//    	                ChatFrameThread cft = new ChatFrameThread(key, null);  
+//    	                cft.setTel(tel);  
+//    	                cft.start();  
+//    	                for (int i = 0; i < ms.size(); i++) {  
+//    	                    tel.messageReceiveHandler(ms.get(i));  
+//    	                }  
+    	            }  
+    	              
+    	              
+    	            offlineManager.deleteMessages();  
+    	        } catch (Exception e) {  
+    	            e.printStackTrace();  
+    	        }  
+    }
 	
 	
 	

@@ -1,8 +1,16 @@
 package com.findu.demo.activity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.packet.VCard;
 
 import com.findu.demo.R;
+import com.findu.demo.manager.LoginManager;
 import com.findu.demo.manager.UserManager;
 
 import android.app.Activity;
@@ -10,6 +18,9 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.BitmapRegionDecoder;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +35,7 @@ public class UserinfoActivity extends Activity {
 
 	//nickName
 	//uFind_ID
-	private ImageView mAvatar;
+	private ImageView mIvAvatar;
 	private TextView mNickName;
 	private Button mBtnChooseAvatar;
 	
@@ -68,6 +79,8 @@ public class UserinfoActivity extends Activity {
 	                startActivityForResult(intent, 1);  
 			}
 		});
+		
+		mIvAvatar = (ImageView)findViewById(R.id.iv_Avatar);
 	}
 	
 	@Override
@@ -76,18 +89,36 @@ public class UserinfoActivity extends Activity {
 			Uri uri = data.getData();
 			Log.d("uri", uri.toString());
 			ContentResolver cr = this.getContentResolver();
-			try {
-				Bitmap bitmap = BitmapFactory.decodeStream(cr
-						.openInputStream(uri));
-				ImageView imageView = (ImageView) findViewById(R.id.iv01);
+				Bitmap bitmap;
+				try {
+					//bitmap = BitmapRegionDecoder.newInstance(cr
+					//		.openInputStream(uri), false).decodeRegion(new Rect(0, 0, 500, 500), null);
+					BitmapFactory.Options opts = new Options();
+					opts.inSampleSize = 2;
+					bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri), null, opts);
+					mIvAvatar.setImageBitmap(bitmap);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+					try {
+						LoginManager.getInstance().setAvatarBytes(baos.toByteArray());
+					} catch (XMPPException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+				//ImageView imageView = (ImageView) findViewById(R.id.iv01);
 				/* 将Bitmap设定到ImageView */
-				imageView.setImageBitmap(bitmap);
-			} catch (FileNotFoundException e) {
-				Log.e("Exception", e.getMessage(), e);
-			}
+				//imageView.setImageBitmap(bitmap);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+	
+	
 }
 
 
