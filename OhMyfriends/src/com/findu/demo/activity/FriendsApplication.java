@@ -1,6 +1,8 @@
 package com.findu.demo.activity;
 
 
+import java.io.File;
+
 import org.androidpn.client.NotificationService;
 import org.androidpn.client.XmppManager;
 import org.jivesoftware.smack.Connection;
@@ -13,6 +15,7 @@ import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
 import com.findu.demo.manager.MapManager;
 import com.findu.demo.service.FindUService;
+import com.findu.demo.util.FindUtil;
 
 import android.app.Application;
 import android.content.ComponentName;
@@ -50,6 +53,7 @@ public class FriendsApplication extends Application {
     	Log.v(TAG, "onCreate");
 	    super.onCreate();
 		mInstance = this;
+		createDirectories();
 		initEngineManager(this);
 		
 	}
@@ -123,6 +127,18 @@ public class FriendsApplication extends Application {
                 FriendsApplication.getInstance().m_bKeyRight = false;
             }
         }
+    }
+    
+    private void createDirectories()
+    {
+    	File rootDir = new File(FindUtil.ROOT_PATH);
+    	if(!rootDir.exists())
+    	{
+    		rootDir.mkdir();
+    		
+    		File avatarDir = new File(FindUtil.AVATAR_PATH);
+    		avatarDir.mkdir();
+    	}
     }
     
 //    public XmppManager getXmppManager()

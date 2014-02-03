@@ -188,6 +188,12 @@ public class LoginManager {
 		}
        
 	}
+	/**
+	 * 设置当前用户的头像数据
+	 * @param data 头像数据的字节流
+	 * @throws XMPPException
+	 * @throws IOException
+	 */
 	public void setAvatarBytes(byte[] data)
 			throws XMPPException, IOException {
 		VCard vcard = new VCard();
@@ -249,15 +255,11 @@ public class LoginManager {
     	            Iterator<String> offIt = keys.iterator();  
     	            while(offIt.hasNext())  
     	            {  
-//    	                String key = offIt.next();  
-//    	                ArrayList<Message> ms = offlineMsgs.get(key);  
-//    	                TelFrame tel = new TelFrame(key);  
-//    	                ChatFrameThread cft = new ChatFrameThread(key, null);  
-//    	                cft.setTel(tel);  
-//    	                cft.start();  
-//    	                for (int i = 0; i < ms.size(); i++) {  
-//    	                    tel.messageReceiveHandler(ms.get(i));  
-//    	                }  
+    	                String key = offIt.next();  
+    	                ArrayList<org.jivesoftware.smack.packet.Message> ms = offlineMsgs.get(key);  
+    	                for (int i = 0; i < ms.size(); i++) {  
+    	                    Log.v(TAG, "offline message " + ms.get(i));  
+    	                }  
     	            }  
     	              
     	              

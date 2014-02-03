@@ -12,6 +12,7 @@ import org.jivesoftware.smackx.packet.VCard;
 import com.findu.demo.R;
 import com.findu.demo.manager.LoginManager;
 import com.findu.demo.manager.UserManager;
+import com.findu.demo.util.FindUtil;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -81,6 +82,7 @@ public class UserinfoActivity extends Activity {
 		});
 		
 		mIvAvatar = (ImageView)findViewById(R.id.iv_Avatar);
+		mIvAvatar.setImageBitmap(FindUtil.getAvatar(UserManager.getInstance().getCurrentUser().mNickname));
 	}
 	
 	@Override
@@ -89,31 +91,28 @@ public class UserinfoActivity extends Activity {
 			Uri uri = data.getData();
 			Log.d("uri", uri.toString());
 			ContentResolver cr = this.getContentResolver();
-				Bitmap bitmap;
+			Bitmap bitmap;
+			try {
+				BitmapFactory.Options opts = new Options();
+				opts.inSampleSize = 4;
+				bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri),
+						null, opts);
+				mIvAvatar.setImageBitmap(bitmap);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 				try {
-					//bitmap = BitmapRegionDecoder.newInstance(cr
-					//		.openInputStream(uri), false).decodeRegion(new Rect(0, 0, 500, 500), null);
-					BitmapFactory.Options opts = new Options();
-					opts.inSampleSize = 2;
-					bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri), null, opts);
-					mIvAvatar.setImageBitmap(bitmap);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-					try {
-						LoginManager.getInstance().setAvatarBytes(baos.toByteArray());
-					} catch (XMPPException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} catch (IOException e) {
+//					LoginManager.getInstance().setAvatarBytes(
+//							baos.toByteArray());
+					FindUtil.saveAvatar(baos.toByteArray(), UserManager.getInstance().getCurrentUser().mNickname
+							+ ".jpg");
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				
-				//ImageView imageView = (ImageView) findViewById(R.id.iv01);
-				/* 将Bitmap设定到ImageView */
-				//imageView.setImageBitmap(bitmap);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
